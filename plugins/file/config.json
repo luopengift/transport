@@ -1,0 +1,28 @@
+#This is a test
+{
+    "runtime":{ #系统配置
+        "DEBUG":false,
+        "MAXPROCS":2
+    },
+    "kafka": { #kafka配置
+        "addrs":[
+            "10.10.20.14:9092",
+            "10.10.20.15:9092",
+            "10.10.20.16:9092"
+        ],
+        "topic":"falcon_monitor_us",
+        "maxthreads":100000 #写kafka的并发数
+    },
+    "file":[ #监听文件列表
+        "/data/test_%Y%M%D.log",
+        "/data/monitor_%Y%M%D.log"
+    ],
+    "prefix":"",
+    "suffix":"",
+    "http": { #http服务
+        "addr":":9143"
+    },
+    "tags":"collect", #说明
+    "version":"2017.05.10-0.0.3"
+}
+
