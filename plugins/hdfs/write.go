@@ -42,8 +42,8 @@ func (h *HDFS) Init() error {
 }
 
 func (h *HDFS) PrepareFileFd() (fd *hdfs.FileWriter, err error) {
-	hdfs_path := file.HandlerRule(h.Path)
-	hdfs_file := file.HandlerRule(h.File)
+	hdfs_path := file.TimeRule.Handle(h.Path)
+	hdfs_file := file.TimeRule.Handle(h.File)
 	hdfs_abs := path.Join(hdfs_path, hdfs_file)
 	h.Client.MkdirAll(hdfs_path, 755)
     

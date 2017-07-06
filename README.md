@@ -22,9 +22,11 @@ type WriteCloser interface {
 }
 ```
 ### Input组件:
+- [x] File
 - [x] Kafka
 
 ### Output组件:
+- [x] Kafka
 - [x] HDFS
 
 ### Handler组件:

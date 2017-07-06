@@ -1,10 +1,12 @@
 package transport
 
 import (
-    "sync"
     "time"
 	"github.com/luopengift/golibs/logger"
 )
+
+var MaxBytes = 1000
+
 
 type Transport struct {
 	Inputer
@@ -13,7 +15,6 @@ type Transport struct {
 	ReadBuffer  chan *[]byte
 	WriteBuffer chan *[]byte
     IsSend bool
-    *sync.Mutex
 }
 
 func NewTransport(in Inputer, h Handler, out Outputer) *Transport {
@@ -24,8 +25,8 @@ func NewTransport(in Inputer, h Handler, out Outputer) *Transport {
 	transport.ReadBuffer = make(chan *[]byte, 10)
 	transport.WriteBuffer = make(chan *[]byte, 10)
     transport.IsSend = false
-	transport.Mutex = new(sync.Mutex)
     return transport
+
 }
 
 func (t *Transport) StopWrite() {
@@ -36,16 +37,17 @@ func (t *Transport) StartWrite() {
     t.IsSend = true
 }
 
+func (t *Transport) SetInputer(in Inputer) {
+    t.Inputer = in
+}
 
 func (t *Transport) SetOutputer(out Outputer) {
-    //t.Mutex.Lock()
-    //defer t.Mutex.Unlock()	
     t.Outputer = out
 }
 
 // 将数据从read接口读入 ReadBuffer中
 func (t *Transport) recv() {
-	b := make([]byte, 1000)
+	b := make([]byte, MaxBytes)
 	_, err := t.Inputer.Read(b)
 	if err != nil {
 		logger.Error("recv error:%v", err)
@@ -60,8 +62,6 @@ func (t *Transport) send() {
         time.Sleep(100* time.Millisecond)
         return
     }
-    //t.Mutex.Lock()
-    //defer t.Mutex.Unlock()
     b := <-t.WriteBuffer
 	logger.Debug("send %v,output %#v", string(*b),t.Outputer)
     n, err := t.Outputer.Write(*b)
@@ -71,7 +71,7 @@ func (t *Transport) send() {
 }
 
 func (t *Transport) handle() {
-    b := make([]byte,1024)
+    b := make([]byte,MaxBytes)
     err := t.Handler.Handle(*(<-t.ReadBuffer),b)
     if err != nil {
         logger.Error("Handler Error!%v",err)
