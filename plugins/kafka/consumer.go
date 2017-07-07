@@ -38,6 +38,12 @@ func (self *Consumer) Read(p []byte) (cnt int, err error) {
 	return len(*msg), nil
 }
 
+func (self *Consumer) Start() error {
+    self.ReadFromTopic()
+    return nil
+}
+
+
 func (self *Consumer) ReadFromTopic() {
 	var wg sync.WaitGroup
 	//consumer

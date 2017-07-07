@@ -1,48 +1,29 @@
 package transport
 
 import (
-    "time"
 	"github.com/luopengift/golibs/logger"
+	"time"
 )
 
 var MaxBytes = 1000
 
-
 type Transport struct {
-	Inputer
-    Handler
-	Outputer
+	*Input
+	*Output
+	*Filter
 	ReadBuffer  chan *[]byte
 	WriteBuffer chan *[]byte
-    IsSend bool
 }
 
 func NewTransport(in Inputer, h Handler, out Outputer) *Transport {
 	transport := new(Transport)
-	transport.Inputer = in
-    transport.Handler = h
-	transport.Outputer = out
+	transport.Input = NewInput(in)
+	transport.Filter = NewFilter(h)
+	transport.Output = NewOutput(out)
 	transport.ReadBuffer = make(chan *[]byte, 10)
 	transport.WriteBuffer = make(chan *[]byte, 10)
-    transport.IsSend = false
-    return transport
+	return transport
 
-}
-
-func (t *Transport) StopWrite() {
-    t.IsSend = false
-}
-
-func (t *Transport) StartWrite() {
-    t.IsSend = true
-}
-
-func (t *Transport) SetInputer(in Inputer) {
-    t.Inputer = in
-}
-
-func (t *Transport) SetOutputer(out Outputer) {
-    t.Outputer = out
 }
 
 // 将数据从read接口读入 ReadBuffer中
@@ -57,30 +38,31 @@ func (t *Transport) recv() {
 
 // 将数据从WriteBuffer写入 Write接口中
 func (t *Transport) send() {
-	if !t.IsSend {
-        logger.Warn("stop send,please wait...")
-        time.Sleep(100* time.Millisecond)
-        return
-    }
-    b := <-t.WriteBuffer
-	logger.Debug("send %v,output %#v", string(*b),t.Outputer)
-    n, err := t.Outputer.Write(*b)
+	if !t.Output.IsSend {
+		time.Sleep(100 * time.Millisecond)
+		return
+	}
+	b := <-t.WriteBuffer
+	logger.Debug("send %v,output %#v", string(*b), t.Outputer)
+	n, err := t.Outputer.Write(*b)
 	if err != nil {
-		logger.Error("send error:%v,%v|message:", n, err,string(*b))
+		logger.Error("send error:%v,%v|message:", n, err, string(*b))
 	}
 }
 
 func (t *Transport) handle() {
-    b := make([]byte,MaxBytes)
-    err := t.Handler.Handle(*(<-t.ReadBuffer),b)
-    if err != nil {
-        logger.Error("Handler Error!%v",err)
-    }
-    
-    t.WriteBuffer <-&b
+	b := make([]byte, MaxBytes)
+	err := t.Handler.Handle(*(<-t.ReadBuffer), b)
+	if err != nil {
+		logger.Error("Handler Error!%v", err)
+	}
+
+	t.WriteBuffer <- &b
 }
 
 func (t *Transport) Run() {
+    go t.Inputer.Start()
+    go t.Outputer.Start()
 	go func() {
 		for {
 			t.recv()
@@ -96,6 +78,6 @@ func (t *Transport) Run() {
 			t.send()
 		}
 	}()
-    logger.Info("Transport start success...")
+	logger.Info("Transport start success...")
 	select {}
 }

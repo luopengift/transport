@@ -17,11 +17,11 @@ func New(name string) *Input {
 
 
 func (in *Input) Read(p []byte) (int, error) {
-return 0,nil
+    return 0,nil
 }
 
 
 func (in *Input) Close() error {
-    return nil
+    return in.Tail.Close()
 }
 
