@@ -1,11 +1,11 @@
 package config
 
 import (
-    "github.com/luopengift/transport"
+	"github.com/luopengift/transport"
 )
 
 type Configer interface {
-   Parse(string) map[string]interface{} 
+	Parse(string) map[string]interface{}
 }
 
 type FilterConfig struct{}
@@ -25,13 +25,17 @@ type Config struct {
 	Api     ApiConfig     `json:"api"`
 }
 
+func NewConfig() *Config {
+    return new(Config)
+}
 
 
 type InputConfig struct {
 	Type string `json:"type"`
-    *transport.Inputer
-    Config
+	transport.Inputer
 }
 
 
-
+func (ic *IntputConfig) Parse(str string) map[string]interface{} {
+    return nil
+}

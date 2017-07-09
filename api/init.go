@@ -1,10 +1,10 @@
 package api
 
 import (
-    "github.com/luopengift/gohttp"
+	"github.com/luopengift/gohttp"
 )
 
 func init() {
-    app := gohttp.Init()
-    app.Run("38888")
+	app := gohttp.Init()
+	go app.Run(":38888")
 }

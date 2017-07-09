@@ -38,12 +38,14 @@ func (t *Transport) recv() {
 
 // 将数据从WriteBuffer写入 Write接口中
 func (t *Transport) send() {
-	if !t.Output.IsSend {
-		time.Sleep(100 * time.Millisecond)
-		return
-	}
+	/*if !t.Output.IsSend {
+		    logger.Warn("stop write")
+	    	time.Sleep(100 * time.Millisecond)
+			return
+		}*/
 	b := <-t.WriteBuffer
-	logger.Debug("send %v,output %#v", string(*b), t.Outputer)
+	//logger.Debug("send %v,output %#v", string(*b), t.Outputer)
+	logger.Debug("send %v", string(*b))
 	n, err := t.Outputer.Write(*b)
 	if err != nil {
 		logger.Error("send error:%v,%v|message:", n, err, string(*b))
@@ -61,8 +63,8 @@ func (t *Transport) handle() {
 }
 
 func (t *Transport) Run() {
-    go t.Inputer.Start()
-    go t.Outputer.Start()
+	go t.Inputer.Start()
+	go t.Outputer.Start()
 	go func() {
 		for {
 			t.recv()
@@ -78,6 +80,6 @@ func (t *Transport) Run() {
 			t.send()
 		}
 	}()
-	logger.Info("Transport start success...")
+	logger.Info("Transport start success...%s", time.Now())
 	select {}
 }

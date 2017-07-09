@@ -1,11 +1,11 @@
 package transport
 
 import (
-    "time"
+	"time"
 )
 
 type Message struct {
-    timestamp time.Time
-    key []byte
-    value []byte
+	timestamp time.Time
+	key       []byte
+	value     []byte
 }

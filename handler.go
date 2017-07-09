@@ -5,17 +5,23 @@ type Handler interface {
 }
 
 type Filter struct {
-    Handler
+	Handler
 }
 
 func NewFilter(h Handler) *Filter {
-    f := new(Filter)
-    f.Handler = h
-    return f
+	f := new(Filter)
+	f.Handler = h
+	return f
 }
 
-func (f *Filter) Handle(in,out []byte) error {
-    return f.Handler.Handle(in,out)
+func (f *Filter) Handle(in, out []byte) error {
+	return f.Handler.Handle(in, out)
 }
 
 
+
+var FilterPlugins = map[string]Handler{}
+
+func RegistHandler(key string, h Handler) {
+    FilterPlugins[key] = h
+}

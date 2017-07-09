@@ -9,9 +9,9 @@ import (
 type Producer struct {
 	addrs   []string
 	topic   string
-	message chan []byte      //将数据写入这个管道中
-    // 并发写topic的协程控制
-    // 由于并发写入topic,写入顺序不可控,想要严格数序的话,maxThreads = 1即可
+	message chan []byte //将数据写入这个管道中
+	// 并发写topic的协程控制
+	// 由于并发写入topic,写入顺序不可控,想要严格数序的话,maxThreads = 1即可
 	channel *channel.Channel //并发写topic的协程控制
 }
 

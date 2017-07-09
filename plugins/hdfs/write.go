@@ -1,12 +1,12 @@
 package hdfs
 
 import (
-	"errors"
 	"github.com/colinmarc/hdfs"
 	"github.com/luopengift/golibs/file"
 	"github.com/luopengift/golibs/logger"
 	"path"
 	"sync"
+	"time"
 )
 
 type Config struct {
@@ -38,16 +38,25 @@ func NewHDFS(namenode, path, file string) *HDFS {
 }
 
 func (h *HDFS) Init() error {
-	//h.Mutex.Lock()
-	//defer h.Mutex.Unlock()
 	var err error
 	h.Client, err = hdfs.New(h.Namenode)
 	if err != nil {
 		return err
 	}
-	print("client not error")
 	h.FileWriter, err = h.PrepareFileFd()
 	return err
+}
+
+func (h *HDFS) ReConnect() error {
+	h.Mutex.Lock()
+	defer h.Mutex.Unlock()
+	if err := h.Close(); err != nil {
+		return err
+	}
+	if err := h.Init(); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (h *HDFS) PrepareFileFd() (fd *hdfs.FileWriter, err error) {
@@ -56,14 +65,16 @@ func (h *HDFS) PrepareFileFd() (fd *hdfs.FileWriter, err error) {
 	hdfs_abs := path.Join(hdfs_path, hdfs_file)
 	h.Client.MkdirAll(hdfs_path, 755)
 
-	// Append opens an existing file in HDFS and returns an io.WriteCloser for writing to it
-	if fd, err = h.Client.Append(hdfs_abs); err == nil {
-		return fd, err
-	}
-	print("append error,then create", err.Error())
-	// Create opens a new file in HDFS
-	if fd, err = h.Client.Create(hdfs_abs); err == nil {
-		return fd, err
+	if _, err = h.Client.Stat(hdfs_abs); err == nil {
+		// Append opens an existing file in HDFS and returns an io.WriteCloser for writing to it
+		if fd, err = h.Client.Append(hdfs_abs); err == nil {
+			return fd, err
+		}
+	} else {
+		// Create opens a new file in HDFS
+		if fd, err = h.Client.Create(hdfs_abs); err == nil {
+			return fd, err
+		}
 	}
 	return nil, err
 }
@@ -75,23 +86,32 @@ func (h *HDFS) Write(p []byte) (int, error) {
 }
 
 func (h *HDFS) Start() error {
-    return nil
+	tc := time.Tick(60 * time.Second)
+	for {
+		select {
+		case <-tc:
+			logger.Info("reopen start")
+			if err := h.ReConnect(); err != nil {
+				logger.Error("reconnect hdfs error:%v", err)
+			}
+			logger.Info("reopen success, %#v", h)
+		}
+	}
+	return nil
 }
 
-
 func (h *HDFS) Close() (err error) {
-	h.Mutex.Lock()
-	defer h.Mutex.Unlock()
-	if h.Client == nil || h.FileWriter == nil {
-		return errors.New("can not close client or FileWriter,maybe is nil")
+	if h.FileWriter != nil {
+		if err = h.FileWriter.Close(); err != nil {
+			logger.Trace("filewriter close fail:%#v", err)
+			return err
+		}
 	}
-	if err = h.FileWriter.Close(); err != nil {
-		logger.Trace("filewriter close fail:%#v", err)
-		return err
-	}
-	if err = h.Client.Close(); err != nil {
-		logger.Trace("client close fail:%#v", err)
-		return err
+	if h.Client != nil {
+		if err = h.Client.Close(); err != nil {
+			logger.Trace("client close fail:%#v", err)
+			return err
+		}
 	}
 	return nil
 }
