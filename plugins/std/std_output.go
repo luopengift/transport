@@ -1,15 +1,30 @@
 package plugins
 
 import (
-    "os"
-    "github.com/luopengift/transport"
+        "github.com/luopengift/transport"
+        "os"
 )
 
-var (
-	Stdout = os.Stdout
-)
+type Stdout struct {
+        *os.File
+}
+
+func NewStdout() *Stdout {
+        return new(Stdout)
+}
+
+func (stdout *Stdout) Close() error {
+        return stdout.Close()
+}
+
+func (stdout *Stdout) Init(config map[string]string) error {
+        stdout.File = os.Stdout
+        return nil
+}
+
 
 
 func init() {
-    transport.RegistOutputer("stdout",Stdout)
+        transport.RegistOutputer("stdout", NewStdout())
 }
+

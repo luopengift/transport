@@ -9,3 +9,7 @@ type Message struct {
 	key       []byte
 	value     []byte
 }
+
+func InitMessage() *Message {
+	return new(Message)
+}

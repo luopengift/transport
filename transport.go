@@ -7,6 +7,10 @@ import (
 
 var MaxBytes = 1000
 
+func InitBytes(max int) []byte {
+	return make([]byte, 0, max)
+}
+
 type Transport struct {
 	*Input
 	*Output
@@ -28,8 +32,15 @@ func NewTransport(in Inputer, h Handler, out Outputer) *Transport {
 
 // 将数据从read接口读入 ReadBuffer中
 func (t *Transport) recv() {
-	b := make([]byte, MaxBytes)
+	t.Input.Mutex.Lock()
+	defer t.Input.Mutex.Unlock()
+	if t.Inputer == nil {
+		time.Sleep(600 * time.Millisecond)
+		return
+	}
+	b := InitBytes(MaxBytes)
 	_, err := t.Inputer.Read(b)
+	logger.Debug("recv %v", string(b))
 	if err != nil {
 		logger.Error("recv error:%v", err)
 	}
@@ -38,13 +49,13 @@ func (t *Transport) recv() {
 
 // 将数据从WriteBuffer写入 Write接口中
 func (t *Transport) send() {
-	/*if !t.Output.IsSend {
-		    logger.Warn("stop write")
-	    	time.Sleep(100 * time.Millisecond)
-			return
-		}*/
+	t.Output.Mutex.Lock()
+	defer t.Output.Mutex.Unlock()
+	if t.Outputer == nil {
+		time.Sleep(1000 * time.Second)
+		return
+	}
 	b := <-t.WriteBuffer
-	//logger.Debug("send %v,output %#v", string(*b), t.Outputer)
 	logger.Debug("send %v", string(*b))
 	n, err := t.Outputer.Write(*b)
 	if err != nil {
@@ -53,7 +64,7 @@ func (t *Transport) send() {
 }
 
 func (t *Transport) handle() {
-	b := make([]byte, MaxBytes)
+	b := InitBytes(MaxBytes)
 	err := t.Handler.Handle(*(<-t.ReadBuffer), b)
 	if err != nil {
 		logger.Error("Handler Error!%v", err)
@@ -63,8 +74,8 @@ func (t *Transport) handle() {
 }
 
 func (t *Transport) Run() {
-	go t.Inputer.Start()
-	go t.Outputer.Start()
+	//	go t.Inputer.Start()
+	//	go t.Outputer.Start()
 	go func() {
 		for {
 			t.recv()
@@ -82,4 +93,13 @@ func (t *Transport) Run() {
 	}()
 	logger.Info("Transport start success...%s", time.Now())
 	select {}
+}
+
+func (t *Transport) Stop() {
+	t.Input.Close()
+	close(t.ReadBuffer)
+	//t.Filter.Close()
+	close(t.WriteBuffer)
+	t.Output.Close()
+
 }

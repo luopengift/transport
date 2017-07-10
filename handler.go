@@ -18,10 +18,8 @@ func (f *Filter) Handle(in, out []byte) error {
 	return f.Handler.Handle(in, out)
 }
 
-
-
 var FilterPlugins = map[string]Handler{}
 
 func RegistHandler(key string, h Handler) {
-    FilterPlugins[key] = h
+	FilterPlugins[key] = h
 }

@@ -3,9 +3,9 @@ package main
 import (
 	"github.com/luopengift/golibs/logger"
 	"github.com/luopengift/transport"
+	"github.com/luopengift/transport/filter"
 	"github.com/luopengift/transport/plugins/hdfs"
 	"github.com/luopengift/transport/plugins/kafka"
-	"github.com/luopengift/transport/filter"
 )
 
 const (
@@ -17,7 +17,7 @@ var t *transport.Transport
 
 func main() {
 	//	file, _ := os.Open("/tmp/port.py")
-    logger.Info("Transport starting...")
+	logger.Info("Transport starting...")
 	//output := kafka.NewProducer([]string{"172.31.4.53:9092", "172.31.4.54:9092", "172.31.4.55:9092"}, "lp_test", 100)
 	//go output.WriteToTopic()
 
@@ -29,11 +29,11 @@ func main() {
 
 	output = hdfs.NewHDFS("10.10.20.64:8020", "/tmp/luopeng/%Y%M%D/%h", "test.log")
 	err := output.Init()
-    if err != nil {
-        logger.Error("Init error:%v",err)
-        return
-    }	
-    defer output.Close()
+	if err != nil {
+		logger.Error("Init error:%v", err)
+		return
+	}
+	defer output.Close()
 	t = transport.NewTransport(input, filter.AddEnter, output)
 	t.Run()
 }
