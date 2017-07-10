@@ -31,8 +31,10 @@ func NewConsumer(addrs []string, topic string, offset int64) *Consumer {
 	}
 }
 
-func New() *Consumer {
-	return new(Consumer)
+func NewKafkaInput() *Consumer {
+	c := new(Consumer)
+    c.Message = make(chan *[]byte)
+    return c
 }
 
 func (c *Consumer) Init(config map[string]string) error{
@@ -44,7 +46,7 @@ func (c *Consumer) Init(config map[string]string) error{
 
 
 func (self *Consumer) Read(p []byte) (cnt int, err error) {
-	msg := <-self.Message
+    msg := <-self.Message
 	if len(*msg) > len(p) {
 		p = (*msg)[:len(p)-1]
 		return len(p), errors.New("message is larger than buffer")
@@ -54,12 +56,12 @@ func (self *Consumer) Read(p []byte) (cnt int, err error) {
 }
 
 func (self *Consumer) Start() error {
-	self.ReadFromTopic()
+    self.ReadFromTopic()
 	return nil
 }
 
 func (self *Consumer) ReadFromTopic() {
-	var wg sync.WaitGroup
+    var wg sync.WaitGroup
 	consumer, err := sarama.NewConsumer(self.Addrs, sarama.NewConfig())
 	if err != nil {
 		logger.Error("<new consumer error> %v", err)
@@ -69,18 +71,17 @@ func (self *Consumer) ReadFromTopic() {
 		logger.Error("<consumer partitions> %v", err)
 	}
 	for partition := range partitionList {
-		pc, err := consumer.ConsumePartition(self.Topic, int32(partition), self.Offset)
+        pc, err := consumer.ConsumePartition(self.Topic, int32(partition), self.Offset)
 		if err != nil {
 			logger.Error("<consume error> %v", err)
 		}
 		defer pc.AsyncClose()
 
 		wg.Add(1)
-
 		go func(pc sarama.PartitionConsumer) {
 			defer wg.Done()
 			for msg := range pc.Messages() {
-				self.Message <- &(msg.Value)
+    			self.Message <- &(msg.Value)
 			}
 		}(pc)
 
@@ -94,7 +95,7 @@ func (self *Consumer) Close() error {
 }
 
 func init() {
-	transport.RegistInputer("kafka",new(Consumer))
+	transport.RegistInputer("kafka",NewKafkaInput())
 }
 
 

@@ -5,8 +5,10 @@
     },
 	"input":{
 		"type":"kafka",
+        "path":"config.json",
 		"addrs":"172.31.4.53:9092",
-		"topic":"lp_test"
+		"topic":"falcon_monitor_ap",
+        "offset":"-1"
 	},
 	"output":{
 		"type":"stdout",

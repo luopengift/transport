@@ -14,7 +14,7 @@ type Outputer interface {
 	// 如果 p 中的数据无法被全部写入，则 err 应该返回相应的错误信息。
 	Init(map[string]string) error
 	io.WriteCloser //Write(p []byte) (n int, err error), Close() error
-	//	Start() error
+	Start() error
 }
 
 type Output struct {

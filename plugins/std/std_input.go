@@ -13,6 +13,11 @@ func NewStdin() *Stdin {
 	return new(Stdin)
 }
 
+
+func (stdin *Stdin) Start() error {
+	return nil
+}
+
 func (stdin *Stdin) Close() error {
 	return stdin.Close()
 }

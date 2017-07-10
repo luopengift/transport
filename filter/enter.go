@@ -1,6 +1,7 @@
 package filter
 
-import "bytes"
+//import "bytes"
+//import "fmt"
 
 var enter = []byte("\n")
 var none = []byte("")
@@ -10,9 +11,12 @@ var AddEnter *AddEnterSymbol = new(AddEnterSymbol)
 type AddEnterSymbol struct{}
 
 func (a *AddEnterSymbol) Handle(in, out []byte) error {
-	tmp := bytes.Join([][]byte{in, enter}, []byte{})
-	copy(out, tmp)
-	return nil
+	//tmp := bytes.Join([][]byte{in, enter}, []byte{})
+	//copy(out, tmp)
+	in = append(in,'\n')
+	copy(out, in)
+    
+    return nil
 }
 
 // direct connect input and output, do nothing

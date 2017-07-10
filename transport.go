@@ -8,7 +8,7 @@ import (
 var MaxBytes = 1000
 
 func InitBytes(max int) []byte {
-	return make([]byte, 0, max)
+	return make([]byte, max)
 }
 
 type Transport struct {
@@ -35,33 +35,18 @@ func (t *Transport) recv() {
 	t.Input.Mutex.Lock()
 	defer t.Input.Mutex.Unlock()
 	if t.Inputer == nil {
-		time.Sleep(600 * time.Millisecond)
+        logger.Debug("input is nil")
+		time.Sleep(1000 * time.Millisecond)
 		return
 	}
 	b := InitBytes(MaxBytes)
-	_, err := t.Inputer.Read(b)
-	logger.Debug("recv %v", string(b))
-	if err != nil {
+    _, err := t.Inputer.Read(b)
+    if err != nil {
 		logger.Error("recv error:%v", err)
 	}
 	t.ReadBuffer <- &b
 }
 
-// 将数据从WriteBuffer写入 Write接口中
-func (t *Transport) send() {
-	t.Output.Mutex.Lock()
-	defer t.Output.Mutex.Unlock()
-	if t.Outputer == nil {
-		time.Sleep(1000 * time.Second)
-		return
-	}
-	b := <-t.WriteBuffer
-	logger.Debug("send %v", string(*b))
-	n, err := t.Outputer.Write(*b)
-	if err != nil {
-		logger.Error("send error:%v,%v|message:", n, err, string(*b))
-	}
-}
 
 func (t *Transport) handle() {
 	b := InitBytes(MaxBytes)
@@ -73,9 +58,26 @@ func (t *Transport) handle() {
 	t.WriteBuffer <- &b
 }
 
+// 将数据从WriteBuffer写入 Write接口中
+func (t *Transport) send() {
+	t.Output.Mutex.Lock()
+	defer t.Output.Mutex.Unlock()
+	if t.Outputer == nil {
+		time.Sleep(1000 * time.Second)
+		return
+	}
+	b := <-t.WriteBuffer
+	//logger.Debug("send %v", string(*b))
+	n, err := t.Outputer.Write(*b)
+	if err != nil {
+		logger.Error("send error:%v,%v|message:", n, err, string(*b))
+	}
+}
+
+
 func (t *Transport) Run() {
-	//	go t.Inputer.Start()
-	//	go t.Outputer.Start()
+	go t.Inputer.Start()
+	go t.Outputer.Start()
 	go func() {
 		for {
 			t.recv()

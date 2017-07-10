@@ -1,7 +1,7 @@
 package transport
 
 import (
-	"io"
+	//"io"
 	"sync"
 )
 
@@ -14,8 +14,11 @@ type Inputer interface {
 	// 2、如果数据被读空，没有数据可读（n == 0），则 err 应该返回 EOF。
 	// 如果遇到读取错误，则 err 应该返回相应的错误信息。
 	Init(map[string]string) error
-	io.ReadCloser //Read(p []byte) (n int, err error),  Close() error
-	//	Start() error
+	//io.ReadCloser
+    Read(p []byte) (n int, err error)
+    Close() error
+	
+    Start() error
 }
 
 type Input struct {

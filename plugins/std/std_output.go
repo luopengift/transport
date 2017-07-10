@@ -13,6 +13,11 @@ func NewStdout() *Stdout {
         return new(Stdout)
 }
 
+
+func (stdout *Stdout) Start() error {
+        return nil
+}
+
 func (stdout *Stdout) Close() error {
         return stdout.Close()
 }
