@@ -1,13 +1,13 @@
 package kafka
 
 import (
-	"github.com/luopengift/transport"
 	"errors"
 	"github.com/Shopify/sarama"
 	"github.com/luopengift/golibs/logger"
-	"sync"
-	"strings"
+	"github.com/luopengift/transport"
 	"strconv"
+	"strings"
+	"sync"
 )
 
 /*
@@ -33,20 +33,19 @@ func NewConsumer(addrs []string, topic string, offset int64) *Consumer {
 
 func NewKafkaInput() *Consumer {
 	c := new(Consumer)
-    c.Message = make(chan *[]byte)
-    return c
+	c.Message = make(chan *[]byte)
+	return c
 }
 
-func (c *Consumer) Init(config map[string]string) error{
-	c.Addrs = strings.Split(config["addrs"],",")
+func (c *Consumer) Init(config map[string]string) error {
+	c.Addrs = strings.Split(config["addrs"], ",")
 	c.Topic = config["topic"]
 	c.Offset, _ = strconv.ParseInt(config["offset"], 10, 64)
 	return nil
 }
 
-
 func (self *Consumer) Read(p []byte) (cnt int, err error) {
-    msg := <-self.Message
+	msg := <-self.Message
 	if len(*msg) > len(p) {
 		p = (*msg)[:len(p)-1]
 		return len(p), errors.New("message is larger than buffer")
@@ -56,12 +55,12 @@ func (self *Consumer) Read(p []byte) (cnt int, err error) {
 }
 
 func (self *Consumer) Start() error {
-    self.ReadFromTopic()
+	self.ReadFromTopic()
 	return nil
 }
 
 func (self *Consumer) ReadFromTopic() {
-    var wg sync.WaitGroup
+	var wg sync.WaitGroup
 	consumer, err := sarama.NewConsumer(self.Addrs, sarama.NewConfig())
 	if err != nil {
 		logger.Error("<new consumer error> %v", err)
@@ -71,7 +70,7 @@ func (self *Consumer) ReadFromTopic() {
 		logger.Error("<consumer partitions> %v", err)
 	}
 	for partition := range partitionList {
-        pc, err := consumer.ConsumePartition(self.Topic, int32(partition), self.Offset)
+		pc, err := consumer.ConsumePartition(self.Topic, int32(partition), self.Offset)
 		if err != nil {
 			logger.Error("<consume error> %v", err)
 		}
@@ -81,7 +80,7 @@ func (self *Consumer) ReadFromTopic() {
 		go func(pc sarama.PartitionConsumer) {
 			defer wg.Done()
 			for msg := range pc.Messages() {
-    			self.Message <- &(msg.Value)
+				self.Message <- &(msg.Value)
 			}
 		}(pc)
 
@@ -95,9 +94,5 @@ func (self *Consumer) Close() error {
 }
 
 func init() {
-	transport.RegistInputer("kafka",NewKafkaInput())
+	transport.RegistInputer("kafka", NewKafkaInput())
 }
-
-
-
-

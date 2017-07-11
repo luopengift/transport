@@ -4,28 +4,29 @@ import (
 	"github.com/luopengift/transport"
 )
 
-type Elasticsearch struct {}
+type EsOutput struct {
+}
 
 
-func NewEsOutput() *Elasticsearch {
-    es := new(Elasticsearch)
+func NewEsOutput() *EsOutput {
+    es := new(EsOutput)
     return es
 }
 
 
-func (es *Elasticsearch) Init(map[string]string) error {
+func (es *EsOutput) Init(map[string]string) error {
 	return nil
 }
 
-func (es *Elasticsearch) Start() error {
+func (es *EsOutput) Start() error {
     return nil 
 }
 
-func (es *Elasticsearch) Write(p []byte) (int,error) {
+func (es *EsOutput) Write(p []byte) (int,error) {
 	return 0,nil
 }
 
-func (es *Elasticsearch) Close() error {
+func (es *EsOutput) Close() error {
 	return nil
 }
 
