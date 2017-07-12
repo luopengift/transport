@@ -5,18 +5,18 @@ import (
 	"time"
 )
 
-var MaxBytes = 1000
+var MaxBytes = 1000000
 
 func InitBytes(max int) []byte {
-	return make([]byte, max)
+	return make([]byte, 0, max)
 }
 
 type Transport struct {
 	*Input
 	*Output
 	*Filter
-	ReadBuffer  chan *[]byte
-	WriteBuffer chan *[]byte
+	ReadBuffer  chan []byte
+	WriteBuffer chan []byte
 }
 
 func NewTransport(in Inputer, h Handler, out Outputer) *Transport {
@@ -24,8 +24,8 @@ func NewTransport(in Inputer, h Handler, out Outputer) *Transport {
 	transport.Input = NewInput(in)
 	transport.Filter = NewFilter(h)
 	transport.Output = NewOutput(out)
-	transport.ReadBuffer = make(chan *[]byte, 10)
-	transport.WriteBuffer = make(chan *[]byte, 10)
+	transport.ReadBuffer = make(chan []byte, 10)
+	transport.WriteBuffer = make(chan []byte, 10)
 	return transport
 
 }
@@ -40,22 +40,21 @@ func (t *Transport) recv() {
 		return
 	}
 	b := InitBytes(MaxBytes)
-    _, err := t.Inputer.Read(b)
+    n, err := t.Inputer.Read(b)
     if err != nil {
 		logger.Error("recv error:%v", err)
 	}
-	t.ReadBuffer <- &b
+	t.ReadBuffer <- b[:n]
 }
 
 
 func (t *Transport) handle() {
-	b := InitBytes(MaxBytes)
-	err := t.Handler.Handle(*(<-t.ReadBuffer), b)
+	b := make([]byte,MaxBytes,MaxBytes)
+	n, err := t.Handler.Handle(<-t.ReadBuffer, b)
 	if err != nil {
 		logger.Error("Handler Error!%v", err)
 	}
-
-	t.WriteBuffer <- &b
+	t.WriteBuffer <- b[:n]
 }
 
 // 将数据从WriteBuffer写入 Write接口中
@@ -67,10 +66,10 @@ func (t *Transport) send() {
 		return
 	}
 	b := <-t.WriteBuffer
-	//logger.Debug("send %v", string(*b))
-	n, err := t.Outputer.Write(*b)
+	//logger.Debug("send %v", string(b))
+	n, err := t.Outputer.Write(b)
 	if err != nil {
-		logger.Error("send error:%v,%v|message:", n, err, string(*b))
+		logger.Error("send error:%v,%v|message:", n, err, string(b))
 	}
 }
 

@@ -1,5 +1,4 @@
-//package elasticsearch
-package main
+package elasticsearch
 
 import (
 	"encoding/json"
@@ -27,16 +26,16 @@ func NewMeta(_index, _type, _id string) *Meta {
 type Bulk struct {
 	Index  *Meta  `json:"index,omitempty"`
 	Update *Meta  `json:"update,omitempty"`
-	Source string `json:"-"`
+	Source []byte `json:"-"`
 }
 
-func NewBulkIndex(_index, _type, _id, source string) *Bulk {
+func NewBulkIndex(_index, _type, _id string, source []byte) *Bulk {
 	return &Bulk{
 		Index:  NewMeta(_index, _type, _id),
 		Source: source,
 	}
 }
-func NewBulkUpdate(_index, _type, _id, source string) *Bulk {
+func NewBulkUpdate(_index, _type, _id string, source []byte) *Bulk {
 	return &Bulk{
 		Update: NewMeta(_index, _type, _id),
 		Source: source,
@@ -49,11 +48,10 @@ func (b *Bulk) Bytes() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	source := []byte(b.Source)
 	p := make([]byte, 0, 1000)
 	p = append(p, action...)
 	p = append(p, enter)
-	p = append(p, source...)
+	p = append(p, b.Source...)
 	p = append(p, enter)
 	return p, nil
 }
@@ -78,7 +76,7 @@ type HttpBulk struct {
 	// Maximum number of documents.
 	MaxCount int
 	// Internal HTTP Client.
-	client *gohttp.Client
+	Client *gohttp.Client
 	// Optional username for HTTP authentication
 	username string
 	// Optional password for HTTP authentication
@@ -97,16 +95,19 @@ func NewHttpBulk(protocol, addrs, path string, maxCount int,
 		password: password,
 	}
 
-	h.client = gohttp.NewClient().URL(h.Protocol+"://"+h.Addrs).Path(path).Path("/_bulk").Header("Accept", "application/json")
+	h.Client = gohttp.NewClient().URL(h.Protocol+"://"+h.Addrs).Path("/_bulk").Header("Accept", "application/json")
 	return h
 }
 
 func (h *HttpBulk) Index(p []byte) error {
-	resp,err := h.client.Body(p).Post()
+	logger.Info("SEND %s",string(p))
+    resp,err := h.Client.Body(p).Post()
 	if err != nil {
-		logger.Error("<bulk post error>resp:%v,err:%v",resp.String(),err)
+		logger.Error("<bulk post error>%#v",err)
 		return err
 	}
-	return nil
+    logger.Warn("resp%#v",resp.String())
+    return nil
 }
+
 

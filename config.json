@@ -6,15 +6,16 @@
 	"input":{
 		"type":"kafka",
         "path":"config.json",
-		"addrs":"172.31.4.53:9092",
-		"topic":"falcon_monitor_ap",
+		"addrs":"10.10.20.14:9092",
+		"topic":"click-reformat",
         "offset":"-1"
 	},
 	"output":{
-		"type":"stdout",
-		"addrs":"172.31.4.53:9092",
-		"topic":"lp_test"
-	
+        "type":"elasticsearch",
+        "protocol":"http",
+        "addrs":"172.31.16.120:9200",
+        "index":"test",
+        "_type":"test"
 	}
 }
 

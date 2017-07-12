@@ -65,8 +65,8 @@ func (cfg *Config) Input() transport.Inputer {
 }
 
 func (cfg *Config) Output() transport.Outputer {
-	out := transport.OutputPlugins[cfg.OutputConfig["type"]]
-	out.Init(cfg.OutputConfig)
+    out := transport.OutputPlugins[cfg.OutputConfig["type"]]
+    out.Init(cfg.OutputConfig)
 	return out
 }
 

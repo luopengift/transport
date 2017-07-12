@@ -5,6 +5,9 @@ import (
 )
 
 type EsOutput struct {
+    *HttpBulk
+    Index   string
+    Type    string
 }
 
 
@@ -13,9 +16,24 @@ func NewEsOutput() *EsOutput {
     return es
 }
 
+/*
+{
+    "type":"elasticsearch",
+    "protocol":"http",
+    "addrs":"172.31.16.120:9200",
+    "index":"test",
+    "type":"test"
+}
 
-func (es *EsOutput) Init(map[string]string) error {
-	return nil
+*/
+
+
+
+func (es *EsOutput) Init(cfg map[string]string) error {
+	es.HttpBulk = NewHttpBulk(cfg["protocol"],cfg["addrs"],"",0,"","")
+    es.Index = cfg["index"]
+    es.Type = cfg["_type"]
+    return nil
 }
 
 func (es *EsOutput) Start() error {
@@ -23,7 +41,12 @@ func (es *EsOutput) Start() error {
 }
 
 func (es *EsOutput) Write(p []byte) (int,error) {
-	return 0,nil
+    bulk,err := NewBulkIndex(es.Index,es.Type,"",p).Bytes()
+    if err != nil {
+        return 0,err
+    }
+    err = es.HttpBulk.Index(bulk)
+    return 0,err
 }
 
 func (es *EsOutput) Close() error {

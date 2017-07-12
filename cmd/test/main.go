@@ -29,7 +29,8 @@ func main() {
 	input := cfg.Input()
 	output := cfg.Output()
 	logger.Debug("%#v,%#v",input,output)
-	t = transport.NewTransport(input, filter.AddEnter, output)
+	//t = transport.NewTransport(input, filter.AddEnter, output)
+	t = transport.NewTransport(input, &filter.DefaultConnection{}, output)
 	t.Run()
 	logger.Debug("%#v", t)
 

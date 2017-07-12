@@ -1,7 +1,6 @@
 package kafka
 
 import (
-	"errors"
 	"github.com/Shopify/sarama"
 	"github.com/luopengift/golibs/logger"
 	"github.com/luopengift/transport"
@@ -46,12 +45,8 @@ func (c *Consumer) Init(config map[string]string) error {
 
 func (self *Consumer) Read(p []byte) (cnt int, err error) {
 	msg := <-self.Message
-	if len(*msg) > len(p) {
-		p = (*msg)[:len(p)-1]
-		return len(p), errors.New("message is larger than buffer")
-	}
-	copy(p, *msg)
-	return len(*msg), nil
+    p = append(p,(*msg)...)
+	return len(p), nil
 }
 
 func (self *Consumer) Start() error {

@@ -1,7 +1,7 @@
 package transport
 
 type Handler interface {
-	Handle(in, out []byte) error
+	Handle(in, out []byte) (n int,err error)
 }
 
 type Filter struct {
@@ -14,7 +14,7 @@ func NewFilter(h Handler) *Filter {
 	return f
 }
 
-func (f *Filter) Handle(in, out []byte) error {
+func (f *Filter) Handle(in, out []byte) (int, error) {
 	return f.Handler.Handle(in, out)
 }
 
