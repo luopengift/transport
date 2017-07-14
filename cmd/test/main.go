@@ -18,13 +18,13 @@ const (
 var t *transport.Transport
 
 func main() {
-	runtime.GOMAXPROCS(runtime.NumCPU())
 
 	logger.Info("Transport starting...")
 	cfg := config.NewConfig()
 	logger.Info("%#v", cfg)
 	logger.Info("%#v,%#v", transport.InputPlugins, transport.OutputPlugins)
 
+	runtime.GOMAXPROCS(runtime.NumCPU())
 
 	input := cfg.Input()
 	output := cfg.Output()

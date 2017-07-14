@@ -95,18 +95,21 @@ func NewHttpBulk(protocol, addrs, path string, maxCount int,
 		password: password,
 	}
 
-	h.Client = gohttp.NewClient().URL(h.Protocol+"://"+h.Addrs).Path("/_bulk").Header("Accept", "application/json")
+	h.Client = gohttp.NewClient().Url(h.Protocol+"://"+h.Addrs).Path("/_bulk").Header("Accept", "application/json")
 	return h
 }
 
 func (h *HttpBulk) Index(p []byte) error {
-	logger.Info("SEND %s",string(p))
+    logger.Info("%p",h.Client)
     resp,err := h.Client.Body(p).Post()
 	if err != nil {
 		logger.Error("<bulk post error>%#v",err)
 		return err
 	}
-    logger.Warn("resp%#v",resp.String())
+    if resp.Code() != 200 {
+        logger.Warn("resp%#v",resp.String())
+        return nil    
+    }
     return nil
 }
 

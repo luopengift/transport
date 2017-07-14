@@ -3,8 +3,10 @@ data transportation tool, from one to another.such as,file, kafka, hdfs etc.
 
 
 ```
-任何实现了ReadCloser接口，即可做为input组件
-type ReadCloser interface {
+任何实现了Inputer接口，即可做为input组件
+type Inputer interface {
+    Init(cfg map[string]string) error
+    Start() error
     Read([]byte) (int, error)
     Close() error
 }
@@ -15,20 +17,24 @@ type Handler interface {
 }
 
 
-任何实现了WritCloser接口，即可作为output组件
-type WriteCloser interface {
+任何实现了Inputer接口，即可作为output组件
+type Outputer interface {
+    Init(cfg map[string]string) error
+    Start() error
     Write([]byte) (int, error)
     Close() error
 }
 ```
 ### Input组件:
-- [x] File
-- [x] Kafka
-
+- [x] stdin
+- [x] file
+- [x] kafka
+- [x] elasticsearch
 ### Output组件:
-- [x] Kafka
-- [x] HDFS
-
+- [x] stdout
+- [x] kafka
+- [x] elasticsearch
+- [] hdfs
 ### Handler组件:
 - [x] Default,直接连接input,output
 - [x] 在行尾加入换行符,例子:写文件

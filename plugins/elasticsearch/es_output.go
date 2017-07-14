@@ -16,22 +16,9 @@ func NewEsOutput() *EsOutput {
     return es
 }
 
-/*
-{
-    "type":"elasticsearch",
-    "protocol":"http",
-    "addrs":"172.31.16.120:9200",
-    "index":"test",
-    "type":"test"
-}
-
-*/
-
-
-
 func (es *EsOutput) Init(cfg map[string]string) error {
 	es.HttpBulk = NewHttpBulk(cfg["protocol"],cfg["addrs"],"",0,"","")
-    es.Index = cfg["index"]
+    es.Index = cfg["_index"]
     es.Type = cfg["_type"]
     return nil
 }
@@ -56,3 +43,4 @@ func (es *EsOutput) Close() error {
 func init() {
 	transport.RegistOutputer("elasticsearch", NewEsOutput())
 }
+

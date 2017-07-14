@@ -5,11 +5,14 @@ import (
 	"time"
 )
 
-var MaxBytes = 1000000
+const (
+	B = 1        //1B = 8bit
+	K = 1024 * B //1KB
+	M = 1024 * K //1MB
+	G = 1024 * M //1GB
 
-func InitBytes(max int) []byte {
-	return make([]byte, 0, max)
-}
+	MAX = 1 * M
+)
 
 type Transport struct {
 	*Input
@@ -35,21 +38,21 @@ func (t *Transport) recv() {
 	t.Input.Mutex.Lock()
 	defer t.Input.Mutex.Unlock()
 	if t.Inputer == nil {
-        logger.Debug("input is nil")
+		logger.Debug("input is nil")
 		time.Sleep(1000 * time.Millisecond)
 		return
 	}
-	b := InitBytes(MaxBytes)
-    n, err := t.Inputer.Read(b)
-    if err != nil {
+	b := make([]byte, MAX, MAX)
+	n, err := t.Inputer.Read(b)
+	if err != nil {
 		logger.Error("recv error:%v", err)
 	}
-	t.ReadBuffer <- b[:n]
+    t.ReadBuffer <- b[:n]
+	logger.Debug("recv %v", string(b[:n]))
 }
 
-
 func (t *Transport) handle() {
-	b := make([]byte,MaxBytes,MaxBytes)
+	b := make([]byte, MAX, MAX)
 	n, err := t.Handler.Handle(<-t.ReadBuffer, b)
 	if err != nil {
 		logger.Error("Handler Error!%v", err)
@@ -66,13 +69,12 @@ func (t *Transport) send() {
 		return
 	}
 	b := <-t.WriteBuffer
-	//logger.Debug("send %v", string(b))
+	logger.Debug("send %v", string(b))
 	n, err := t.Outputer.Write(b)
 	if err != nil {
 		logger.Error("send error:%v,%v|message:", n, err, string(b))
 	}
 }
-
 
 func (t *Transport) Run() {
 	go t.Inputer.Start()

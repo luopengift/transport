@@ -53,7 +53,7 @@ func NewConfig() *Config {
 func (cfg *Config) Init() (*Config,error) {
     conf := file.NewConfig("./config.json")
     err := conf.Parse(cfg)
-    logger.Info("%+v", conf.String())
+    logger.Info("%+v,%#v", conf.String(),cfg)
     return cfg, err
 
 }

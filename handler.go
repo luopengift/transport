@@ -1,7 +1,7 @@
 package transport
 
 type Handler interface {
-	Handle(in, out []byte) (n int,err error)
+	Handle(in, out []byte) (n int, err error)
 }
 
 type Filter struct {

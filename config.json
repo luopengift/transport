@@ -3,19 +3,26 @@
         "DEBUG":false,
         "MAXPROCS":2
     },
-	"input":{
-		"type":"kafka",
-        "path":"config.json",
-		"addrs":"10.10.20.14:9092",
-		"topic":"click-reformat",
-        "offset":"-1"
-	},
-	"output":{
+    "input":{
         "type":"elasticsearch",
         "protocol":"http",
         "addrs":"172.31.16.120:9200",
-        "index":"test",
+        "_index":"tpushuser",
+        "_type":"tpushuser",
+        "scroll":"2m",
+        "query":"{\"query\":{\"match_all\":{}}}"
+        
+        #"type":"kafka",
+        #"addrs":"10.10.20.14:9092",
+        #"topic":"click-reformat",
+        #"offset":"-1"
+    },
+    "output":{
+        "type":"elasticsearch",
+        "protocol":"http",
+        "addrs":"172.31.16.120:9200",
+        "_index":"test",
         "_type":"test"
-	}
+    }
 }
 

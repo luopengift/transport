@@ -18,7 +18,7 @@ type Consumer struct {
 	Addrs   []string
 	Topic   string
 	Offset  int64
-	Message chan *[]byte //从这个管道中读取数据
+	Message chan []byte //从这个管道中读取数据
 }
 
 func NewConsumer(addrs []string, topic string, offset int64) *Consumer {
@@ -26,13 +26,13 @@ func NewConsumer(addrs []string, topic string, offset int64) *Consumer {
 		Addrs:   addrs,
 		Topic:   topic,
 		Offset:  offset,
-		Message: make(chan *[]byte),
+		Message: make(chan []byte),
 	}
 }
 
 func NewKafkaInput() *Consumer {
 	c := new(Consumer)
-	c.Message = make(chan *[]byte)
+	c.Message = make(chan []byte)
 	return c
 }
 
@@ -45,8 +45,8 @@ func (c *Consumer) Init(config map[string]string) error {
 
 func (self *Consumer) Read(p []byte) (cnt int, err error) {
 	msg := <-self.Message
-    p = append(p,(*msg)...)
-	return len(p), nil
+    n := copy(p,msg)
+    return n,nil
 }
 
 func (self *Consumer) Start() error {
@@ -75,7 +75,7 @@ func (self *Consumer) ReadFromTopic() {
 		go func(pc sarama.PartitionConsumer) {
 			defer wg.Done()
 			for msg := range pc.Messages() {
-				self.Message <- &(msg.Value)
+				self.Message <- msg.Value
 			}
 		}(pc)
 
