@@ -5,7 +5,6 @@ import (
 	"github.com/luopengift/transport"
 	_ "github.com/luopengift/transport/api"
 	"github.com/luopengift/transport/config"
-	"github.com/luopengift/transport/filter"
 	_ "github.com/luopengift/transport/plugins"
 	"runtime"
 	//"flag"
@@ -21,16 +20,15 @@ func main() {
 
 	logger.Info("Transport starting...")
 	cfg := config.NewConfig()
-	logger.Info("%#v", cfg)
-	logger.Info("%#v,%#v", transport.InputPlugins, transport.OutputPlugins)
+	logger.Info("%#v,%#v, %#v", transport.InputPlugins, transport.HandlePlugins, transport.OutputPlugins)
 
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
 	input := cfg.Input()
 	output := cfg.Output()
-	logger.Debug("%#v,%#v",input,output)
-	//t = transport.NewTransport(input, filter.AddEnter, output)
-	t = transport.NewTransport(input, &filter.DefaultConnection{}, output)
+	handle := cfg.Handle()
+    logger.Debug("%#v,%#v,%#v",input,handle,output)
+	t = transport.NewTransport(input, handle, output)
 	t.Run()
 	logger.Debug("%#v", t)
 

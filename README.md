@@ -36,8 +36,8 @@ type Outputer interface {
 - [x] elasticsearch
 - [] hdfs
 ### Handler组件:
-- [x] Default,直接连接input,output
-- [x] 在行尾加入换行符,例子:写文件
+- [x] null,直接连接input,output
+- [x] addenter,在行尾加入换行符,例子:写文件
 
 ## TODO
 1. 优化性能

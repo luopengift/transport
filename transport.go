@@ -17,7 +17,7 @@ const (
 type Transport struct {
 	*Input
 	*Output
-	*Filter
+	*Middleware
 	ReadBuffer  chan []byte
 	WriteBuffer chan []byte
 }
@@ -25,7 +25,7 @@ type Transport struct {
 func NewTransport(in Inputer, h Handler, out Outputer) *Transport {
 	transport := new(Transport)
 	transport.Input = NewInput(in)
-	transport.Filter = NewFilter(h)
+	transport.Middleware = NewMiddleware(h)
 	transport.Output = NewOutput(out)
 	transport.ReadBuffer = make(chan []byte, 10)
 	transport.WriteBuffer = make(chan []byte, 10)
@@ -58,6 +58,7 @@ func (t *Transport) handle() {
         n, err := t.Handler.Handle(p, b)
         if err != nil {
             logger.Error("Handler Error!%v", err)
+            return
         }
         t.WriteBuffer <- b[:n]
     }(tmp)
@@ -68,6 +69,7 @@ func (t *Transport) send() {
 	t.Output.Mutex.Lock()
 	defer t.Output.Mutex.Unlock()
 	if t.Outputer == nil {
+		logger.Debug("output is nil")
 		time.Sleep(1000 * time.Second)
 		return
 	}

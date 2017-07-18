@@ -4,18 +4,21 @@
         "MAXPROCS":2
     },
     "input":{
-        "type":"elasticsearch",
-        "protocol":"http",
-        "addrs":"172.31.16.120:9200",
-        "_index":"tpushuser",
-        "_type":"tpushuser",
-        "scroll":"2m",
-        "query":"{\"query\":{\"match_all\":{}}}"
+        #"type":"elasticsearch",
+        #"protocol":"http",
+        #"addrs":"172.31.16.120:9200",
+        #"_index":"tpushuser",
+        #"_type":"tpushuser",
+        #"scroll":"2m",
+        #"query":"{\"query\":{\"match_all\":{}}}"
         
-        #"type":"kafka",
-        #"addrs":"10.10.20.14:9092",
-        #"topic":"click-reformat",
-        #"offset":"-1"
+        "type":"file",
+        "path":"test.log",
+        "topic":"click-reformat",
+        "offset":"-1"
+    },
+    "handle":{
+        "type":"null"
     },
     "output":{
         "type":"elasticsearch",

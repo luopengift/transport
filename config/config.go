@@ -27,7 +27,7 @@ func NewRuntimeConfig() *RuntimeConfig {
 type InputConfig map[string]string
 //type FilterConfig map[string]string
 type OutputConfig map[string]string
-
+type HandleConfig map[string]string
 
 type ApiConfig struct {
 }
@@ -37,24 +37,28 @@ type ApiConfig struct {
 type Config struct {
 	Runtime      *RuntimeConfig `json:"runtime"`
 	InputConfig  InputConfig   `json:"input"`
-	FilterConfig map[string]string  `json:"filter"`
+	HandleConfig HandleConfig  `json:"handle"`
 	OutputConfig OutputConfig  `json:"output"`
 	ApiConfig    *ApiConfig     `json:"api"`
 }
 
 func NewConfig() *Config {
 	cfg := new(Config)
-	cfg.Init()
-	logger.Warn("logger is %#v",cfg.InputConfig)
-	logger.Warn("logger is %#v",cfg.OutputConfig)
+	err := cfg.Init()
+	if err != nil {
+        logger.Error("config parse error!%v",err)
+        return nil
+    }
+    logger.Warn("Inputer is %#v",cfg.InputConfig)
+	logger.Warn("Outputer is %#v",cfg.OutputConfig)
+	logger.Warn("Handle is %#v",cfg.HandleConfig)
 	return cfg
 }
 
-func (cfg *Config) Init() (*Config,error) {
+func (cfg *Config) Init() (error) {
     conf := file.NewConfig("./config.json")
     err := conf.Parse(cfg)
-    logger.Info("%+v,%#v", conf.String(),cfg)
-    return cfg, err
+    return err
 
 }
 
@@ -70,5 +74,9 @@ func (cfg *Config) Output() transport.Outputer {
 	return out
 }
 
-
+func (cfg *Config) Handle() transport.Handler {
+    handle := transport.HandlePlugins[cfg.HandleConfig["type"]]
+    //handle.Init(cfg.HandleConfig)
+	return handle
+}
 
