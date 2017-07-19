@@ -47,21 +47,21 @@ func (t *Transport) recv() {
 	if err != nil {
 		logger.Error("recv error:%v", err)
 	}
-    t.ReadBuffer <- b[:n]
+	t.ReadBuffer <- b[:n]
 	logger.Debug("recv %v", string(b[:n]))
 }
 
 func (t *Transport) handle() {
-	tmp := <- t.ReadBuffer
-    go func(p []byte) {
-        b := make([]byte, MAX, MAX)
-        n, err := t.Handler.Handle(p, b)
-        if err != nil {
-            logger.Error("Handler Error!%v", err)
-            return
-        }
-        t.WriteBuffer <- b[:n]
-    }(tmp)
+	tmp := <-t.ReadBuffer
+	go func(p []byte) {
+		b := make([]byte, MAX, MAX)
+		n, err := t.Handler.Handle(p, b)
+		if err != nil {
+			logger.Error("Handler Error!%v", err)
+			return
+		}
+		t.WriteBuffer <- b[:n]
+	}(tmp)
 }
 
 // 将数据从WriteBuffer写入 Write接口中

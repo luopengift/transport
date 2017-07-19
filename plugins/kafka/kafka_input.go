@@ -45,8 +45,8 @@ func (c *Consumer) Init(config map[string]string) error {
 
 func (self *Consumer) Read(p []byte) (cnt int, err error) {
 	msg := <-self.Message
-    n := copy(p,msg)
-    return n,nil
+	n := copy(p, msg)
+	return n, nil
 }
 
 func (self *Consumer) Start() error {

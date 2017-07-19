@@ -88,7 +88,7 @@ func NewHttpBulk(protocol, addrs, path string, maxCount int,
 
 	h := &HttpBulk{
 		Protocol: protocol,
-		Addrs:   addrs,
+		Addrs:    addrs,
 		Path:     path,
 		MaxCount: maxCount,
 		username: username,
@@ -100,17 +100,15 @@ func NewHttpBulk(protocol, addrs, path string, maxCount int,
 }
 
 func (h *HttpBulk) Index(p []byte) error {
-    resp,err := h.Client.Body(p).Post()
+	resp, err := h.Client.Body(p).Post()
 	if err != nil {
-		logger.Error("<bulk post error>%#v",err)
+		logger.Error("<bulk post error>%#v", err)
 		return err
 	}
-    if resp.Code() != 200 {
-        logger.Warn("resp%#v",resp.String())
-        return nil    
-    }
-    logger.Debug("Response is %v",resp.String())
-    return nil
+	if resp.Code() != 200 {
+		logger.Warn("resp%#v", resp.String())
+		return nil
+	}
+	logger.Debug("Response is %v", resp.String())
+	return nil
 }
-
-
