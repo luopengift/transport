@@ -12,7 +12,8 @@
         #"scroll":"2m",
         #"query":"{\"query\":{\"match_all\":{}}}"
         
-        "type":"file",
+        "type":"http",
+        "addr":":9999",
         "path":"test.log",
         "topic":"click-reformat",
         "offset":"-1"

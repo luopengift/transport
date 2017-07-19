@@ -30,11 +30,12 @@ type Outputer interface {
 - [x] file
 - [x] kafka
 - [x] elasticsearch
+- [x] http
 ### Output组件:
 - [x] stdout
 - [x] kafka
 - [x] elasticsearch
-- [] hdfs
+- [x] hdfs
 ### Handler组件:
 - [x] null,直接连接input,output
 - [x] addenter,在行尾加入换行符,例子:写文件

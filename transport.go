@@ -99,7 +99,7 @@ func (t *Transport) Run() {
 			t.send()
 		}
 	}()
-	logger.Info("Transport start success...%s", time.Now())
+	logger.Info("Transport start success...%s\n", time.Now())
 	select {}
 }
 

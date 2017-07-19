@@ -52,6 +52,6 @@ func (i *Input) Close() error {
 
 var InputPlugins = map[string]Inputer{}
 
-func RegistInputer(key string, out Inputer) {
-	InputPlugins[key] = out
+func RegistInputer(key string, in Inputer) {
+	InputPlugins[key] = in
 }

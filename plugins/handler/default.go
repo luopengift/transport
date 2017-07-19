@@ -4,8 +4,6 @@ import (
     "github.com/luopengift/transport"
 )
 
-var enter = []byte("\n")
-var none = []byte("")
 
 // add a enter symbol at end of line, classic written into file
 type AddEnterHandler struct{}
