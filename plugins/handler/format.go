@@ -1,38 +1,65 @@
 package handler
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/luopengift/golibs/logger"
+	//"github.com/luopengift/golibs/logger"
+	"github.com/luopengift/transport"
+	"strconv"
+	"strings"
 )
+
+type LogFormat struct {
+	RequestId string `json:"request_id"`
+	Uid       string `json:"uid"`
+	ReqTime   int64  `json:"request_time"`
+	Module    string `json:"module"`
+	Cost      int    `json:"cost"`
+	Timestamp int64  `json:"timestamp"`
+	Data      string `json:"data"`
+	Prefix    string `json:"Prefix"`
+}
 
 //Format: xxxxxxx||K1=V1&K2=V2&K3=V3...Kn=Vn
 // test||JSON:{K1={sk1=sV1}}
 type ZhiziLogFormat struct{}
 
 func (d *ZhiziLogFormat) Handle(in, out []byte) (int, error) {
-	//n := copy(out, in)
-	//return n, nil
 
 	if len(in) == 0 {
 		return 0, fmt.Errorf("input is null\n")
 	}
-	loglist := bytes.Split(in, []byte("||")) // 切割无用日志
+	loglist := strings.Split(string(in), "||") // 切割无用日志
 	if len(loglist) != 2 {
 		return 0, fmt.Errorf("can't split input by ||,%s\n", string(in))
 	}
 
-	kvMap := map[string]interface{}{"others": string(loglist[0])}
-	log := loglist[1]
-	for _, v := range bytes.Split(log, []byte("&")) {
-		n := bytes.IndexAny(v, ":")
-		if n == -1 {
-			return 0, fmt.Errorf("can't find : to split k and v ||,%s\n", string(v))
-		}
-		kvMap[string(v[:n])] = parse(v[n+1:])
+	logformat := LogFormat{
+		Prefix: loglist[0],
 	}
-	output, err := json.Marshal(kvMap)
+	value := strings.Split(loglist[1], "&&")
+	if len(value) <= 3 {
+		return 0, fmt.Errorf("log format is error! log is %v", string(in))
+	}
+
+	timestamp, _ := strconv.ParseInt(value[0], 10, 64)
+	logformat.Timestamp = timestamp
+
+	logformat.RequestId = value[1]
+	reqid := strings.Split(logformat.RequestId, "_")
+	if len(reqid) != 2 {
+		return 0, fmt.Errorf("%v<request_id> format is error! log is %v", logformat.RequestId, string(in))
+	}
+	logformat.Uid = reqid[0]
+	req_time, _ := strconv.ParseInt(reqid[1], 10, 64)
+	logformat.ReqTime = req_time
+
+	logformat.Module = value[2]
+
+	cost, _ := strconv.Atoi(value[3])
+	logformat.Cost = cost
+
+	output, err := json.Marshal(logformat)
 	if err != nil {
 		return 0, fmt.Errorf("JSON Marshal error:%v", err)
 	}
@@ -41,46 +68,6 @@ func (d *ZhiziLogFormat) Handle(in, out []byte) (int, error) {
 
 }
 
-func parse(p []byte) interface{} {
-	logger.Info("parse:%v", string(p))
-	if p[0] != '[' && p[0] != '{' && p[1] != '"' {
-		return string(p)
-	}
-	n := len(p)
-	switch {
-	case p[0] == '{' && p[1] == '"' && p[n-1] == '}':
-		m := map[string]interface{}{}
-		err := json.Unmarshal(p, &m)
-		if err != nil {
-			logger.Error("Map Json Unmarshal error:%v", err)
-			return string(p)
-		}
-		return m
-	case p[0] == '[' && p[1] == '"' && p[n-1] == ']':
-		m := []interface{}{}
-		err := json.Unmarshal(p, &m)
-		if err != nil {
-			logger.Error("List Json Unmarshal error:%v", err)
-			return string(p)
-		}
-		return m
-	case p[0] == '{' && p[1] != '"' && p[n-1] == '}':
-		kvMap := map[string]interface{}{}
-		for _, v := range bytes.Split(p[1:n-1], []byte(",")) {
-			n := bytes.IndexAny(v, "=")
-			kvMap[string(v[:n])] = parse(v[n+1:])
-		}
-		return kvMap
-	case p[0] == '[' && p[1] != '"' && p[n-1] == ']':
-		vList := []interface{}{}
-		logger.Debug("D1,%#s", p[1:n-1])
-		for _, v := range bytes.Split(p[1:n-1], []byte(",")) {
-			vList = append(vList, parse(v))
-		}
-		return vList
-	default:
-		logger.Error("parse error")
-		return string(p)
-
-	}
+func init() {
+	transport.RegistHandler("zhizilog", new(ZhiziLogFormat))
 }

@@ -12,20 +12,21 @@
         #"scroll":"2m",
         #"query":"{\"query\":{\"match_all\":{}}}"
         
-        "type":"http",
+        "type":"file",
         "addr":":9999",
         "path":"test.log",
         "topic":"click-reformat",
         "offset":"-1"
     },
     "handle":{
-        "type":"null"
+        #"type":"null"
+        "type":"zhizilog"
     },
     "output":{
         "type":"elasticsearch",
         "protocol":"http",
         "addrs":"172.31.16.120:9200",
-        "_index":"test",
+        "_index":"test-%Y%M%D%h",
         "_type":"test"
     }
 }

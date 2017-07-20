@@ -11,7 +11,7 @@ const (
 	M = 1024 * K //1MB
 	G = 1024 * M //1GB
 
-	MAX = 1 * M
+	MAX = 1 * K
 )
 
 type Transport struct {
@@ -25,10 +25,10 @@ type Transport struct {
 func NewTransport(in Inputer, h Handler, out Outputer) *Transport {
 	transport := new(Transport)
 	transport.Input = NewInput(in)
-	transport.Middleware = NewMiddleware(h)
+	transport.Middleware = NewMiddleware(h, 200000)
 	transport.Output = NewOutput(out)
-	transport.ReadBuffer = make(chan []byte, 10)
-	transport.WriteBuffer = make(chan []byte, 10)
+	transport.ReadBuffer = make(chan []byte, 20000)
+	transport.WriteBuffer = make(chan []byte, 20000)
 	return transport
 
 }
@@ -52,6 +52,7 @@ func (t *Transport) recv() {
 }
 
 func (t *Transport) handle() {
+	t.Middleware.Channel.Add()
 	tmp := <-t.ReadBuffer
 	go func(p []byte) {
 		b := make([]byte, MAX, MAX)
@@ -61,6 +62,7 @@ func (t *Transport) handle() {
 			return
 		}
 		t.WriteBuffer <- b[:n]
+		t.Middleware.Channel.Done()
 	}(tmp)
 }
 
@@ -99,7 +101,7 @@ func (t *Transport) Run() {
 			t.send()
 		}
 	}()
-	logger.Info("Transport start success...%s\n", time.Now())
+	logger.Info("Transport start success...%s", time.Now())
 	select {}
 }
 

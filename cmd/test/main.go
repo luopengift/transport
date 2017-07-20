@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/luopengift/golibs/logger"
 	"github.com/luopengift/transport"
-	_ "github.com/luopengift/transport/api"
+	//_ "github.com/luopengift/transport/api"
 	"github.com/luopengift/transport/config"
 	_ "github.com/luopengift/transport/plugins"
 	"runtime"
@@ -17,17 +17,16 @@ const (
 var t *transport.Transport
 
 func main() {
+	runtime.GOMAXPROCS(runtime.NumCPU())
 
 	logger.Info("Transport starting...")
 	cfg := config.NewConfig()
 	logger.Info("%#v,%#v, %#v", transport.InputPlugins, transport.HandlePlugins, transport.OutputPlugins)
 
-	runtime.GOMAXPROCS(runtime.NumCPU())
-
 	input := cfg.Input()
 	output := cfg.Output()
 	handle := cfg.Handle()
-    logger.Debug("%#v,%#v,%#v",input,handle,output)
+	logger.Debug("%#v,%#v,%#v", input, handle, output)
 	t = transport.NewTransport(input, handle, output)
 	t.Run()
 	logger.Debug("%#v", t)

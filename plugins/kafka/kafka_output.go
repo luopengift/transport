@@ -4,9 +4,11 @@ import (
 	"github.com/Shopify/sarama"
 	"github.com/luopengift/golibs/channel"
 	"github.com/luopengift/golibs/logger"
+	"github.com/luopengift/transport"
+	"strings"
 )
 
-type Producer struct {
+type KafkaOutput struct {
 	addrs   []string
 	topic   string
 	message chan []byte //将数据写入这个管道中
@@ -15,29 +17,37 @@ type Producer struct {
 	channel *channel.Channel //并发写topic的协程控制
 }
 
-func NewProducer(addrs []string, topic string, maxThreads int64) *Producer {
-	return &Producer{
-		addrs:   addrs,
-		topic:   topic,
-		message: make(chan []byte, 1000),
-		channel: channel.NewChannel(maxThreads),
-	}
+func NewKafkaOutput() *KafkaOutput {
+	return new(KafkaOutput)
 }
 
-func (self *Producer) ChanInfo() string {
+func (k *KafkaOutput) Init(cfg map[string]string) error {
+	k.addrs = strings.Split(cfg["addrs"], ",")
+	k.topic = cfg["topic"]
+	k.message = make(chan []byte, 10000)
+	k.channel = channel.NewChannel(1000000)
+	return nil
+}
+
+func (self *KafkaOutput) ChanInfo() string {
 	return self.channel.String()
 }
 
-func (self *Producer) Write(msg []byte) (int, error) {
+func (self *KafkaOutput) Write(msg []byte) (int, error) {
 	self.message <- msg
 	return len(msg), nil
 }
 
-func (self *Producer) Close() error {
+func (self *KafkaOutput) Close() error {
 	return self.Close()
 }
 
-func (self *Producer) WriteToTopic() error {
+func (self *KafkaOutput) Start() error {
+	go self.WriteToTopic()
+	return nil
+}
+
+func (self *KafkaOutput) WriteToTopic() error {
 
 	config := sarama.NewConfig()
 	config.Producer.Return.Successes = true
@@ -72,4 +82,8 @@ func (self *Producer) WriteToTopic() error {
 		}
 	}
 	return nil
+}
+
+func init() {
+	transport.RegistOutputer("kafka", NewKafkaOutput())
 }

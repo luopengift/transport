@@ -62,13 +62,19 @@ func (cfg *Config) Init() error {
 
 func (cfg *Config) Input() transport.Inputer {
 	in := transport.InputPlugins[cfg.InputConfig["type"]]
-	in.Init(cfg.InputConfig)
+	err := in.Init(cfg.InputConfig)
+	if err != nil {
+		return nil
+	}
 	return in
 }
 
 func (cfg *Config) Output() transport.Outputer {
 	out := transport.OutputPlugins[cfg.OutputConfig["type"]]
-	out.Init(cfg.OutputConfig)
+	err := out.Init(cfg.OutputConfig)
+	if err != nil {
+		return nil
+	}
 	return out
 }
 

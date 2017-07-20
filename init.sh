@@ -56,7 +56,7 @@ function check_PID() {
 
 function build() {
     gofmt -w .
-    go build -o $APP cmd/$1.go
+    go build -o $APP $1.go
     if [ $? -ne 0 ]; then
         exit $?
     fi
@@ -101,7 +101,7 @@ function status() {
 
 
 function debug() {
-    go run cmd/$1.go
+    go run $1.go
 }
 
 function stop() {
