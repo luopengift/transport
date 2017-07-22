@@ -47,9 +47,9 @@ func NewConfig() *Config {
 		logger.Error("config parse error!%v", err)
 		return nil
 	}
-	logger.Warn("Inputer is %#v", cfg.InputConfig)
-	logger.Warn("Outputer is %#v", cfg.OutputConfig)
-	logger.Warn("Handle is %#v", cfg.HandleConfig)
+	logger.Warn("Inputer config is %#v", cfg.InputConfig)
+	logger.Warn("Outputer config is %#v", cfg.OutputConfig)
+	logger.Warn("Handle config is %#v", cfg.HandleConfig)
 	return cfg
 }
 
@@ -64,7 +64,7 @@ func (cfg *Config) Input() transport.Inputer {
 	in := transport.InputPlugins[cfg.InputConfig["type"]]
 	err := in.Init(cfg.InputConfig)
 	if err != nil {
-		return nil
+		logger.Error("init input plugin fail,%v",err)
 	}
 	return in
 }
@@ -73,13 +73,16 @@ func (cfg *Config) Output() transport.Outputer {
 	out := transport.OutputPlugins[cfg.OutputConfig["type"]]
 	err := out.Init(cfg.OutputConfig)
 	if err != nil {
-		return nil
+		logger.Error("init output plugin fail,%v",err)
 	}
 	return out
 }
 
-func (cfg *Config) Handle() transport.Handler {
-	handle := transport.HandlePlugins[cfg.HandleConfig["type"]]
-	//handle.Init(cfg.HandleConfig)
-	return handle
+func (cfg *Config) Handle() (h transport.Handler) {
+	var ok bool
+    if h, ok = transport.HandlePlugins[cfg.HandleConfig["type"]];!ok {
+        h = transport.HandlePlugins["null"]
+    }
+    //handle.Init(cfg.HandleConfig)
+	return h
 }

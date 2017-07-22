@@ -14,7 +14,7 @@ func NewFileInput() *Input {
 }
 
 func (in *Input) Init(cfg map[string]string) error {
-	in.Tail = file.NewTail(cfg["path"], file.NullRule)
+	in.Tail = file.NewTail(cfg["path"], file.TimeRule)
 	return nil
 }
 
@@ -28,7 +28,7 @@ func (in *Input) Start() error {
 }
 
 func (in *Input) Close() error {
-	return nil //stdout.Close()
+	return in.Tail.Close()
 }
 
 func init() {

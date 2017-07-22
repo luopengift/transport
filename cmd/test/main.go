@@ -3,11 +3,10 @@ package main
 import (
 	"github.com/luopengift/golibs/logger"
 	"github.com/luopengift/transport"
-	//_ "github.com/luopengift/transport/api"
 	"github.com/luopengift/transport/config"
 	_ "github.com/luopengift/transport/plugins"
-	"runtime"
-	//"flag"
+	"time"
+    "runtime"
 )
 
 const (
@@ -28,7 +27,12 @@ func main() {
 	handle := cfg.Handle()
 	logger.Debug("%#v,%#v,%#v", input, handle, output)
 	t = transport.NewTransport(input, handle, output)
-	t.Run()
-	logger.Debug("%#v", t)
-
+	defer t.Stop()
+    t.Run()
+    select{
+        case <- t.End():
+            break
+    }
+    time.Sleep(2 * time.Second)
+    return
 }

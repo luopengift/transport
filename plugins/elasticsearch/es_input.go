@@ -21,8 +21,7 @@ func (es *EsInput) Init(cfg map[string]string) error {
 }
 
 func (es *EsInput) Start() error {
-	es.Next()
-	return nil
+	return es.Next()
 }
 
 func (es *EsInput) Read(p []byte) (int, error) {

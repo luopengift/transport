@@ -3,13 +3,13 @@ package handler
 import (
 	"encoding/json"
 	"fmt"
-	//"github.com/luopengift/golibs/logger"
+	"github.com/luopengift/golibs/crypto"
 	"github.com/luopengift/transport"
 	"strconv"
 	"strings"
 )
 
-type LogFormat struct {
+type ZhiziLog struct {
 	RequestId string `json:"request_id"`
 	Uid       string `json:"uid"`
 	ReqTime   int64  `json:"request_time"`
@@ -18,6 +18,7 @@ type LogFormat struct {
 	Timestamp int64  `json:"timestamp"`
 	Data      string `json:"data"`
 	Prefix    string `json:"Prefix"`
+	MD5    string `json:"md5"`
 }
 
 //Format: xxxxxxx||K1=V1&K2=V2&K3=V3...Kn=Vn
@@ -34,8 +35,9 @@ func (d *ZhiziLogFormat) Handle(in, out []byte) (int, error) {
 		return 0, fmt.Errorf("can't split input by ||,%s\n", string(in))
 	}
 
-	logformat := LogFormat{
+	logformat := ZhiziLog{
 		Prefix: loglist[0],
+        MD5:    crypto(loglist[1]),
 	}
 	value := strings.Split(loglist[1], "&&")
 	if len(value) <= 3 {

@@ -5,29 +5,25 @@
     },
     "input":{
         #"type":"elasticsearch",
-        #"protocol":"http",
-        #"addrs":"172.31.16.120:9200",
-        #"_index":"tpushuser",
-        #"_type":"tpushuser",
-        #"scroll":"2m",
-        #"query":"{\"query\":{\"match_all\":{}}}"
-        
         "type":"file",
-        "addr":":9999",
-        "path":"test.log",
-        "topic":"click-reformat",
-        "offset":"-1"
+        #"path":"/tmp/test-%Y%M%D%h%m.log",
+        "path":"/tmp/test.log",
+        "protocol":"http",
+        "addrs":"10.10.10.100:9200",
+        "_index":"zhizi-log-*",
+        "_type":"logs",
+        "scroll":"2m",
+        #"query":"{\"size\":100,\"query\":{\"match_all\":{}}}"
+        "query":"{\"query\":{\"range\":{\"timestamp\":{\"gte\":1500605469401,\"lte\":1500605469411}}}}"
     },
     "handle":{
+        "type":"logdispatch"
         #"type":"null"
-        "type":"zhizilog"
+        #"type":"zhizilog"
     },
     "output":{
-        "type":"elasticsearch",
-        "protocol":"http",
-        "addrs":"172.31.16.120:9200",
-        "_index":"test-%Y%M%D%h",
-        "_type":"test"
+        "type":"null",
+        "path":"/tmp/test.log"
     }
 }
 

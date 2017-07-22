@@ -20,19 +20,25 @@ type Transport struct {
 	*Middleware
 	ReadBuffer  chan []byte
 	WriteBuffer chan []byte
+    isEnd       chan bool
 }
 
 func NewTransport(in Inputer, h Handler, out Outputer) *Transport {
 	transport := new(Transport)
 	transport.Input = NewInput(in)
-	transport.Middleware = NewMiddleware(h, 200000)
+	transport.Middleware = NewMiddleware(h, 1)
 	transport.Output = NewOutput(out)
 	transport.ReadBuffer = make(chan []byte, 20000)
 	transport.WriteBuffer = make(chan []byte, 20000)
+    transport.isEnd = make(chan bool)
 	return transport
 
 }
 
+
+func (t *Transport) End() chan bool {
+    return t.isEnd
+}
 // 将数据从read接口读入 ReadBuffer中
 func (t *Transport) recv() {
 	t.Input.Mutex.Lock()
@@ -102,14 +108,13 @@ func (t *Transport) Run() {
 		}
 	}()
 	logger.Info("Transport start success...%s", time.Now())
-	select {}
 }
 
 func (t *Transport) Stop() {
 	t.Input.Close()
 	close(t.ReadBuffer)
-	//t.Filter.Close()
 	close(t.WriteBuffer)
 	t.Output.Close()
-
+    t.isEnd <- true
+	logger.Info("Transport stop success...%s", time.Now())
 }

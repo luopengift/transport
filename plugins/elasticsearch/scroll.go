@@ -59,7 +59,6 @@ func NewScroll(url, _index, _type, scroll string, querybody interface{}) *Scroll
 
 func (self *ScrollQuery) Read(p []byte) (int, error) {
 	data, err := json.Marshal(<-self.Ch)
-	println(data, len(data))
 	if err != nil {
 		return 0, err
 	}
@@ -69,7 +68,8 @@ func (self *ScrollQuery) Read(p []byte) (int, error) {
 
 func (self *ScrollQuery) First() {
 	resp, err := gohttp.NewClient().Url(self.Url).Path(self.Index+"/"+self.Type+"/_search").
-		Query(map[string]string{"search_type": "scan", "scroll": "10m", "size": "50"}).
+		Query(map[string]string{"scroll": "10m", "size": "50"}).
+		//Query(map[string]string{"search_type": "scan", "scroll": "10m", "size": "50"}).
 		Header("Content-Type", "application/json").Body(self.QueryBody).Get()
 	self.parseResponse(resp, err)
 }
@@ -96,10 +96,14 @@ func (self *ScrollQuery) parseResponse(resp *gohttp.Response, err error) {
 	}
 }
 
-func (self *ScrollQuery) Next() {
+func (self *ScrollQuery) Next() error {
 	client := gohttp.NewClient().Url(self.Url).Path("/_search/scroll").Header("Content-Type", "application/json")
 	for bool(self.ScrollId != "") {
 		resp, err := client.Body(map[string]string{"scroll": self.Scroll, "scroll_id": self.ScrollId}).Get()
 		self.parseResponse(resp, err)
-	}
+	} 
+    return nil
 }
+
+
+
