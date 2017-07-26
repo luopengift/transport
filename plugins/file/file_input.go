@@ -2,7 +2,7 @@ package file
 
 import (
 	"github.com/luopengift/golibs/file"
-	"github.com/luopengift/transport"
+	"github.com/luopengift/transport/pipeline"
 )
 
 type Input struct {
@@ -14,7 +14,13 @@ func NewFileInput() *Input {
 }
 
 func (in *Input) Init(cfg map[string]string) error {
-	in.Tail = file.NewTail(cfg["path"], file.TimeRule)
+    in.Tail = file.NewTail(cfg["path"], file.TimeRule)
+    switch cfg["endstop"] {
+    case "true":
+	    in.Tail.EndStop(true)
+	default:
+        in.Tail.EndStop(false)
+    }
 	return nil
 }
 
@@ -32,5 +38,5 @@ func (in *Input) Close() error {
 }
 
 func init() {
-	transport.RegistInputer("file", NewFileInput())
+	pipeline.RegistInputer("file", NewFileInput())
 }

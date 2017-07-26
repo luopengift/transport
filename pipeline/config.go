@@ -1,9 +1,8 @@
-package config
+package pipeline
 
 import (
 	"github.com/luopengift/golibs/file"
 	"github.com/luopengift/golibs/logger"
-	"github.com/luopengift/transport"
 )
 
 type Configer interface {
@@ -40,9 +39,9 @@ type Config struct {
 	ApiConfig    *ApiConfig     `json:"api"`
 }
 
-func NewConfig() *Config {
+func NewConfig(config string) *Config {
 	cfg := new(Config)
-	err := cfg.Init()
+	err := cfg.Init(config)
 	if err != nil {
 		logger.Error("config parse error!%v", err)
 		return nil
@@ -53,36 +52,36 @@ func NewConfig() *Config {
 	return cfg
 }
 
-func (cfg *Config) Init() error {
-	conf := file.NewConfig("./config.json")
+func (cfg *Config) Init(config string) error {
+	conf := file.NewConfig(config)
 	err := conf.Parse(cfg)
 	return err
 
 }
 
-func (cfg *Config) Input() transport.Inputer {
-	in := transport.InputPlugins[cfg.InputConfig["type"]]
+func (cfg *Config) Input() Inputer {
+	in := InputPlugins[cfg.InputConfig["type"]]
 	err := in.Init(cfg.InputConfig)
 	if err != nil {
-		logger.Error("init input plugin fail,%v",err)
+		logger.Error("init input plugin fail,%v", err)
 	}
 	return in
 }
 
-func (cfg *Config) Output() transport.Outputer {
-	out := transport.OutputPlugins[cfg.OutputConfig["type"]]
+func (cfg *Config) Output() Outputer {
+	out := OutputPlugins[cfg.OutputConfig["type"]]
 	err := out.Init(cfg.OutputConfig)
 	if err != nil {
-		logger.Error("init output plugin fail,%v",err)
+		logger.Error("init output plugin fail,%v", err)
 	}
 	return out
 }
 
-func (cfg *Config) Handle() (h transport.Handler) {
+func (cfg *Config) Handle() (h Handler) {
 	var ok bool
-    if h, ok = transport.HandlePlugins[cfg.HandleConfig["type"]];!ok {
-        h = transport.HandlePlugins["null"]
-    }
-    //handle.Init(cfg.HandleConfig)
+	if h, ok = HandlePlugins[cfg.HandleConfig["type"]]; !ok {
+		h = HandlePlugins["null"]
+	}
+	//handle.Init(cfg.HandleConfig)
 	return h
 }

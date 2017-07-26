@@ -2,7 +2,7 @@ package http
 
 import (
 	"github.com/luopengift/gohttp"
-	"github.com/luopengift/transport"
+	"github.com/luopengift/transport/pipeline"
 )
 
 var ch = make(chan []byte, 100)
@@ -44,5 +44,5 @@ func (http *HttpInput) Close() error {
 }
 
 func init() {
-	transport.RegistInputer("http", NewHttpInput())
+	pipeline.RegistInputer("http", NewHttpInput())
 }

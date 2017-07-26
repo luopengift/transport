@@ -1,7 +1,7 @@
 package elasticsearch
 
 import (
-	"github.com/luopengift/transport"
+	"github.com/luopengift/transport/pipeline"
 )
 
 type EsInput struct {
@@ -33,5 +33,5 @@ func (es *EsInput) Close() error {
 }
 
 func init() {
-	transport.RegistInputer("elasticsearch", NewEsInput())
+	pipeline.RegistInputer("elasticsearch", NewEsInput())
 }

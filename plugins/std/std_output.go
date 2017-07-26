@@ -1,7 +1,7 @@
 package plugins
 
 import (
-	"github.com/luopengift/transport"
+	"github.com/luopengift/transport/pipeline"
 	"os"
 )
 
@@ -27,5 +27,5 @@ func (stdout *Stdout) Init(config map[string]string) error {
 }
 
 func init() {
-	transport.RegistOutputer("stdout", NewStdout())
+	pipeline.RegistOutputer("stdout", NewStdout())
 }

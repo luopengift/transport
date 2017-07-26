@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/luopengift/golibs/crypto"
-	"github.com/luopengift/transport"
+	"github.com/luopengift/transport/pipeline"
 	"strconv"
 	"strings"
 )
@@ -18,7 +18,7 @@ type ZhiziLog struct {
 	Timestamp int64  `json:"timestamp"`
 	Data      string `json:"data"`
 	Prefix    string `json:"Prefix"`
-	MD5    string `json:"md5"`
+	MD5       string `json:"md5"`
 }
 
 //Format: xxxxxxx||K1=V1&K2=V2&K3=V3...Kn=Vn
@@ -37,7 +37,7 @@ func (d *ZhiziLogFormat) Handle(in, out []byte) (int, error) {
 
 	logformat := ZhiziLog{
 		Prefix: loglist[0],
-        MD5:    crypto(loglist[1]),
+		MD5:    crypto.MD5(loglist[1]),
 	}
 	value := strings.Split(loglist[1], "&&")
 	if len(value) <= 3 {
@@ -71,5 +71,5 @@ func (d *ZhiziLogFormat) Handle(in, out []byte) (int, error) {
 }
 
 func init() {
-	transport.RegistHandler("zhizilog", new(ZhiziLogFormat))
+	pipeline.RegistHandler("zhizilog", new(ZhiziLogFormat))
 }

@@ -1,0 +1,31 @@
+{
+    "runtime":{
+        "DEBUG":false,
+        "MAXPROCS":2
+    },
+    "input":{
+        "type":"elasticsearch",
+        #"type":"file",
+        "path":"/tmp/fallback_request_id.log",
+        "protocol":"http",
+        "addrs":"10.10.10.100:9200",
+        "_index":"zhizi-log-2017.07.23",
+        "_type":"logs",
+        "scroll":"2m",
+        #"query":"{\"size\":100,\"query\":{\"match_all\":{}}}"
+        #"query":"{\"query\":{\"range\":{\"timestamp\":{\"gte\":1500605469401,\"lte\":1500605469411}}}}"
+        #"query":"{\"query\":{\"bool\":{\"must\":[{\"term\":{\"module\":\"honeybee.redis.fallback\"}}],\"must_not\":[],\"should\":[]}},\"sort\":[],\"aggs\":{}}"
+        "query":"{\"query\":{\"bool\":{\"must\":[{\"term\":{\"module\":\"honeybee.infolist\"}}],\"must_not\":[],\"should\":[]}},\"sort\":[],\"aggs\":{}}"
+    },
+    "handle":{
+        #"type":"getdatabyrequestid"
+        "type":"getrequestid"
+        #"type":"null"
+        #"type":"zhizilog"
+    },
+    "output":{
+        "type":"file",
+        "path":"/tmp/request_id-%Y%M%D%h%m.log"
+    }
+}
+

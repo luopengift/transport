@@ -81,6 +81,7 @@ type HttpBulk struct {
 	username string
 	// Optional password for HTTP authentication
 	password string
+	pool     *gohttp.ClientPool
 }
 
 func NewHttpBulk(protocol, addrs, path string, maxCount int,
@@ -93,14 +94,18 @@ func NewHttpBulk(protocol, addrs, path string, maxCount int,
 		MaxCount: maxCount,
 		username: username,
 		password: password,
+		pool:     gohttp.NewClientPool(2000, 2000, 60),
 	}
-
-	h.Client = gohttp.NewClient().Url(h.Protocol+"://"+h.Addrs).Path("/_bulk").Header("Accept", "application/json")
 	return h
 }
 
 func (h *HttpBulk) Index(p []byte) error {
-	resp, err := h.Client.Body(p).Post()
+	conn, err := h.pool.Get()
+	if err != nil {
+		return err
+	}
+	defer h.pool.Put(conn)
+	resp, err := conn.Url(h.Protocol+"://"+h.Addrs).Path("/_bulk").Header("Accept", "application/json").Body(p).Post()
 	if err != nil {
 		logger.Error("<bulk post error>%#v", err)
 		return err

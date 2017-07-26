@@ -4,7 +4,7 @@ import (
 	"github.com/Shopify/sarama"
 	"github.com/luopengift/golibs/channel"
 	"github.com/luopengift/golibs/logger"
-	"github.com/luopengift/transport"
+	"github.com/luopengift/transport/pipeline"
 	"strings"
 )
 
@@ -85,5 +85,5 @@ func (self *KafkaOutput) WriteToTopic() error {
 }
 
 func init() {
-	transport.RegistOutputer("kafka", NewKafkaOutput())
+	pipeline.RegistOutputer("kafka", NewKafkaOutput())
 }

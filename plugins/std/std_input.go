@@ -1,7 +1,7 @@
 package plugins
 
 import (
-	"github.com/luopengift/transport"
+	"github.com/luopengift/transport/pipeline"
 	"os"
 )
 
@@ -27,5 +27,5 @@ func (stdin *Stdin) Init(map[string]string) error {
 }
 
 func init() {
-	transport.RegistInputer("stdin", NewStdin())
+	pipeline.RegistInputer("stdin", NewStdin())
 }

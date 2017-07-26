@@ -1,4 +1,4 @@
-package transport
+package pipeline
 
 import (
 	"github.com/luopengift/golibs/channel"
@@ -22,10 +22,4 @@ func NewMiddleware(h Handler, max int64) *Middleware {
 
 func (m *Middleware) Handle(in, out []byte) (int, error) {
 	return m.Handler.Handle(in, out)
-}
-
-var HandlePlugins = map[string]Handler{}
-
-func RegistHandler(key string, h Handler) {
-	HandlePlugins[key] = h
 }

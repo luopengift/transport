@@ -1,4 +1,4 @@
-package transport
+package pipeline
 
 import (
 	"sync"
@@ -25,8 +25,12 @@ func NewOutput(out Outputer) *Output {
 }
 
 func (o *Output) Set(out Outputer) error {
+	if err := o.Outputer.Close(); err != nil {
+		return err
+	}
 	o.Outputer = out
 	return nil
+
 }
 
 func (o *Output) Write(p []byte) (int, error) {
@@ -39,11 +43,4 @@ func (o *Output) Start() error {
 
 func (o *Output) Close() error {
 	return o.Outputer.Close()
-}
-
-// 输出组件列表
-var OutputPlugins = map[string]Outputer{}
-
-func RegistOutputer(key string, out Outputer) {
-	OutputPlugins[key] = out
 }

@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"github.com/luopengift/transport"
+	"github.com/luopengift/transport/pipeline"
 )
 
 // add a enter symbol at end of line, classic written into file
@@ -22,7 +22,7 @@ func (h *NullHandler) Handle(in, out []byte) (int, error) {
 }
 
 func init() {
-	transport.RegistHandler("null", new(NullHandler))
-	transport.RegistHandler("addenter", new(AddEnterHandler))
+	pipeline.RegistHandler("null", new(NullHandler))
+	pipeline.RegistHandler("addenter", new(AddEnterHandler))
 
 }

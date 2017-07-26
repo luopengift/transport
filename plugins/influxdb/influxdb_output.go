@@ -3,7 +3,7 @@ package influxdb
 import (
 	"encoding/json"
 	"github.com/influxdata/influxdb/client/v2"
-	"github.com/luopengift/transport"
+	"github.com/luopengift/transport/pipeline"
 	"time"
 )
 
@@ -85,5 +85,5 @@ func (influx *InfluxOutput) Close() error {
 }
 
 func init() {
-	transport.RegistOutputer("influxdb", NewInfluxOutput())
+	pipeline.RegistOutputer("influxdb", NewInfluxOutput())
 }

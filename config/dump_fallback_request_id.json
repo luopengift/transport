@@ -1,0 +1,24 @@
+{
+    "runtime":{
+        "DEBUG":false,
+        "MAXPROCS":2
+    },
+    "input":{
+        "type":"elasticsearch",
+        "path":"/tmp/fallback_request_id.log",
+        "protocol":"http",
+        "addrs":"10.10.10.100:9200",
+        "_index":"zhizi-log-2017.07.23",
+        "_type":"logs",
+        "scroll":"2m",
+        "query":"{\"query\":{\"bool\":{\"must\":[{\"term\":{\"module\":\"honeybee.redis.fallback\"}}],\"must_not\":[],\"should\":[]}},\"sort\":[],\"aggs\":{}}"
+    },
+    "handle":{
+        "type":"getrequestid"
+    },
+    "output":{
+        "type":"file",
+        "path":"/tmp/honeybee_fallback_request_id-20170723.log"
+    }
+}
+

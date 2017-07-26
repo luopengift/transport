@@ -2,6 +2,7 @@ package elasticsearch
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/luopengift/gohttp"
 	"github.com/luopengift/golibs/logger"
 )
@@ -42,6 +43,8 @@ type ScrollQuery struct {
 	QueryBody interface{}
 	ScrollId  string
 	Ch        chan map[string]interface{}
+	Done      chan bool
+	IsEnd     bool
 }
 
 func NewScroll(url, _index, _type, scroll string, querybody interface{}) *ScrollQuery {
@@ -52,17 +55,24 @@ func NewScroll(url, _index, _type, scroll string, querybody interface{}) *Scroll
 		Scroll:    scroll,
 		QueryBody: querybody,
 		Ch:        make(chan map[string]interface{}, 100),
+		Done:      make(chan bool),
+		IsEnd:     false,
 	}
 	s.First()
 	return s
 }
 
 func (self *ScrollQuery) Read(p []byte) (int, error) {
-	data, err := json.Marshal(<-self.Ch)
+	data, ok := <-self.Ch
+	if !ok {
+		return 0, fmt.Errorf("scroll channel is closed.")
+	}
+
+	bp, err := json.Marshal(data)
 	if err != nil {
 		return 0, err
 	}
-	n := copy(p, data)
+	n := copy(p, bp)
 	return n, nil
 }
 
@@ -91,6 +101,10 @@ func (self *ScrollQuery) parseResponse(resp *gohttp.Response, err error) {
 		return
 	}
 	self.ScrollId = data.ScrollId
+	if len(data.Hits.Hits) == 0 {
+		self.IsEnd = true
+		return
+	}
 	for _, v := range data.Hits.Hits {
 		self.Ch <- v.Source
 	}
@@ -98,12 +112,10 @@ func (self *ScrollQuery) parseResponse(resp *gohttp.Response, err error) {
 
 func (self *ScrollQuery) Next() error {
 	client := gohttp.NewClient().Url(self.Url).Path("/_search/scroll").Header("Content-Type", "application/json")
-	for bool(self.ScrollId != "") {
+	for !self.IsEnd {
 		resp, err := client.Body(map[string]string{"scroll": self.Scroll, "scroll_id": self.ScrollId}).Get()
 		self.parseResponse(resp, err)
-	} 
-    return nil
+	}
+	close(self.Ch)
+	return nil
 }
-
-
-

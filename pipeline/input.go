@@ -1,4 +1,4 @@
-package transport
+package pipeline
 
 import (
 	"sync"
@@ -48,10 +48,4 @@ func (i *Input) Start() error {
 
 func (i *Input) Close() error {
 	return i.Inputer.Close()
-}
-
-var InputPlugins = map[string]Inputer{}
-
-func RegistInputer(key string, in Inputer) {
-	InputPlugins[key] = in
 }

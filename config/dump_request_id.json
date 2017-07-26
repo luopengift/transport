@@ -1,0 +1,24 @@
+{
+    "runtime":{
+        "DEBUG":false,
+        "MAXPROCS":2
+    },
+    "input":{
+        "type":"elasticsearch",
+        "protocol":"http",
+        "addrs":"10.10.10.100:9200",
+        "_index":"zhizi-log-*",
+        "_type":"logs",
+        "scroll":"2m",
+        #"query":"{\"query\":{\"bool\":{\"filter\":[{\"term\":{\"module\":\"honeybee.infolist\"}},{\"range\":{\"request_time\":{\"gte\":1500998400000,\"lt\":1501002000000}}}]}}}"
+        "query":"{\"query\":{\"bool\":{\"filter\":[{\"term\":{\"module\":\"honeybee.infolist\"}},{\"range\":{\"request_time\":{\"gte\":1500998400000,\"lt\":1500998405000}}}]}}}"
+    },
+    "handle":{
+        "type":"getrequestid"
+    },
+    "output":{
+        "type":"file",
+        "path":"/data/zhizi-log-data/request_id/request_id.%Y%M%D%h.txt"
+    }
+}
+

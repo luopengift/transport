@@ -1,0 +1,24 @@
+{
+    "runtime":{
+        "DEBUG":false,
+        "MAXPROCS":2
+    },
+    "input":{
+        "type":"file",
+        #"endstop":"true",
+        "path":"/data/zhizi-log-data/request_id/request_id.2017072700.txt"
+        #"path":"/tmp/a.log"
+    },
+    "handle":{
+        "type":"getdatabyrequestid"
+    },
+    "output":{
+        "type":"elasticsearch",
+        "path":"/tmp/test.test",
+        "protocol":"http",    
+        "addrs":"10.10.10.100:9200",
+        "_index":"aggrs-zhizi-log",
+        "_type":"logs"
+    }
+}
+

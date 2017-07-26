@@ -1,7 +1,7 @@
 package null
 
 import (
-	"github.com/luopengift/transport"
+	"github.com/luopengift/transport/pipeline"
 )
 
 type NullOutput struct {
@@ -16,7 +16,7 @@ func (n *NullOutput) Init(cfg map[string]string) error {
 }
 
 func (n *NullOutput) Write(p []byte) (int, error) {
-	return 0,nil
+	return 0, nil
 }
 
 func (n *NullOutput) Start() error {
@@ -28,5 +28,5 @@ func (n *NullOutput) Close() error {
 }
 
 func init() {
-	transport.RegistOutputer("null", NewNullOutput())
+	pipeline.RegistOutputer("null", NewNullOutput())
 }

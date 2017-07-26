@@ -2,7 +2,7 @@ package elasticsearch
 
 import (
 	"github.com/luopengift/golibs/file"
-	"github.com/luopengift/transport"
+	"github.com/luopengift/transport/pipeline"
 )
 
 type EsOutput struct {
@@ -41,5 +41,5 @@ func (es *EsOutput) Close() error {
 }
 
 func init() {
-	transport.RegistOutputer("elasticsearch", NewEsOutput())
+	pipeline.RegistOutputer("elasticsearch", NewEsOutput())
 }

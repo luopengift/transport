@@ -41,7 +41,7 @@ if [ -z $2 ];then #如果$2为空
 else
     main=$2
 fi 
-
+main="cmd/transport/main"
 ################################
 function check_PID() {
     if [ -f $PIDFile ];then

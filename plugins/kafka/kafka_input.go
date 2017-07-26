@@ -3,7 +3,7 @@ package kafka
 import (
 	"github.com/Shopify/sarama"
 	"github.com/luopengift/golibs/logger"
-	"github.com/luopengift/transport"
+	"github.com/luopengift/transport/pipeline"
 	"strconv"
 	"strings"
 	"sync"
@@ -89,5 +89,5 @@ func (self *Consumer) Close() error {
 }
 
 func init() {
-	transport.RegistInputer("kafka", NewKafkaInput())
+	pipeline.RegistInputer("kafka", NewKafkaInput())
 }
