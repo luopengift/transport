@@ -13,7 +13,7 @@ import (
 	"strings"
 )
 
-var logger *Logger = NewLogger(ERROR, "2006/01/02 15:04:05.000 [transport Handle]", true, os.Stdout)
+var logger *Logger = NewLogger(DEBUG, "2006/01/02 15:04:05.000 [transport Handle]", true, os.Stdout)
 
 var ModuleMap = map[string][]int{}
 
@@ -58,13 +58,13 @@ var factory = func() (interface{}, error) {
 var p = pool.NewPool(100, 1000, 60, factory)
 
 func (self *GetDataByRequestId) Handle(in, out []byte) (int, error) {
-	p.LogLevel(INFO)
+	//p.LogLevel(INFO)
 	request_id := string(in)
 	body := `
     {
   "query": {
     "bool": {
-      "filter": [
+      "must": [
         {
           "term": {
             "request_id": "%s"
@@ -72,29 +72,28 @@ func (self *GetDataByRequestId) Handle(in, out []byte) (int, error) {
         }
       ]
     }
-  }
+  },
+    "from":0,
+    "size":100
 }
     `
 	conn, err := p.Get()
 	if err != nil {
-		logger.Warn("T2,%v", err)
 		return 0, err
 
 	}
-	response, err := conn.(*gohttp.Client).Reset().Url("http://10.10.10.100:9200/zhizi-log*/_search").Body(fmt.Sprintf(body, request_id)).Post()
+	response, err := conn.(*gohttp.Client).Reset().Url("http://10.10.10.100:9200/zhizi-log*/_search?_source=module,cost").Body(fmt.Sprintf(body, request_id)).Post()
 	if err != nil {
-		logger.Warn("T1,%v", err)
 		return 0, err
 	}
 	err = p.Put(conn)
 	if err != nil {
 		logger.Error("PUT:%#v,%#V", conn, err)
 	}
-
+	println("++%s,%s", request_id, response.String())
 	resp := elasticsearch.Scroll{}
 	err = json.Unmarshal(response.Bytes(), &resp)
 	if err != nil {
-		logger.Warn("T3,%v,%#v", err, response.String())
 		return 0, err
 	}
 	req := strings.Split(request_id, "_")

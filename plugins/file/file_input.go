@@ -14,13 +14,13 @@ func NewFileInput() *Input {
 }
 
 func (in *Input) Init(cfg map[string]string) error {
-    in.Tail = file.NewTail(cfg["path"], file.TimeRule)
-    switch cfg["endstop"] {
-    case "true":
-	    in.Tail.EndStop(true)
+	in.Tail = file.NewTail(cfg["path"], file.TimeRule)
+	switch cfg["endstop"] {
+	case "true":
+		in.Tail.EndStop(true)
 	default:
-        in.Tail.EndStop(false)
-    }
+		in.Tail.EndStop(false)
+	}
 	return nil
 }
 

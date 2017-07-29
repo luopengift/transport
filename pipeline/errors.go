@@ -5,10 +5,10 @@ import (
 )
 
 var (
-    ClosedError = errors.New("Closed")
+	ClosedError = errors.New("Closed")
 
-    ReadBufferClosedError = errors.New("Read Buffer is closed")
-    WriteBufferClosedError = errors.New("Write Buffer is closed")
+	ReadBufferClosedError  = errors.New("Read Buffer is closed")
+	WriteBufferClosedError = errors.New("Write Buffer is closed")
 
 	MaxBytesError   = errors.New("MaxBytesError:message is larger than byte buffer")
 	InputNullError  = errors.New("InputError:plugin is null")

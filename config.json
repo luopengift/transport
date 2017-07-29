@@ -1,0 +1,23 @@
+{
+    "runtime":{
+        "DEBUG":false,
+        "MAXPROCS":4
+    },
+    "input":{
+        "type":"kafka",
+        "addrs":"10.10.20.15:9092",
+        "topic":"zhizi-log",
+        "offset":"-1"
+    },
+    "handle":{
+        #"type":"null"
+        "type":"zhizilog1"
+    },
+    "output":{
+        "type":"file",
+        "path":"test.test",
+        "addrs":"10.10.20.15:9092",
+        "topic":"zhizi-log-format",
+        "offset":"-1"
+    }
+}
