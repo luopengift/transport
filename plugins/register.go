@@ -10,7 +10,4 @@ import (
 	_ "github.com/luopengift/transport/plugins/kafka"
 	_ "github.com/luopengift/transport/plugins/null"
 	_ "github.com/luopengift/transport/plugins/std"
-	//_ "github.com/luopengift/transport/plugins/tcp"
 )
-
-func init() {}

@@ -6,12 +6,10 @@ import (
 
 type EsInput struct {
 	*ScrollQuery
-	ch chan map[string]interface{}
 }
 
 func NewEsInput() *EsInput {
 	es := new(EsInput)
-	es.ch = make(chan map[string]interface{}, 10)
 	return es
 }
 
@@ -29,7 +27,7 @@ func (es *EsInput) Read(p []byte) (int, error) {
 }
 
 func (es *EsInput) Close() error {
-	return nil
+	return es.ScrollQuery.Close()
 }
 
 func init() {

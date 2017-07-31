@@ -43,7 +43,6 @@ type ScrollQuery struct {
 	QueryBody interface{}
 	ScrollId  string
 	Ch        chan map[string]interface{}
-	Done      chan bool
 	IsEnd     bool
 }
 
@@ -54,8 +53,7 @@ func NewScroll(url, _index, _type, scroll string, querybody interface{}) *Scroll
 		Type:      _type,
 		Scroll:    scroll,
 		QueryBody: querybody,
-		Ch:        make(chan map[string]interface{}, 100),
-		Done:      make(chan bool),
+		Ch:        make(chan map[string]interface{}, 1000),
 		IsEnd:     false,
 	}
 	s.First()
@@ -78,7 +76,7 @@ func (self *ScrollQuery) Read(p []byte) (int, error) {
 
 func (self *ScrollQuery) First() {
 	resp, err := gohttp.NewClient().Url(self.Url).Path(self.Index+"/"+self.Type+"/_search").
-		Query(map[string]string{"scroll": "10m", "size": "50"}).
+		Query(map[string]string{"scroll": "10m", "size": "500"}).
 		//Query(map[string]string{"search_type": "scan", "scroll": "10m", "size": "50"}).
 		Header("Content-Type", "application/json").Body(self.QueryBody).Get()
 	self.parseResponse(resp, err)
@@ -116,6 +114,11 @@ func (self *ScrollQuery) Next() error {
 		resp, err := client.Body(map[string]string{"scroll": self.Scroll, "scroll_id": self.ScrollId}).Get()
 		self.parseResponse(resp, err)
 	}
-	close(self.Ch)
+    self.Close()
 	return nil
+}
+
+func (self *ScrollQuery) Close() error {
+    close(self.Ch)
+    return nil
 }
