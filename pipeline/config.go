@@ -46,9 +46,9 @@ func NewConfig(config string) *Config {
 		logger.Error("config parse error!%v", err)
 		return nil
 	}
-	logger.Warn("Inputer config is %#v", cfg.InputConfig)
-	logger.Warn("Outputer config is %#v", cfg.OutputConfig)
-	logger.Warn("Handle config is %#v", cfg.HandleConfig)
+	//logger.Warn("Inputer config is %#v", cfg.InputConfig)
+	//logger.Warn("Outputer config is %#v", cfg.OutputConfig)
+	//logger.Warn("Handle config is %#v", cfg.HandleConfig)
 	return cfg
 }
 

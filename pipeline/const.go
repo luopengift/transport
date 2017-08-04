@@ -6,5 +6,5 @@ const (
 	M = 1024 * K //1MB
 	G = 1024 * M //1GB
 
-	MAX = 50 * M
+	MAX = 1 * K
 )

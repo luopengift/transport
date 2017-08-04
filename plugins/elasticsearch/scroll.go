@@ -114,11 +114,11 @@ func (self *ScrollQuery) Next() error {
 		resp, err := client.Body(map[string]string{"scroll": self.Scroll, "scroll_id": self.ScrollId}).Get()
 		self.parseResponse(resp, err)
 	}
-    self.Close()
+	self.Close()
 	return nil
 }
 
 func (self *ScrollQuery) Close() error {
-    close(self.Ch)
-    return nil
+	close(self.Ch)
+	return nil
 }

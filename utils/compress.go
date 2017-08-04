@@ -1,4 +1,4 @@
-package main
+package utils
 
 import (
 	"bytes"
@@ -30,14 +30,4 @@ func Decompress(p []byte) ([]byte, error) {
 		return nil, err
 	}
 	return out.Bytes(), nil
-}
-
-func main() {
-	bt := []byte("This is a luopeng test!")
-	fmt.Println(bt)
-	c, _ := Compress(bt)
-	fmt.Println(string(c))
-	d, err := Decompress(c)
-	fmt.Println(d, err)
-
 }

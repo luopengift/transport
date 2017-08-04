@@ -1,0 +1,23 @@
+{
+    "runtime":{
+        "DEBUG":true,
+        "MAXPROCS":4
+    },
+    "input":{
+        "type":"kafka",
+        "addrs":"10.10.20.15:9092",
+        "topic":"zhizi-log",
+        "offset":"-1"
+    },
+    "handle":{
+        #"type":"null"
+        "type":"zhizilog"
+    },
+    "output":{
+        "type":"kafka",
+        "addrs":"10.10.20.15:9092",
+        "topic":"lp_test",
+        "offset":"-1"
+    }
+}
+

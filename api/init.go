@@ -2,7 +2,6 @@ package api
 
 import (
 	"github.com/luopengift/gohttp"
-	"github.com/luopengift/transport/plugins/handler"
 )
 
 type RootHandler struct {
@@ -25,14 +24,9 @@ type StoreHandler struct {
 	gohttp.HttpHandler
 }
 
-func (ctx *StoreHandler) GET() {
-	ctx.Output(handler.Store)
-}
-
 func init() {
 	app := gohttp.Init()
 	app.Route("^/$", &RootHandler{})
 	app.Route("^/stats$", &StatsHandler{})
-	app.Route("^/store$", &StoreHandler{})
 	go app.Run(":38888")
 }

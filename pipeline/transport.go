@@ -24,10 +24,10 @@ func NewTransport(cfg *Config) *Transport {
 
 	transport := new(Transport)
 	transport.Input = NewInput(input)
-	transport.Middleware = NewMiddleware(handle, 2000)
+	transport.Middleware = NewMiddleware(handle, 100)
 	transport.Output = NewOutput(output)
-	transport.recv_chan = NewByteChannel(1200)
-	transport.send_chan = NewByteChannel(1200)
+	transport.recv_chan = NewByteChannel(100)
+	transport.send_chan = NewByteChannel(100)
 	transport.isEnd = make(chan bool)
 	transport.logs = logger.NewLogger(logger.INFO, "2006/01/02 15:04:05.000 [transport]", true, os.Stdout)
 
@@ -104,8 +104,8 @@ func (t *Transport) Run() {
 		for {
 			if err = t.recv(); err != nil {
 				t.logs.Error("recv error:%v", err)
-                t.recv_chan.Close()
-                return
+				t.recv_chan.Close()
+				return
 			}
 		}
 	}()
@@ -113,8 +113,8 @@ func (t *Transport) Run() {
 		for {
 			if err := t.handle(); err != nil {
 				t.logs.Error("handle error:%v", err)
-                t.send_chan.Close()
-                return
+				t.send_chan.Close()
+				return
 			}
 		}
 	}()
@@ -136,7 +136,7 @@ func (t *Transport) Run() {
 }
 
 func (t *Transport) Stop() {
-//	t.Input.Close()
+	//	t.Input.Close()
 	t.Output.Close()
 	t.logs.Info("stop success...%s", time.Now())
 }

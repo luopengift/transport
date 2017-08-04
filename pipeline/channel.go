@@ -17,9 +17,8 @@ func NewByteChannel(max int) *ByteChannel {
 }
 
 func (bc *ByteChannel) Channel() chan []byte {
-    return bc.channel
+	return bc.channel
 }
-
 
 func (bc *ByteChannel) Put(b []byte) {
 	bc.channel <- b
@@ -39,10 +38,10 @@ func (bc *ByteChannel) Close() error {
 			time.Sleep(1 * time.Second)
 			continue
 		}
-        break
+		break
 	}
-    close(bc.channel)
-    close(bc.closed)
+	close(bc.channel)
+	close(bc.closed)
 	return nil
 
 }
