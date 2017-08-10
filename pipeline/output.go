@@ -6,19 +6,21 @@ import (
 
 // 数据输入接口, 实现了标准io库中的ReadCloser接口
 type Outputer interface {
-	Init(map[string]string) error
+	Init(Configer) error
 	Write(p []byte) (n int, err error)
 	Close() error
 	Start() error
 }
 
 type Output struct {
+	Name string
 	Outputer
 	*sync.Mutex
 }
 
-func NewOutput(out Outputer) *Output {
+func NewOutput(name string, out Outputer) *Output {
 	o := new(Output)
+	o.Name = name
 	o.Outputer = out
 	o.Mutex = new(sync.Mutex)
 	return o

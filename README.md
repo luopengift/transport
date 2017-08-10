@@ -3,9 +3,14 @@ data transportation tool, from one to another.such as,file, kafka, hdfs etc.
 
 
 ```
+// 将配置文件解析成制定格式v的结构
+type Configer interface {
+    Parse(v interface{}) error
+}
+
 任何实现了Inputer接口，即可做为input组件
 type Inputer interface {
-    Init(cfg map[string]string) error
+    Init(config Configer) error
     Start() error
     Read([]byte) (int, error)
     Close() error
@@ -13,13 +18,14 @@ type Inputer interface {
 
 任何实现了Handler接口，即可做为数据处理组件
 type Handler interface {
+    Init(config Configer) error
     Handle(in, out byte) error
 }
 
 
 任何实现了Inputer接口，即可作为output组件
 type Outputer interface {
-    Init(cfg map[string]string) error
+    Init(config Configer) error
     Start() error
     Write([]byte) (int, error)
     Close() error

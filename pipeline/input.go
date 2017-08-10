@@ -6,7 +6,7 @@ import (
 
 // 数据输入接口
 type Inputer interface {
-	Init(map[string]string) error
+	Init(Configer) error
 	Read(p []byte) (n int, err error)
 	Close() error
 
@@ -14,12 +14,14 @@ type Inputer interface {
 }
 
 type Input struct {
+	Name string
 	Inputer
 	*sync.Mutex
 }
 
-func NewInput(in Inputer) *Input {
+func NewInput(name string, in Inputer) *Input {
 	i := new(Input)
+	i.Name = name
 	i.Inputer = in
 	i.Mutex = new(sync.Mutex)
 	return i

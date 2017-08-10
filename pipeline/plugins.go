@@ -1,20 +1,33 @@
 package pipeline
 
-var InputPlugins = map[string]Inputer{}
-
-func RegistInputer(key string, in Inputer) {
-	InputPlugins[key] = in
+type PluginsMap struct {
+	Input  map[string]Inputer
+	Output map[string]Outputer
+	Handle map[string]Handler
 }
 
-// 输出组件列表
-var OutputPlugins = map[string]Outputer{}
-
-func RegistOutputer(key string, out Outputer) {
-	OutputPlugins[key] = out
+func NewPluginsMap() *PluginsMap {
+	pluginsMap = new(PluginsMap)
+	pluginsMap.Input = make(map[string]Inputer)
+	pluginsMap.Output = make(map[string]Outputer)
+	pluginsMap.Handle = make(map[string]Handler)
+	return pluginsMap
 }
 
-var HandlePlugins = map[string]Handler{}
+var pluginsMap *PluginsMap
 
-func RegistHandler(key string, h Handler) {
-	HandlePlugins[key] = h
+func RegistInputer(key string, input Inputer) {
+	pluginsMap.Input[key] = input
+}
+
+func RegistOutputer(key string, output Outputer) {
+	pluginsMap.Output[key] = output
+}
+
+func RegistHandler(key string, handle Handler) {
+	pluginsMap.Handle[key] = handle
+}
+
+func init() {
+	pluginsMap = NewPluginsMap()
 }

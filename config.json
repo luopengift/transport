@@ -1,23 +1,26 @@
 {
-    "runtime":{
-        "DEBUG":false,
-        "MAXPROCS":4
+  "runtime": {
+    "DEBUG": true,
+    "MAXPROCS": 4,
+    "VERSION": "0.0.2"
+  },
+  "inputs": {
+    "file": {
+      "path": [
+        "a.log",
+        "b.log"
+      ],
+      "endstop":false
     },
-    "input":{
-        "type":"kafka",
-        "addrs":"10.10.20.15:9092",
-        "topic":"zhizi-log",
-        "offset":"-1"
+    "stdin":{}
+  },
+  "handles": {
+    "addenter": {}
+  },
+  "outputs": {
+    "file": {
+      "path": "test.test"
     },
-    "handle":{
-        #"type":"null"
-        "type":"zhizilog1"
-    },
-    "output":{
-        "type":"file",
-        "path":"test.test",
-        "addrs":"10.10.20.15:9092",
-        "topic":"zhizi-log-format",
-        "offset":"-1"
-    }
+    "stdout":{}
+  }
 }

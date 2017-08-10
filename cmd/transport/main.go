@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"github.com/luopengift/golibs/logger"
 	_ "github.com/luopengift/transport/api"
 	"github.com/luopengift/transport/pipeline"
@@ -14,22 +15,47 @@ import (
 	"runtime/pprof"
 )
 
+/*
+Process Signaling
+
+On Unix systems, the NATS server responds to the following signals:
+
+Signal	Result
+SIGKILL	Kills the process immediately
+SIGINT	Stops the server gracefully
+SIGUSR1	Reopens the log file for log rotation
+SIGHUP	Reloads server configuration file
+*/
+
 const (
 	VERSION = "0.0.1"
 )
 
 var t *pipeline.Transport
 
+var helpString = `Transport Help
+	-h	Help
+	-f	config
+`
+
 func main() {
 
-	logger.Info("Transport starting...")
 	config := flag.String("f", "", "(config)配置文件")
+	help := flag.Bool("h", false, "(config)配置文件")
 	flag.Parse()
+
+	if *help {
+		fmt.Println(helpString)
+		return
+	}
+
 	if *config == "" {
+		fmt.Println(helpString)
 		logger.Error("config is null,exit...")
 		return
 	}
 
+	logger.Info("Transport starting...")
 	cfg := pipeline.NewConfig(*config)
 	logger.Info("%#v", cfg.Runtime)
 	runtime.GOMAXPROCS(runtime.NumCPU())
