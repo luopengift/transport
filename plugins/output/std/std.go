@@ -1,4 +1,4 @@
-package plugins
+package std
 
 import (
 	"github.com/luopengift/transport/pipeline"
@@ -21,11 +21,11 @@ func (stdout *Stdout) Close() error {
 	return stdout.Close()
 }
 
-func (stdout *Stdout) Init(config map[string]string) error {
+func (stdout *Stdout) Init(config pipeline.Configer) error {
 	stdout.File = os.Stdout
 	return nil
 }
 
 func init() {
-	pipeline.RegistOutputer("stdout", NewStdout())
+	pipeline.RegistOutputer("std", NewStdout())
 }

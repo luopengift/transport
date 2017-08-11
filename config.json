@@ -5,14 +5,14 @@
     "VERSION": "0.0.2"
   },
   "inputs": {
-    "file": {
+    "files": {
       "path": [
-        "a.log",
-        "b.log"
+        "/tmp/a.log",
+        "/tmp/b.log"
       ],
       "endstop":false
     },
-    "stdin":{}
+    "std":{}
   },
   "handles": {
     "addenter": {}
@@ -21,6 +21,6 @@
     "file": {
       "path": "test.test"
     },
-    "stdout":{}
+    "std":{}
   }
 }

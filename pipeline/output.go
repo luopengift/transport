@@ -34,7 +34,7 @@ func (o *Output) Set(out Outputer) error {
 	return nil
 
 }
-
+/*
 func (o *Output) Write(p []byte) (int, error) {
 	return o.Outputer.Write(p)
 }
@@ -46,3 +46,4 @@ func (o *Output) Start() error {
 func (o *Output) Close() error {
 	return o.Outputer.Close()
 }
+*/

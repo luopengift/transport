@@ -23,7 +23,7 @@ type Handler interface {
 }
 
 
-任何实现了Inputer接口，即可作为output组件
+任何实现了Outputer接口，即可作为output组件
 type Outputer interface {
     Init(config Configer) error
     Start() error
@@ -32,13 +32,14 @@ type Outputer interface {
 }
 ```
 ### Input组件:
-- [x] stdin
-- [x] file
+- [x] std: stdin,标准输入
+- [x] file(s): 文件
 - [x] kafka
 - [x] elasticsearch
 - [x] http
 ### Output组件:
-- [x] stdout
+- [x] std: stdout,标准输出
+- [x] file: 文件
 - [x] kafka
 - [x] elasticsearch
 - [x] hdfs

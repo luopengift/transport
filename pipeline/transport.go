@@ -35,7 +35,7 @@ func NewTransport(cfg *Config) *Transport {
 
 func (t *Transport) RunInputs() {
 	for _, input := range t.Inputs {
-		go input.Start()
+		go input.Inputer.Start()
 		go func(in *Input) {
 			for {
 				//	in.Mutex.Lock()
@@ -54,7 +54,7 @@ func (t *Transport) RunInputs() {
 
 }
 
-func (t *Transport) RunHandles() {
+func (t *Transport) RunCodecs() {
 	for _, codec := range t.Codecs {
 		go func(h *Codec) {
 			for {
@@ -100,11 +100,17 @@ func (t *Transport) RunOutputs() {
 func (t *Transport) Run() {
 	go t.RunInputs()
 	go t.RunOutputs()
-	go t.RunHandles()
-	select {}
+	go t.RunCodecs()
 }
 
 func (t *Transport) Stop() {
-	//t.Output.Close()
+	for _,input := range t.Inputs {
+        input.Inputer.Close()
+    }
+	close(t.recv_chan)
+	close(t.send_chan)
+    for _,output := range t.Outputs {
+        output.Outputer.Close()
+    }
 	t.logs.Info("stop success...%s", time.Now())
 }

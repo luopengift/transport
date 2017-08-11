@@ -7,10 +7,9 @@ import (
 // 数据输入接口
 type Inputer interface {
 	Init(Configer) error
-	Read(p []byte) (n int, err error)
-	Close() error
-
 	Start() error
+	Read(p []byte) (n int, err error)
+    Close() error
 }
 
 type Input struct {
@@ -36,7 +35,7 @@ func (i *Input) Set(in Inputer) error {
 	i.Inputer = in
 	return nil
 }
-
+/*
 func (i *Input) Read(p []byte) (int, error) {
 	i.Mutex.Lock()
 	defer i.Mutex.Unlock()
@@ -51,3 +50,4 @@ func (i *Input) Start() error {
 func (i *Input) Close() error {
 	return i.Inputer.Close()
 }
+*/
