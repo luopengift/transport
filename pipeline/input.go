@@ -9,7 +9,7 @@ type Inputer interface {
 	Init(Configer) error
 	Start() error
 	Read(p []byte) (n int, err error)
-    Close() error
+	Close() error
 }
 
 type Input struct {
@@ -35,6 +35,7 @@ func (i *Input) Set(in Inputer) error {
 	i.Inputer = in
 	return nil
 }
+
 /*
 func (i *Input) Read(p []byte) (int, error) {
 	i.Mutex.Lock()

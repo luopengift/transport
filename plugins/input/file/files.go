@@ -9,7 +9,7 @@ import (
 
 type FilesInput struct {
 	Files []*file.Tail
-    buf chan []byte
+	buf   chan []byte
 }
 
 func NewFilesInput() *FilesInput {
@@ -28,40 +28,40 @@ func (in *FilesInput) Init(config pipeline.Configer) error {
 		logger.Error("parse error:%v", err)
 		return err
 	}
-    for _,path := range cfg.Path {
-	    tail := file.NewTail(path, file.TimeRule)
-	    if cfg.EndStop {
-		    tail.EndStop(true)
-	    }
-        in.Files = append(in.Files, tail)
-    }
-    in.buf = make(chan []byte, 1000)
+	for _, path := range cfg.Path {
+		tail := file.NewTail(path, file.TimeRule)
+		if cfg.EndStop {
+			tail.EndStop(true)
+		}
+		in.Files = append(in.Files, tail)
+	}
+	in.buf = make(chan []byte, 1000)
 	return nil
 }
 
 func (in *FilesInput) Read(p []byte) (int, error) {
 	n := copy(p, <-in.buf)
-    return n, nil
+	return n, nil
 }
 
 func (in *FilesInput) Start() error {
-    for _, tail := range in.Files {
-	    go func(t *file.Tail) {
-            t.ReadLine()
-            for msg := range t.NextLine() {
-                in.buf <- msg
-            }
-        }(tail)
-    }
+	for _, tail := range in.Files {
+		go func(t *file.Tail) {
+			t.ReadLine()
+			for msg := range t.NextLine() {
+				in.buf <- msg
+			}
+		}(tail)
+	}
 
 	return nil
 }
 
 func (in *FilesInput) Close() error {
-    for _, tail := range in.Files {
-        tail.Close()
-    }
-    return nil
+	for _, tail := range in.Files {
+		tail.Close()
+	}
+	return nil
 }
 
 func init() {

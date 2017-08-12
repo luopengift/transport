@@ -104,13 +104,13 @@ func (t *Transport) Run() {
 }
 
 func (t *Transport) Stop() {
-	for _,input := range t.Inputs {
-        input.Inputer.Close()
-    }
+	for _, input := range t.Inputs {
+		input.Inputer.Close()
+	}
 	close(t.recv_chan)
 	close(t.send_chan)
-    for _,output := range t.Outputs {
-        output.Outputer.Close()
-    }
+	for _, output := range t.Outputs {
+		output.Outputer.Close()
+	}
 	t.logs.Info("stop success...%s", time.Now())
 }

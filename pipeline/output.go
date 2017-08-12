@@ -34,6 +34,7 @@ func (o *Output) Set(out Outputer) error {
 	return nil
 
 }
+
 /*
 func (o *Output) Write(p []byte) (int, error) {
 	return o.Outputer.Write(p)

@@ -63,7 +63,7 @@ func main() {
 	t = pipeline.NewTransport(cfg)
 	defer t.Stop()
 	t.Run()
-    select{}
+	select {}
 }
 
 func DebugProfile() {
