@@ -35,6 +35,7 @@ type Outputer interface {
 - [x] std: stdin,标准输入
 - [x] file(s): 文件
 - [x] kafka
+- [x] exec: 执行程序/脚本
 - [x] elasticsearch
 - [x] http
 ### Output组件:

@@ -1,0 +1,24 @@
+{
+  "runtime": {
+    "DEBUG": true,
+    "MAXPROCS": 4,
+    "VERSION": "0.0.2"
+  },
+  "inputs": {
+    "exec": {
+      "script": "python /tmp/t.py",
+      "interval":10,
+      "cron":"*/2 * * * * *"
+    },
+    "std":{}
+  },
+  "handles": {
+    "addenter": {}
+  },
+  "outputs": {
+    "file": {
+      "path": "test.test"
+    },
+    "std":{}
+  }
+}
