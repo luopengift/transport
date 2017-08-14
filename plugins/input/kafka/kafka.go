@@ -13,56 +13,52 @@ sarame.OffsetNewest int64 = -1
 sarame.OffsetOldest int64 = -2
 */
 type KafkaInput struct {
-	*KafkaConfig
-	Message chan []byte //从这个管道中读取数据
-}
-
-type KafkaConfig struct {
 	Addrs  []string
 	Topic  string
 	Offset int64
+
+    Message chan []byte //从这个管道中读取数据
 }
+
 
 func NewKafkaInput() *KafkaInput {
-	k := new(KafkaInput)
-	return k
+	in := new(KafkaInput)
+	return in
 }
 
-func (k *KafkaInput) Init(config pipeline.Configer) error {
-	cfg := KafkaConfig{}
-	err := config.Parse(&cfg)
+func (in *KafkaInput) Init(config pipeline.Configer) error {
+	err := config.Parse(in)
 	if err != nil {
 		logger.Error("parse error:%v", err)
 		return err
 	}
-	k.KafkaConfig = &cfg
-	k.Message = make(chan []byte)
+	in.Message = make(chan []byte)
 	return nil
 }
 
-func (k *KafkaInput) Read(p []byte) (cnt int, err error) {
-	msg := <-k.Message
+func (in *KafkaInput) Read(p []byte) (cnt int, err error) {
+	msg := <-in.Message
 	n := copy(p, msg)
 	return n, nil
 }
 
-func (k *KafkaInput) Start() error {
-	k.ReadFromTopic()
+func (in *KafkaInput) Start() error {
+	in.ReadFromTopic()
 	return nil
 }
 
-func (k *KafkaInput) ReadFromTopic() {
+func (in *KafkaInput) ReadFromTopic() {
 	var wg sync.WaitGroup
-	consumer, err := sarama.NewConsumer(k.KafkaConfig.Addrs, sarama.NewConfig())
+	consumer, err := sarama.NewConsumer(in.Addrs, sarama.NewConfig())
 	if err != nil {
 		logger.Error("<new consumer error> %v", err)
 	}
-	partitionList, err := consumer.Partitions(k.KafkaConfig.Topic)
+	partitionList, err := consumer.Partitions(in.Topic)
 	if err != nil {
 		logger.Error("<consumer partitions> %v", err)
 	}
 	for partition := range partitionList {
-		pc, err := consumer.ConsumePartition(k.KafkaConfig.Topic, int32(partition), k.KafkaConfig.Offset)
+		pc, err := consumer.ConsumePartition(in.Topic, int32(partition), in.Offset)
 		if err != nil {
 			logger.Error("<consume error> %v", err)
 		}
@@ -72,7 +68,7 @@ func (k *KafkaInput) ReadFromTopic() {
 		go func(pc sarama.PartitionConsumer) {
 			defer wg.Done()
 			for msg := range pc.Messages() {
-				k.Message <- msg.Value
+				in.Message <- msg.Value
 			}
 		}(pc)
 
@@ -81,8 +77,8 @@ func (k *KafkaInput) ReadFromTopic() {
 	consumer.Close()
 }
 
-func (k *KafkaInput) Close() error {
-	return k.Close()
+func (in *KafkaInput) Close() error {
+	return in.Close()
 }
 
 func init() {

@@ -1,61 +1,51 @@
 package exec
 
 import (
-	"github.com/luopengift/golibs/cron"
 	"github.com/luopengift/golibs/exec"
 	"github.com/luopengift/golibs/logger"
 	"github.com/luopengift/transport/pipeline"
 )
 
 type ExecInput struct {
-	*ExecInputConfig
-	result chan []byte
+	Script  string `json:"script"`
+	Crontab string `json:"cron"`
+
+    result chan []byte
 }
 
 func NewExecInput() *ExecInput {
 	return new(ExecInput)
 }
 
-type ExecInputConfig struct {
-	Script  string `json:"script"`
-	Crontab string `json:"cron"`
-}
-
-func (e *ExecInput) Init(config pipeline.Configer) error {
-	cfg := &ExecInputConfig{}
-	err := config.Parse(cfg)
+func (in *ExecInput) Init(config pipeline.Configer) error {
+	err := config.Parse(in)
 	if err != nil {
 		logger.Error("parse error:%v", err)
 		return err
 	}
-	e.ExecInputConfig = cfg
-	e.result = make(chan []byte, 1)
-	//task := cron.NewTask("exec", e.ExecInputConfig.Crontab, func() error { return e.Start() })
-	//cron.StartTask()
-	//cron.AddTask("task", task)
+	in.result = make(chan []byte, 1)
 	pipeline.AddCronTask(
 		"exec",
-		e.ExecInputConfig.Crontab,
+		in.Crontab,
 		func() error {
-			return e.Start()
+			return in.Start()
 		},
 	)
 	return nil
 }
 
-func (e *ExecInput) Read(p []byte) (int, error) {
-	n := copy(p, <-e.result)
+func (in *ExecInput) Read(p []byte) (int, error) {
+	n := copy(p, <-in.result)
 	return n, nil
 }
 
-func (e *ExecInput) Start() error {
-	result, err := exec.CmdOut("/bin/bash", "-c", e.ExecInputConfig.Script)
-	e.result <- result
+func (in *ExecInput) Start() error {
+	result, err := exec.CmdOut("/bin/bash", "-c", in.Script)
+	in.result <- result
 	return err
 }
 
-func (e *ExecInput) Close() error {
-	cron.StopTask()
+func (in *ExecInput) Close() error {
 	return nil
 }
 

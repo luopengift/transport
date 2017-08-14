@@ -5,27 +5,27 @@ import (
 	"os"
 )
 
-type Stdout struct {
+type StdOutput struct {
 	*os.File
 }
 
-func NewStdout() *Stdout {
-	return new(Stdout)
+func NewStdOutput() *StdOutput {
+	return new(StdOutput)
 }
 
-func (stdout *Stdout) Start() error {
+func (out *StdOutput) Start() error {
 	return nil
 }
 
-func (stdout *Stdout) Close() error {
-	return stdout.Close()
+func (out *StdOutput) Close() error {
+	return out.Close()
 }
 
-func (stdout *Stdout) Init(config pipeline.Configer) error {
-	stdout.File = os.Stdout
+func (out *StdOutput) Init(config pipeline.Configer) error {
+	out.File = os.Stdout
 	return nil
 }
 
 func init() {
-	pipeline.RegistOutputer("std", NewStdout())
+	pipeline.RegistOutputer("std", NewStdOutput())
 }

@@ -8,56 +8,50 @@ import (
 )
 
 type KafkaOutput struct {
-	*KafkaOutputConfig
-	Message chan []byte //将数据写入这个管道中
+	Addrs    []string `json:"addrs"`
+	Topic    string   `json:"topic"`
+	MaxProcs int      `json:"max_procs"` //最大并发写协程
+
+    Message chan []byte //将数据写入这个管道中
 	// 并发写topic的协程控制
 	// 由于并发写入topic,写入顺序不可控,想要严格数序的话,maxThreads = 1即可
 	channel *channel.Channel //并发写topic的协程控制
 }
 
-type KafkaOutputConfig struct {
-	Addrs    []string `json:"addrs"`
-	Topic    string   `json:"topic"`
-	MaxProcs int      `json:"max_procs"` //最大并发写协程
-}
 
 func NewKafkaOutput() *KafkaOutput {
 	return new(KafkaOutput)
 }
 
-func (k *KafkaOutput) Init(config pipeline.Configer) error {
-	cfg := &KafkaOutputConfig{
-		MaxProcs: 1,
-	}
-	err := config.Parse(cfg)
+func (out *KafkaOutput) Init(config pipeline.Configer) error {
+	err := config.Parse(out)
 	if err != nil {
 		return err
 	}
-	k.KafkaOutputConfig = cfg
-	k.Message = make(chan []byte, k.MaxProcs)
-	k.channel = channel.NewChannel(k.MaxProcs)
+	out.Message = make(chan []byte, out.MaxProcs)
+	out.channel = channel.NewChannel(out.MaxProcs)
 	return nil
 }
 
-func (k *KafkaOutput) ChanInfo() string {
-	return k.channel.String()
+func (out *KafkaOutput) ChanInfo() string {
+	return out.channel.String()
 }
 
-func (k *KafkaOutput) Write(msg []byte) (int, error) {
-	k.Message <- msg
+func (out *KafkaOutput) Write(msg []byte) (int, error) {
+	out.Message <- msg
 	return len(msg), nil
 }
 
-func (k *KafkaOutput) Close() error {
-	return k.Close()
+func (out *KafkaOutput) Close() error {
+	return out.Close()
 }
 
-func (k *KafkaOutput) Start() error {
-	go k.WriteToTopic()
+func (out *KafkaOutput) Start() error {
+	go out.WriteToTopic()
 	return nil
 }
 
-func (k *KafkaOutput) WriteToTopic() error {
+func (out *KafkaOutput) WriteToTopic() error {
 
 	config := sarama.NewConfig()
 	config.Producer.Return.Successes = true
@@ -66,7 +60,7 @@ func (k *KafkaOutput) WriteToTopic() error {
 		return err
 	}
 
-	producer, err := sarama.NewSyncProducer(k.KafkaOutputConfig.Addrs, config)
+	producer, err := sarama.NewSyncProducer(out.Addrs, config)
 	if err != nil {
 		logger.Error("<Failed to produce message> %v", err)
 		return err
@@ -75,11 +69,11 @@ func (k *KafkaOutput) WriteToTopic() error {
 
 	for {
 		select {
-		case message := <-k.Message:
-			k.channel.Add()
+		case message := <-out.Message:
+			out.channel.Add()
 			go func(message []byte) {
 				msg := &sarama.ProducerMessage{
-					Topic:     k.KafkaOutputConfig.Topic,
+					Topic:     out.Topic,
 					Partition: int32(-1),
 					Key:       sarama.StringEncoder("key"),
 					Value:     sarama.ByteEncoder(message),
@@ -87,7 +81,7 @@ func (k *KafkaOutput) WriteToTopic() error {
 				if partition, offset, err := producer.SendMessage(msg); err != nil {
 					logger.Error("<write to kafka error,partition=%v,offset=%v> %v", partition, offset, err)
 				}
-				k.channel.Done()
+				out.channel.Done()
 			}(message)
 		}
 	}

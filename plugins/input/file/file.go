@@ -17,13 +17,7 @@ func NewFileInput() *FileInput {
 	return new(FileInput)
 }
 
-type FileConfig struct {
-	Path    []string `json:"path"`
-	EndStop bool     `json:"endstop"`
-}
-
 func (in *FileInput) Init(config pipeline.Configer) error {
-	//cfg := FileConfig{}
 	err := config.Parse(in)
 	if err != nil {
 		logger.Error("parse error:%v", err)

@@ -8,7 +8,10 @@ import (
 )
 
 type FilesInput struct {
-	Files []*file.Tail
+	Path    []string `json:"path"`
+	EndStop bool     `json:"endstop"`
+
+    Files []*file.Tail
 	buf   chan []byte
 }
 
@@ -16,21 +19,16 @@ func NewFilesInput() *FilesInput {
 	return new(FilesInput)
 }
 
-type FilesConfig struct {
-	Path    []string `json:"path"`
-	EndStop bool     `json:"endstop"`
-}
 
 func (in *FilesInput) Init(config pipeline.Configer) error {
-	cfg := FilesConfig{}
-	err := config.Parse(&cfg)
+	err := config.Parse(in)
 	if err != nil {
 		logger.Error("parse error:%v", err)
 		return err
 	}
-	for _, path := range cfg.Path {
+	for _, path := range in.Path {
 		tail := file.NewTail(path, file.TimeRule)
-		if cfg.EndStop {
+		if in.EndStop {
 			tail.EndStop(true)
 		}
 		in.Files = append(in.Files, tail)

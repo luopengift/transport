@@ -7,33 +7,28 @@ import (
 )
 
 type FileOutput struct {
-	path  string //配置路径
+	Path string `json:"path"`   //配置路径
 	cpath string //真实路径
 	fd    *os.File
 }
 
-type FileOutputConfig struct {
-	Path string `json:"path"`
-}
 
 func NewFileOutput() *FileOutput {
 	return new(FileOutput)
 }
 
 func (out *FileOutput) Init(config pipeline.Configer) error {
-	cfg := FileOutputConfig{}
-	err := config.Parse(&cfg)
+	err := config.Parse(out)
 	if err != nil {
 		return err
 	}
-	out.path = cfg.Path
-	out.cpath = file.TimeRule.Handle(out.path)
+	out.cpath = file.TimeRule.Handle(out.Path)
 	out.fd, err = os.OpenFile(out.cpath, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644)
 	return err
 }
 
 func (out *FileOutput) Write(p []byte) (int, error) {
-	if cpath := file.TimeRule.Handle(out.path); out.cpath != cpath {
+	if cpath := file.TimeRule.Handle(out.Path); out.cpath != cpath {
 		var err error
 		out.cpath = cpath
 		out.fd, err = os.OpenFile(out.cpath, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644)
