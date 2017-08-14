@@ -18,7 +18,6 @@ type KafkaOutput struct {
 type KafkaOutputConfig struct {
 	Addrs    []string `json:"addrs"`
 	Topic    string   `json:"topic"`
-	MaxBytes int      `json:"max_bytes"` //最大写入字节长度
 	MaxProcs int      `json:"max_procs"` //最大并发写协程
 }
 
@@ -27,13 +26,15 @@ func NewKafkaOutput() *KafkaOutput {
 }
 
 func (k *KafkaOutput) Init(config pipeline.Configer) error {
-	cfg := &KafkaOutputConfig{}
+	cfg := &KafkaOutputConfig{
+		MaxProcs: 1,
+	}
 	err := config.Parse(cfg)
 	if err != nil {
 		return err
 	}
 	k.KafkaOutputConfig = cfg
-	k.Message = make(chan []byte, k.MaxBytes)
+	k.Message = make(chan []byte, k.MaxProcs)
 	k.channel = channel.NewChannel(k.MaxProcs)
 	return nil
 }

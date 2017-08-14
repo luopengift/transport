@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/luopengift/golibs/logger"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -27,7 +28,7 @@ func NewTransport(cfg *Config) *Transport {
 	transport.send_chan = make(chan []byte, 100)
 	transport.errchan = make(chan string, 100)
 	transport.isEnd = make(chan bool)
-	transport.logs = logger.NewLogger(logger.DEBUG, os.Stdout)
+	transport.logs = logger.NewLogger(logger.INFO, os.Stdout)
 	transport.logs.SetPrefix("[transport]")
 
 	startCronTask()
@@ -66,13 +67,17 @@ func (t *Transport) RunCodecs() {
 					t.logs.Error("[%s] %s", h.Name, ReadBufferClosedError.Error())
 					break
 				}
-				b := make([]byte, MAX, MAX)
-				n, err := h.Handle(value, b)
-				if err != nil {
-					t.errchan <- fmt.Sprintf("[%s] %s", h.Name, err.Error())
-					continue
-				}
-				t.send_chan <- b[:n]
+				h.Channel.Add()
+				go func(value []byte) {
+					defer h.Channel.Done()
+					b := make([]byte, MAX, MAX)
+					n, err := h.Handle(value, b)
+					if err != nil {
+						t.errchan <- fmt.Sprintf("[%s] %s", h.Name, err.Error())
+						return
+					}
+					t.send_chan <- b[:n]
+				}(value)
 			}
 		}(codec)
 	}
@@ -90,7 +95,7 @@ func (t *Transport) RunOutputs() {
 		}
 		for _, output := range t.Outputs {
 			func(out *Output) {
-				_, err := out.Outputer.Write(value)
+				_, err := out.Write(value)
 				if err != nil {
 					t.errchan <- fmt.Sprintf("[%s] write data err:%s", out.Name, err.Error())
 				}
@@ -100,9 +105,32 @@ func (t *Transport) RunOutputs() {
 }
 
 func (t *Transport) Run() {
+	go func() {
+		for {
+			t.logs.Error("%v", <-t.errchan)
+		}
+	}()
+	go func() {
+		for {
+			input_stat := []string{}
+			for _, input := range t.Inputs {
+				input_stat = append(input_stat, fmt.Sprintf("%v:%v", input.Name, input.Cnt))
+			}
+			codec_stat := []string{}
+			for _, codec := range t.Codecs {
+				codec_stat = append(codec_stat, fmt.Sprintf("%v:%v", codec.Name, codec.Cnt))
+			}
+			output_stat := []string{}
+			for _, output := range t.Outputs {
+				output_stat = append(output_stat, fmt.Sprintf("%v:%v", output.Name, output.Cnt))
+			}
+			t.logs.Info("stat=> inputs:%s|codecs:%s|outputs:%s", strings.Join(input_stat, ","), strings.Join(codec_stat, ","), strings.Join(output_stat, ","))
+			time.Sleep(10 * time.Second)
+		}
+	}()
 	go t.RunInputs()
-	go t.RunOutputs()
 	go t.RunCodecs()
+	go t.RunOutputs()
 }
 
 func (t *Transport) Stop() {

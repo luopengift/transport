@@ -14,8 +14,9 @@ type Inputer interface {
 
 type Input struct {
 	Name string
-	Inputer
+	Cnt  int64 //count numbers of input message
 	*sync.Mutex
+	Inputer
 }
 
 func NewInput(name string, in Inputer) *Input {
@@ -36,11 +37,10 @@ func (i *Input) Set(in Inputer) error {
 	return nil
 }
 
-/*
 func (i *Input) Read(p []byte) (int, error) {
 	i.Mutex.Lock()
-	defer i.Mutex.Unlock()
-
+	i.Cnt += 1
+	i.Mutex.Unlock()
 	return i.Inputer.Read(p)
 }
 
@@ -51,4 +51,3 @@ func (i *Input) Start() error {
 func (i *Input) Close() error {
 	return i.Inputer.Close()
 }
-*/

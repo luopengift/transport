@@ -8,6 +8,8 @@ import (
 )
 
 type FileInput struct {
+	Path    []string `json:"path"`
+	EndStop bool     `json:"endstop"`
 	*file.Tail
 }
 
@@ -21,15 +23,15 @@ type FileConfig struct {
 }
 
 func (in *FileInput) Init(config pipeline.Configer) error {
-	cfg := FileConfig{}
-	err := config.Parse(&cfg)
+	//cfg := FileConfig{}
+	err := config.Parse(in)
 	if err != nil {
 		logger.Error("parse error:%v", err)
 		return err
 	}
 
-	in.Tail = file.NewTail(cfg.Path[0], file.TimeRule)
-	if cfg.EndStop {
+	in.Tail = file.NewTail(in.Path[0], file.TimeRule)
+	if in.EndStop {
 		in.Tail.EndStop(true)
 	}
 	return nil

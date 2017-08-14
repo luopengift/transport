@@ -14,13 +14,15 @@ type Outputer interface {
 
 type Output struct {
 	Name string
-	Outputer
+	Cnt  int64
 	*sync.Mutex
+	Outputer
 }
 
 func NewOutput(name string, out Outputer) *Output {
 	o := new(Output)
 	o.Name = name
+	o.Cnt = 0
 	o.Outputer = out
 	o.Mutex = new(sync.Mutex)
 	return o
@@ -35,8 +37,10 @@ func (o *Output) Set(out Outputer) error {
 
 }
 
-/*
 func (o *Output) Write(p []byte) (int, error) {
+	o.Mutex.Lock()
+	o.Cnt += 1
+	o.Mutex.Unlock()
 	return o.Outputer.Write(p)
 }
 
@@ -47,4 +51,3 @@ func (o *Output) Start() error {
 func (o *Output) Close() error {
 	return o.Outputer.Close()
 }
-*/

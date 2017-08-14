@@ -116,7 +116,7 @@ func (cfg *Config) InitCodecs() []*Codec {
 		if !ok {
 			logger.Error("[%s] handle is not register in pluginsMap", handleName)
 		}
-		handle := NewCodec(handleName, handler, 1)
+		handle := NewCodec(handleName, handler, 1000)
 		handles = append(handles, handle)
 	}
 	return handles

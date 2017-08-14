@@ -11,18 +11,24 @@
         "10.10.20.15:9092",
         "10.10.20.16:9092"
       ],
-      "topic":"falcon_monitor_us",
+      "topic":"zhizi-log",
       "offset":-1
     },
     "std":{}
   },
   "handles": {
-    "addenter": {}
+    "zhizilog": {}
   },
   "outputs": {
-    "file": {
-      "path": "/tmp/test.test"
-    },
-    "std":{}
+    "kafka": {
+      "addrs": [
+        "10.10.20.14:9092",
+        "10.10.20.15:9092",
+        "10.10.20.16:9092"
+      ],
+      "topic":"zhizi-log-format",
+      "max_procs": 1000
+    }
+    #"std":{}
   }
 }
