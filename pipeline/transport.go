@@ -30,6 +30,8 @@ func NewTransport(cfg *Config) *Transport {
 	transport.logs = logger.NewLogger(logger.DEBUG, os.Stdout)
 	transport.logs.SetPrefix("[transport]")
 
+	startCronTask()
+
 	return transport
 }
 
@@ -104,6 +106,7 @@ func (t *Transport) Run() {
 }
 
 func (t *Transport) Stop() {
+	stopCronTask() //关闭全部定时任务
 	for _, input := range t.Inputs {
 		input.Inputer.Close()
 	}

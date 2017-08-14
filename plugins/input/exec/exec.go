@@ -30,9 +30,16 @@ func (e *ExecInput) Init(config pipeline.Configer) error {
 	}
 	e.ExecInputConfig = cfg
 	e.result = make(chan []byte, 1)
-	task := cron.NewTask("exec", e.ExecInputConfig.Crontab, func() error { return e.Start() })
-	cron.AddTask("task", task)
-	cron.StartTask()
+	//task := cron.NewTask("exec", e.ExecInputConfig.Crontab, func() error { return e.Start() })
+	//cron.StartTask()
+	//cron.AddTask("task", task)
+	pipeline.AddCronTask(
+		"exec",
+		e.ExecInputConfig.Crontab,
+		func() error {
+			return e.Start()
+		},
+	)
 	return nil
 }
 
@@ -42,7 +49,7 @@ func (e *ExecInput) Read(p []byte) (int, error) {
 }
 
 func (e *ExecInput) Start() error {
-	result, err := exec.CmdOutBytes("/bin/bash", "-c", e.ExecInputConfig.Script)
+	result, err := exec.CmdOut("/bin/bash", "-c", e.ExecInputConfig.Script)
 	e.result <- result
 	return err
 }
