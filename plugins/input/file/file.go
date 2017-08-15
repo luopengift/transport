@@ -1,7 +1,6 @@
 package file
 
 import (
-	//	"encoding/json"
 	"github.com/luopengift/golibs/file"
 	"github.com/luopengift/golibs/logger"
 	"github.com/luopengift/transport/pipeline"
