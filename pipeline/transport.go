@@ -14,26 +14,34 @@ type Transport struct {
 	Codecs    []*Codec
 	recv_chan chan []byte
 	send_chan chan []byte
-	errchan   chan string
 	isEnd     chan bool
 	logs      *logger.Logger
 }
 
-func NewTransport(cfg *Config) *Transport {
+func NewTransport(cfg *Config) (*Transport, error) {
+    var err error
 	transport := new(Transport)
-	transport.Inputs = cfg.InitInputs()
-	transport.Codecs = cfg.InitCodecs()
-	transport.Outputs = cfg.InitOutputs()
+	transport.Inputs, err = cfg.InitInputs()
+	if err != nil {
+        return nil, err
+    }
+    transport.Codecs, err = cfg.InitCodecs()
+	if err != nil {
+        return nil, err
+    }
+	transport.Outputs, err = cfg.InitOutputs()
+	if err != nil {
+        return nil, err
+    }
 	transport.recv_chan = make(chan []byte, 100)
 	transport.send_chan = make(chan []byte, 100)
-	transport.errchan = make(chan string, 100)
 	transport.isEnd = make(chan bool)
-	transport.logs = logger.NewLogger(logger.INFO, os.Stdout)
+	transport.logs = logger.NewLogger(logger.DEBUG, os.Stdout)
 	transport.logs.SetPrefix("[transport]")
 
 	startCronTask()
 
-	return transport
+	return transport, err
 }
 
 func (t *Transport) RunInputs() {
@@ -45,8 +53,8 @@ func (t *Transport) RunInputs() {
 				//	defer in.Mutex.Unlock()
 				b := make([]byte, MAX, MAX)
 				n, err := in.Read(b)
-				if err != nil {
-					t.errchan <- fmt.Sprintf("[%s] %s", in.Name, err.Error())
+			    if err != nil {
+					t.logs.Error("[%s] %s", in.Name, err.Error())
 					continue
 				}
 				t.recv_chan <- b[:n]
@@ -63,7 +71,6 @@ func (t *Transport) RunCodecs() {
 			for {
 				value, ok := <-t.recv_chan
 				if !ok {
-					t.errchan <- fmt.Sprintf("[%s] %s", h.Name, ReadBufferClosedError.Error())
 					t.logs.Error("[%s] %s", h.Name, ReadBufferClosedError.Error())
 					break
 				}
@@ -73,7 +80,7 @@ func (t *Transport) RunCodecs() {
 					b := make([]byte, MAX, MAX)
 					n, err := h.Handle(value, b)
 					if err != nil {
-						t.errchan <- fmt.Sprintf("[%s] %s", h.Name, err.Error())
+						t.logs.Error("[%s] %s", h.Name, err.Error())
 						return
 					}
 					t.send_chan <- b[:n]
@@ -97,7 +104,7 @@ func (t *Transport) RunOutputs() {
 			func(out *Output) {
 				_, err := out.Write(value)
 				if err != nil {
-					t.errchan <- fmt.Sprintf("[%s] write data err:%s", out.Name, err.Error())
+					t.logs.Error("[%s] write data err:%s", out.Name, err.Error())
 				}
 			}(output)
 		}
@@ -105,11 +112,6 @@ func (t *Transport) RunOutputs() {
 }
 
 func (t *Transport) Run() {
-	go func() {
-		for {
-			t.logs.Error("%v", <-t.errchan)
-		}
-	}()
 	go func() {
 		for {
 			input_stat := []string{}

@@ -60,7 +60,12 @@ func main() {
 			http.ListenAndServe("localhost:6060", nil)
 		}()
 	}
-	t = pipeline.NewTransport(cfg)
+    var err error
+	t, err = pipeline.NewTransport(cfg)
+    if err != nil {
+        logger.Error("%v",err)
+        return
+    }
 	defer t.Stop()
 	t.Run()
 	select {}

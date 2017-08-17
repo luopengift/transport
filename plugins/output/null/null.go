@@ -11,7 +11,7 @@ func NewNullOutput() *NullOutput {
 	return new(NullOutput)
 }
 
-func (n *NullOutput) Init(config Configer) error {
+func (n *NullOutput) Init(config pipeline.Configer) error {
 	return nil
 }
 

@@ -7,6 +7,7 @@ import (
 	_ "github.com/luopengift/transport/plugins/input/file"
 	_ "github.com/luopengift/transport/plugins/input/kafka"
 	_ "github.com/luopengift/transport/plugins/input/std"
+	_ "github.com/luopengift/transport/plugins/input/http"
 
 	_ "github.com/luopengift/transport/plugins/output/null"
 	_ "github.com/luopengift/transport/plugins/output/file"

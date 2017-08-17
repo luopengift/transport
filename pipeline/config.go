@@ -1,6 +1,7 @@
 package pipeline
 
 import (
+    "fmt"
 	"encoding/json"
 	"github.com/luopengift/golibs/file"
 	"github.com/luopengift/golibs/logger"
@@ -81,43 +82,43 @@ func (cfg *Config) Init(path string) error {
 
 }
 
-func (cfg *Config) InitInputs() []*Input {
+func (cfg *Config) InitInputs() ([]*Input, error) {
 	var inputs []*Input
 	for inputName, value := range cfg.InputConfig {
 		inputer, ok := pluginsMap.Input[inputName]
 		if !ok {
-			logger.Error("[%s] input is not register in pluginsMap", inputName)
-		}
+			return nil,fmt.Errorf("[%s] input is not register in pluginsMap", inputName)
+        }
 		input := NewInput(inputName, inputer)
 		input.Inputer.Init(value)
 		inputs = append(inputs, input)
 	}
-	return inputs
+	return inputs, nil
 }
 
-func (cfg *Config) InitOutputs() []*Output {
+func (cfg *Config) InitOutputs() ([]*Output, error) {
 	var outputs []*Output
 	for outputName, value := range cfg.OutputConfig {
 		outputer, ok := pluginsMap.Output[outputName]
 		if !ok {
-			logger.Error("[%s] output is not register in pluginsMap", outputName)
+			return nil, fmt.Errorf("[%s] output is not register in pluginsMap", outputName)
 		}
 		output := NewOutput(outputName, outputer)
 		output.Outputer.Init(value)
 		outputs = append(outputs, output)
 	}
-	return outputs
+	return outputs, nil
 }
 
-func (cfg *Config) InitCodecs() []*Codec {
+func (cfg *Config) InitCodecs() ([]*Codec, error) {
 	var handles []*Codec
 	for handleName, _ := range cfg.HandleConfig {
 		handler, ok := pluginsMap.Handle[handleName]
 		if !ok {
-			logger.Error("[%s] handle is not register in pluginsMap", handleName)
+			return nil, fmt.Errorf("[%s] handle is not register in pluginsMap", handleName)
 		}
 		handle := NewCodec(handleName, handler, 1000)
 		handles = append(handles, handle)
 	}
-	return handles
+	return handles, nil
 }
