@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/luopengift/golibs/crypto"
-	"github.com/luopengift/transport/pipeline"
+	"github.com/luopengift/transport"
 	"strconv"
 	"strings"
 )
@@ -25,7 +25,7 @@ type ZhiziLog struct {
 // test||JSON:{K1={sk1=sV1}}
 type ZhiziLogFormat struct{}
 
-func (h *ZhiziLogFormat) Init(config pipeline.Configer) error {
+func (h *ZhiziLogFormat) Init(config transport.Configer) error {
 	return nil
 }
 
@@ -75,5 +75,5 @@ func (d *ZhiziLogFormat) Handle(in, out []byte) (int, error) {
 }
 
 func init() {
-	pipeline.RegistHandler("zhizilog", new(ZhiziLogFormat))
+	transport.RegistHandler("zhizilog", new(ZhiziLogFormat))
 }

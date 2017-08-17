@@ -1,4 +1,4 @@
-package pipeline
+package transport
 
 import (
 	"github.com/luopengift/golibs/channel"

@@ -3,7 +3,7 @@ package file
 import (
 	"github.com/luopengift/golibs/file"
 	"github.com/luopengift/golibs/logger"
-	"github.com/luopengift/transport/pipeline"
+	"github.com/luopengift/transport"
 )
 
 type FileInput struct {
@@ -16,7 +16,7 @@ func NewFileInput() *FileInput {
 	return new(FileInput)
 }
 
-func (in *FileInput) Init(config pipeline.Configer) error {
+func (in *FileInput) Init(config transport.Configer) error {
 	err := config.Parse(in)
 	if err != nil {
 		logger.Error("parse error:%v", err)
@@ -44,5 +44,5 @@ func (in *FileInput) Close() error {
 }
 
 func init() {
-	pipeline.RegistInputer("file", NewFileInput())
+	transport.RegistInputer("file", NewFileInput())
 }

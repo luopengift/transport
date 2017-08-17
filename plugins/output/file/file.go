@@ -2,7 +2,7 @@ package file
 
 import (
 	"github.com/luopengift/golibs/file"
-	"github.com/luopengift/transport/pipeline"
+	"github.com/luopengift/transport"
 	"os"
 )
 
@@ -17,7 +17,7 @@ func NewFileOutput() *FileOutput {
 	return new(FileOutput)
 }
 
-func (out *FileOutput) Init(config pipeline.Configer) error {
+func (out *FileOutput) Init(config transport.Configer) error {
 	err := config.Parse(out)
 	if err != nil {
 		return err
@@ -48,5 +48,5 @@ func (out *FileOutput) Close() error {
 }
 
 func init() {
-	pipeline.RegistOutputer("file", NewFileOutput())
+	transport.RegistOutputer("file", NewFileOutput())
 }

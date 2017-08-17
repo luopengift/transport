@@ -3,7 +3,7 @@ package exec
 import (
 	"github.com/luopengift/golibs/exec"
 	"github.com/luopengift/golibs/logger"
-	"github.com/luopengift/transport/pipeline"
+	"github.com/luopengift/transport"
 )
 
 type ExecInput struct {
@@ -18,7 +18,7 @@ func NewExecInput() *ExecInput {
 	return new(ExecInput)
 }
 
-func (in *ExecInput) Init(config pipeline.Configer) error {
+func (in *ExecInput) Init(config transport.Configer) error {
 	err := config.Parse(in)
 	if err != nil {
 		logger.Error("parse error:%v", err)
@@ -26,7 +26,7 @@ func (in *ExecInput) Init(config pipeline.Configer) error {
 	}
 	in.result = make(chan []byte, 1)
     in.errchan = make(chan error, 1)
-	pipeline.AddCronTask(
+	transport.AddCronTask(
 		"exec",
 		in.Crontab,
 		func() error {
@@ -64,5 +64,5 @@ func (in *ExecInput) Close() error {
 }
 
 func init() {
-	pipeline.RegistInputer("exec", NewExecInput())
+	transport.RegistInputer("exec", NewExecInput())
 }

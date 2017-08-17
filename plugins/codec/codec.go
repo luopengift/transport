@@ -1,13 +1,13 @@
 package codec
 
 import (
-	"github.com/luopengift/transport/pipeline"
+	"github.com/luopengift/transport"
 )
 
 // add a enter symbol at end of line, classic written into file
 type AddEnterHandler struct{}
 
-func (h *AddEnterHandler) Init(config pipeline.Configer) error {
+func (h *AddEnterHandler) Init(config transport.Configer) error {
 	return nil
 }
 
@@ -20,7 +20,7 @@ func (h *AddEnterHandler) Handle(in, out []byte) (int, error) {
 // direct connect input and output, do nothing
 type NullHandler struct{}
 
-func (h *NullHandler) Init(config pipeline.Configer) error {
+func (h *NullHandler) Init(config transport.Configer) error {
 	return nil
 }
 func (h *NullHandler) Handle(in, out []byte) (int, error) {
@@ -29,7 +29,7 @@ func (h *NullHandler) Handle(in, out []byte) (int, error) {
 }
 
 func init() {
-	pipeline.RegistHandler("null", new(NullHandler))
-	pipeline.RegistHandler("addenter", new(AddEnterHandler))
+	transport.RegistHandler("null", new(NullHandler))
+	transport.RegistHandler("addenter", new(AddEnterHandler))
 
 }

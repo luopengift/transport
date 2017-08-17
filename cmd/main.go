@@ -4,7 +4,7 @@ import (
 	"flag"
 	"github.com/luopengift/golibs/logger"
 	_ "github.com/luopengift/transport/api"
-	"github.com/luopengift/transport/pipeline"
+	"github.com/luopengift/transport"
 	_ "github.com/luopengift/transport/plugins"
 	"net/http"
 	_ "net/http/pprof"
@@ -30,7 +30,7 @@ const (
 	VERSION = "0.0.2"
 )
 
-var t *pipeline.Transport
+var t *transport.Transport
 
 func main() {
 
@@ -44,7 +44,7 @@ func main() {
 
 	logger.Info("Transport starting...")
 
-	cfg := pipeline.NewConfig(*config)
+	cfg := transport.NewConfig(*config)
 	if cfg.Runtime.VERSION != VERSION {
 		logger.Error("runtime version is %s,but config version is %s,NOT match!exit...", VERSION, cfg.Runtime.VERSION)
 		return
@@ -61,7 +61,7 @@ func main() {
 		}()
 	}
     var err error
-	t, err = pipeline.NewTransport(cfg)
+	t, err = transport.NewTransport(cfg)
     if err != nil {
         logger.Error("%v",err)
         return

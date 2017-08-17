@@ -2,7 +2,7 @@ package elasticsearch
 
 import (
 	"github.com/luopengift/golibs/file"
-	"github.com/luopengift/transport/pipeline"
+	"github.com/luopengift/transport"
 	"os"
 )
 
@@ -16,7 +16,7 @@ func NewEsOutput() *EsOutput {
 	return new(EsOutput)
 }
 
-func (out *EsOutput) Init(config pipeline.Configer) error {
+func (out *EsOutput) Init(config transport.Configer) error {
 	err := config.Parse(out)
 	if err != nil {
 		return err
@@ -37,6 +37,6 @@ func (out *EsOutput) Close() error {
 }
 
 func init() {
-	pipeline.RegistOutputer("elasticsearch", NewEsOutput())
+	transport.RegistOutputer("elasticsearch", NewEsOutput())
 }
 

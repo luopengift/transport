@@ -3,7 +3,7 @@ package http
 import (
 	"github.com/luopengift/gohttp"
 	"github.com/luopengift/golibs/logger"
-	"github.com/luopengift/transport/pipeline"
+	"github.com/luopengift/transport"
 )
 
 var Ch chan []byte
@@ -19,7 +19,7 @@ func NewHttpInput() *HttpInput {
 	return new(HttpInput)
 }
 
-func (in *HttpInput) Init(config pipeline.Configer) error {
+func (in *HttpInput) Init(config transport.Configer) error {
 	err := config.Parse(in)
 	if err != nil {
 		logger.Error("parse error:%v", err)
@@ -54,5 +54,5 @@ func (in *HttpInput) Close() error {
 }
 
 func init() {
-	pipeline.RegistInputer("http", NewHttpInput())
+	transport.RegistInputer("http", NewHttpInput())
 }

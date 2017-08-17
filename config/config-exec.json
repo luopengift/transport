@@ -6,8 +6,7 @@
   },
   "inputs": {
     "exec": {
-      "script": "python1 /tmp/t.py",
-      "interval":10,
+      "script": "python /tmp/t.py",
       "cron":"*/2 * * * * *"
     },
     "std":{}

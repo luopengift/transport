@@ -4,7 +4,7 @@ import (
 	"github.com/Shopify/sarama"
 	"github.com/luopengift/golibs/channel"
 	"github.com/luopengift/golibs/logger"
-	"github.com/luopengift/transport/pipeline"
+	"github.com/luopengift/transport"
 )
 
 type KafkaOutput struct {
@@ -23,7 +23,7 @@ func NewKafkaOutput() *KafkaOutput {
 	return new(KafkaOutput)
 }
 
-func (out *KafkaOutput) Init(config pipeline.Configer) error {
+func (out *KafkaOutput) Init(config transport.Configer) error {
 	err := config.Parse(out)
 	if err != nil {
 		return err
@@ -89,5 +89,5 @@ func (out *KafkaOutput) WriteToTopic() error {
 }
 
 func init() {
-	pipeline.RegistOutputer("kafka", NewKafkaOutput())
+	transport.RegistOutputer("kafka", NewKafkaOutput())
 }

@@ -3,7 +3,7 @@ package kafka
 import (
 	"github.com/Shopify/sarama"
 	"github.com/luopengift/golibs/logger"
-	"github.com/luopengift/transport/pipeline"
+	"github.com/luopengift/transport"
 	"sync"
 )
 
@@ -26,7 +26,7 @@ func NewKafkaInput() *KafkaInput {
 	return in
 }
 
-func (in *KafkaInput) Init(config pipeline.Configer) error {
+func (in *KafkaInput) Init(config transport.Configer) error {
 	err := config.Parse(in)
 	if err != nil {
 		logger.Error("parse error:%v", err)
@@ -82,5 +82,5 @@ func (in *KafkaInput) Close() error {
 }
 
 func init() {
-	pipeline.RegistInputer("kafka", NewKafkaInput())
+	transport.RegistInputer("kafka", NewKafkaInput())
 }

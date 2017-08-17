@@ -1,10 +1,9 @@
 package file
 
 import (
-	//	"encoding/json"
 	"github.com/luopengift/golibs/file"
 	"github.com/luopengift/golibs/logger"
-	"github.com/luopengift/transport/pipeline"
+	"github.com/luopengift/transport"
 )
 
 type FilesInput struct {
@@ -20,7 +19,7 @@ func NewFilesInput() *FilesInput {
 }
 
 
-func (in *FilesInput) Init(config pipeline.Configer) error {
+func (in *FilesInput) Init(config transport.Configer) error {
 	err := config.Parse(in)
 	if err != nil {
 		logger.Error("parse error:%v", err)
@@ -63,5 +62,5 @@ func (in *FilesInput) Close() error {
 }
 
 func init() {
-	pipeline.RegistInputer("files", NewFilesInput())
+	transport.RegistInputer("files", NewFilesInput())
 }

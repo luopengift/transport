@@ -1,7 +1,7 @@
 package std
 
 import (
-	"github.com/luopengift/transport/pipeline"
+	"github.com/luopengift/transport"
 	"os"
 )
 
@@ -21,11 +21,11 @@ func (in *StdInput) Close() error {
 	return in.Close()
 }
 
-func (in *StdInput) Init(config pipeline.Configer) error {
+func (in *StdInput) Init(config transport.Configer) error {
 	in.File = os.Stdin
 	return nil
 }
 
 func init() {
-	pipeline.RegistInputer("std", NewStdInput())
+	transport.RegistInputer("std", NewStdInput())
 }

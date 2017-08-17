@@ -1,4 +1,4 @@
-package pipeline
+package transport
 
 type PluginsMap struct {
 	Input  map[string]Inputer
