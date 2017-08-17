@@ -32,22 +32,23 @@ type Outputer interface {
 }
 ```
 ### Input组件:
-- [x] std: stdin,标准输入
-- [x] file(s): 文件
-- [x] kafka: kafka
 - [x] exec: 执行程序/脚本
+- [x] file(s): 文件
+- [x] http: HTTP POST方法
+- [x] kafka: kafka
+- [x] std: stdin,标准输入
 
-- [x] elasticsearch
-- [x] http
+- [ ] elasticsearch
+- [ ] random
 
 ### Output组件:
-- [x] null: 类似于/dev/null,输出到空
-- [x] std: stdout,标准输出
 - [x] file: 文件
 - [x] kafka: kafka
+- [x] null: 类似于/dev/null,输出到空
+- [x] std: stdout,标准输出
 
-- [x] elasticsearch
-- [x] hdfs
+- [ ] elasticsearch
+- [ ] hdfs
 
 ### Handler组件:
 - [x] null,直接连接input,output
