@@ -7,8 +7,8 @@ import (
 )
 
 type FileInput struct {
-	Path    []string `json:"path"`
-	EndStop bool     `json:"endstop"`
+	Path    string `json:"path"`
+	EndStop bool   `json:"endstop"`
 	*file.Tail
 }
 
@@ -23,7 +23,7 @@ func (in *FileInput) Init(config transport.Configer) error {
 		return err
 	}
 
-	in.Tail = file.NewTail(in.Path[0], file.TimeRule)
+	in.Tail = file.NewTail(in.Path, file.TimeRule)
 	if in.EndStop {
 		in.Tail.EndStop(true)
 	}

@@ -1,0 +1,6 @@
+### [outputs] plugin null
+```
+{
+    "null": {}
+}
+```

@@ -10,14 +10,13 @@ type FilesInput struct {
 	Path    []string `json:"path"`
 	EndStop bool     `json:"endstop"`
 
-    Files []*file.Tail
+	Files []*file.Tail
 	buf   chan []byte
 }
 
 func NewFilesInput() *FilesInput {
 	return new(FilesInput)
 }
-
 
 func (in *FilesInput) Init(config transport.Configer) error {
 	err := config.Parse(in)

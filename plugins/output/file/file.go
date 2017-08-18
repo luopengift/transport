@@ -7,11 +7,10 @@ import (
 )
 
 type FileOutput struct {
-	Path string `json:"path"`   //配置路径
+	Path  string `json:"path"` //配置路径
 	cpath string //真实路径
 	fd    *os.File
 }
-
 
 func NewFileOutput() *FileOutput {
 	return new(FileOutput)

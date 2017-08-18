@@ -19,20 +19,20 @@ type Transport struct {
 }
 
 func NewTransport(cfg *Config) (*Transport, error) {
-    var err error
+	var err error
 	transport := new(Transport)
 	transport.Inputs, err = cfg.InitInputs()
 	if err != nil {
-        return nil, err
-    }
-    transport.Codecs, err = cfg.InitCodecs()
+		return nil, err
+	}
+	transport.Codecs, err = cfg.InitCodecs()
 	if err != nil {
-        return nil, err
-    }
+		return nil, err
+	}
 	transport.Outputs, err = cfg.InitOutputs()
 	if err != nil {
-        return nil, err
-    }
+		return nil, err
+	}
 	transport.recv_chan = make(chan []byte, 100)
 	transport.send_chan = make(chan []byte, 100)
 	transport.isEnd = make(chan bool)
@@ -53,7 +53,7 @@ func (t *Transport) RunInputs() {
 				//	defer in.Mutex.Unlock()
 				b := make([]byte, MAX, MAX)
 				n, err := in.Read(b)
-			    if err != nil {
+				if err != nil {
 					t.logs.Error("[%s] %s", in.Name, err.Error())
 					continue
 				}

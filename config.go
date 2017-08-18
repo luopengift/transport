@@ -1,8 +1,8 @@
 package transport
 
 import (
-    "fmt"
 	"encoding/json"
+	"fmt"
 	"github.com/luopengift/golibs/file"
 	"github.com/luopengift/golibs/logger"
 )
@@ -87,8 +87,8 @@ func (cfg *Config) InitInputs() ([]*Input, error) {
 	for inputName, value := range cfg.InputConfig {
 		inputer, ok := pluginsMap.Input[inputName]
 		if !ok {
-			return nil,fmt.Errorf("[%s] input is not register in pluginsMap", inputName)
-        }
+			return nil, fmt.Errorf("[%s] input is not register in pluginsMap", inputName)
+		}
 		input := NewInput(inputName, inputer)
 		input.Inputer.Init(value)
 		inputs = append(inputs, input)

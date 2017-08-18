@@ -13,13 +13,12 @@ sarame.OffsetNewest int64 = -1
 sarame.OffsetOldest int64 = -2
 */
 type KafkaInput struct {
-	Addrs  []string
-	Topic  string
-	Offset int64
+	Addrs  []string `json:"addrs"`
+	Topic  string   `json:"topic"`
+	Offset int64    `json:"offset"`
 
-    Message chan []byte //从这个管道中读取数据
+	Message chan []byte //从这个管道中读取数据
 }
-
 
 func NewKafkaInput() *KafkaInput {
 	in := new(KafkaInput)

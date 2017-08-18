@@ -17,4 +17,3 @@ import (
 )
 
 func init() {}
-

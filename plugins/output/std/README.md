@@ -1,0 +1,6 @@
+### [outputs] plugin std
+```
+{
+    "std": {}
+}
+```

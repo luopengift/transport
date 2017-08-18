@@ -7,6 +7,7 @@ import (
 )
 
 var Ch chan []byte
+
 type HttpInput struct {
 	Addr string `json:"addr"`
 	Path string `json:"path"`
@@ -27,7 +28,7 @@ func (in *HttpInput) Init(config transport.Configer) error {
 	}
 	in.app = gohttp.Init()
 	in.app.Route("^"+in.Path+"$", &HttpInput{})
-    Ch = make(chan []byte,100)
+	Ch = make(chan []byte, 100)
 	return nil
 }
 
@@ -44,7 +45,7 @@ func (in *HttpInput) Read(p []byte) (int, error) {
 }
 
 func (in *HttpInput) Start() error {
-    in.app.Run(in.Addr)
+	in.app.Run(in.Addr)
 	return nil
 }
 

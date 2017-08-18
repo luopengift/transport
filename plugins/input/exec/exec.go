@@ -10,8 +10,8 @@ type ExecInput struct {
 	Script  string `json:"script"`
 	Crontab string `json:"cron"`
 
-    result chan []byte
-    errchan chan error
+	result  chan []byte
+	errchan chan error
 }
 
 func NewExecInput() *ExecInput {
@@ -25,7 +25,7 @@ func (in *ExecInput) Init(config transport.Configer) error {
 		return err
 	}
 	in.result = make(chan []byte, 1)
-    in.errchan = make(chan error, 1)
+	in.errchan = make(chan error, 1)
 	transport.AddCronTask(
 		"exec",
 		in.Crontab,
@@ -37,25 +37,25 @@ func (in *ExecInput) Init(config transport.Configer) error {
 }
 
 func (in *ExecInput) Read(p []byte) (int, error) {
-    select {
-        case err := <-in.errchan:
-            return 0,err
-        case b := <-in.result:
-            return copy(p, b), nil
-    }
+	select {
+	case err := <-in.errchan:
+		return 0, err
+	case b := <-in.result:
+		return copy(p, b), nil
+	}
 }
 
 func (in *ExecInput) Start() error {
-    return nil
+	return nil
 }
 
 func (in *ExecInput) run() error {
 	result, err := exec.CmdOut("/bin/bash", "-c", in.Script)
-    if err != nil {
-        in.errchan <- err
-        return err
-    }
-    in.result <- result
+	if err != nil {
+		in.errchan <- err
+		return err
+	}
+	in.result <- result
 	return nil
 }
 

@@ -25,7 +25,7 @@ func (out *EsOutput) Init(config transport.Configer) error {
 }
 
 func (out *EsOutput) Write(p []byte) (int, error) {
-	return 0,nil
+	return 0, nil
 }
 
 func (out *EsOutput) Start() error {
@@ -39,4 +39,3 @@ func (out *EsOutput) Close() error {
 func init() {
 	transport.RegistOutputer("elasticsearch", NewEsOutput())
 }
-

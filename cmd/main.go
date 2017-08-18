@@ -3,8 +3,8 @@ package main
 import (
 	"flag"
 	"github.com/luopengift/golibs/logger"
-	_ "github.com/luopengift/transport/api"
 	"github.com/luopengift/transport"
+	_ "github.com/luopengift/transport/api"
 	_ "github.com/luopengift/transport/plugins"
 	"net/http"
 	_ "net/http/pprof"
@@ -60,12 +60,12 @@ func main() {
 			http.ListenAndServe("localhost:6060", nil)
 		}()
 	}
-    var err error
+	var err error
 	t, err = transport.NewTransport(cfg)
-    if err != nil {
-        logger.Error("%v",err)
-        return
-    }
+	if err != nil {
+		logger.Error("%v", err)
+		return
+	}
 	defer t.Stop()
 	t.Run()
 	select {}
