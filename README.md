@@ -32,11 +32,11 @@ type Outputer interface {
 }
 ```
 ### Input组件:
-- [x] exec: 执行程序/脚本
-- [x] file(s): 文件
-- [x] http: HTTP POST方法
-- [x] kafka: kafka
-- [x] std: stdin,标准输入
+- [x] [exec](https://github.com/luopengift/transport/blob/master/plugins/input/exec/README.md): 执行程序/脚本
+- [x] [file(s)](https://github.com/luopengift/transport/blob/master/plugins/input/file/README.md): 文件
+- [x] [http](https://github.com/luopengift/transport/blob/master/plugins/input/http/README.md): HTTP POST方法
+- [x] [kafka](https://github.com/luopengift/transport/blob/master/plugins/input/kafka/README.md): kafka
+- [x] [std](https://github.com/luopengift/transport/blob/master/plugins/input/std/README.md): stdin,标准输入
 
 - [ ] elasticsearch
 - [ ] random
