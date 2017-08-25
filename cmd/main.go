@@ -4,7 +4,7 @@ import (
 	"flag"
 	"github.com/luopengift/golibs/logger"
 	"github.com/luopengift/transport"
-	_ "github.com/luopengift/transport/api"
+//	_ "github.com/luopengift/transport/api"
 	_ "github.com/luopengift/transport/plugins"
 	"net/http"
 	_ "net/http/pprof"

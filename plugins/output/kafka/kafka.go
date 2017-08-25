@@ -53,6 +53,7 @@ func (out *KafkaOutput) Start() error {
 func (out *KafkaOutput) WriteToTopic() error {
 
 	config := sarama.NewConfig()
+    config.ClientID = "TransportKafkaOutput"
 	config.Producer.Return.Successes = true
 	if err := config.Validate(); err != nil {
 		logger.Error("<config error> %v", err)
@@ -73,14 +74,16 @@ func (out *KafkaOutput) WriteToTopic() error {
 			go func(message []byte) {
 				msg := &sarama.ProducerMessage{
 					Topic:     out.Topic,
-					Partition: int32(-1),
-					Key:       sarama.StringEncoder("key"),
+					//Partition: int32(-1),
+					//Key:       sarama.StringEncoder("key"),
 					Value:     sarama.ByteEncoder(message),
 				}
 				if partition, offset, err := producer.SendMessage(msg); err != nil {
 					logger.Error("<write to kafka error,partition=%v,offset=%v> %v", partition, offset, err)
-				}
-				out.channel.Done()
+				}else{
+				    logger.Debug("<write to kafka success,partition=%v,offset=%v>", partition, offset)
+			    }
+                out.channel.Done()
 			}(message)
 		}
 	}

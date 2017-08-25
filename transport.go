@@ -36,7 +36,7 @@ func NewTransport(cfg *Config) (*Transport, error) {
 	transport.recv_chan = make(chan []byte, 100)
 	transport.send_chan = make(chan []byte, 100)
 	transport.isEnd = make(chan bool)
-	transport.logs = logger.NewLogger(logger.DEBUG, os.Stdout)
+	transport.logs = logger.NewLogger(logger.INFO, os.Stdout)
 	transport.logs.SetPrefix("[transport]")
 
 	startCronTask()
