@@ -1,0 +1,32 @@
+##testing kafkaGroup
+
+{
+  "runtime": {
+    "DEBUG": true,
+    "MAXPROCS": 4,
+    "VERSION": "0.0.2"
+  },
+  "inputs": {
+    "kafka": {
+        "addrs": [
+            "10.10.20.14:9092",
+            "10.10.20.15:9092",
+            "10.10.20.16:9092"
+        ],
+        "topics": [
+            "zhizi-log"
+        ],
+        #"group":"mytestGroup",
+        "offset": -1
+    }
+    #"std":{}
+  },
+  "handles": {
+    "addenter": {}
+  },
+  "outputs": {
+    "file":{
+        "path":"/tmp/tmp.log"
+    }
+  }
+}
