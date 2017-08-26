@@ -4,10 +4,10 @@ import (
 	"github.com/Shopify/sarama"
 	"github.com/luopengift/golibs/logger"
 	"github.com/luopengift/transport"
-    "github.com/wvanbergen/kafka/consumergroup"
-    "github.com/wvanbergen/kazoo-go"
+	"github.com/wvanbergen/kafka/consumergroup"
+	"github.com/wvanbergen/kazoo-go"
 	"sync"
-    "time"
+	"time"
 )
 
 /*
