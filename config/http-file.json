@@ -1,0 +1,23 @@
+{
+  "runtime": {
+    "DEBUG": true,
+    "MAXPROCS": 4,
+    "VERSION": "0.0.2"
+  },
+  "inputs": {
+    "http": {
+      "addr":":12345",
+      "path":"/post"
+    },
+    "std":{}
+  },
+  "handles": {
+    "addenter": {}
+  },
+  "outputs": {
+    "file": {
+      "path": "var/test.test"
+    },
+    "std":{}
+  }
+}

@@ -1,0 +1,6 @@
+### [inputs] plugin random
+```
+{
+    "random": {}
+}
+```

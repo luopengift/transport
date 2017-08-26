@@ -37,9 +37,9 @@ type Outputer interface {
 - [x] [http](https://github.com/luopengift/transport/blob/master/plugins/input/http/README.md): HTTP POST方法
 - [x] [kafka](https://github.com/luopengift/transport/blob/master/plugins/input/kafka/README.md): kafka
 - [x] [std](https://github.com/luopengift/transport/blob/master/plugins/input/std/README.md): stdin,标准输入
+- [x] [random](https://github.com/luopengift/transport/blob/master/plugins/input/random/README.md): 随机生成UUID,用于测试
 
 - [ ] elasticsearch
-- [ ] random
 
 ### Output组件:
 - [x] [file](https://github.com/luopengift/transport/blob/master/plugins/output/file/README.md): 文件
