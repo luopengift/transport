@@ -84,13 +84,13 @@ func (cfg *Config) Init(path string) error {
 
 func (cfg *Config) InitInputs() ([]*Input, error) {
 	var inputs []*Input
-	for inputName, value := range cfg.InputConfig {
+	for inputName, config := range cfg.InputConfig {
 		inputer, ok := pluginsMap.Input[inputName]
 		if !ok {
 			return nil, fmt.Errorf("[%s] input is not register in pluginsMap", inputName)
 		}
 		input := NewInput(inputName, inputer)
-		input.Inputer.Init(value)
+		input.Inputer.Init(config)
 		inputs = append(inputs, input)
 	}
 	return inputs, nil
@@ -98,13 +98,13 @@ func (cfg *Config) InitInputs() ([]*Input, error) {
 
 func (cfg *Config) InitOutputs() ([]*Output, error) {
 	var outputs []*Output
-	for outputName, value := range cfg.OutputConfig {
+	for outputName, config := range cfg.OutputConfig {
 		outputer, ok := pluginsMap.Output[outputName]
 		if !ok {
 			return nil, fmt.Errorf("[%s] output is not register in pluginsMap", outputName)
 		}
 		output := NewOutput(outputName, outputer)
-		output.Outputer.Init(value)
+		output.Outputer.Init(config)
 		outputs = append(outputs, output)
 	}
 	return outputs, nil
@@ -112,12 +112,13 @@ func (cfg *Config) InitOutputs() ([]*Output, error) {
 
 func (cfg *Config) InitCodecs() ([]*Codec, error) {
 	var handles []*Codec
-	for handleName, _ := range cfg.HandleConfig {
+	for handleName, config := range cfg.HandleConfig {
 		handler, ok := pluginsMap.Handle[handleName]
 		if !ok {
 			return nil, fmt.Errorf("[%s] handle is not register in pluginsMap", handleName)
 		}
 		handle := NewCodec(handleName, handler, 1000)
+        handle.Handler.Init(config)
 		handles = append(handles, handle)
 	}
 	return handles, nil

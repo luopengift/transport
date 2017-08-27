@@ -53,6 +53,7 @@ type Outputer interface {
 ### Handler组件:
 - [x] null,直接连接input,output
 - [x] addenter,在行尾加入换行符,例子:写文件
+- [x] json,正则格式化成json格式,说明: ^(?P<命名>子表达式)$  被捕获的组，该组被编号且被命名 (子匹配)"
 
 ## TODO
 1. 优化性能
