@@ -3,8 +3,10 @@ package transport
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/luopengift/gohttp"
 	"github.com/luopengift/golibs/file"
 	"github.com/luopengift/golibs/logger"
+	"strings"
 )
 
 type Configer interface {
@@ -65,6 +67,29 @@ type Config struct {
 	ApiConfig    *ApiConfig     `json:"api"`
 }
 
+func (cfg *Config) String() string {
+	var Func = func(cfg map[string]Map) string {
+		str := ""
+		writeSpace := " "
+		for plugin, config := range cfg {
+			str += strings.Repeat(writeSpace, 2) + plugin + ":\n"
+			for key, value := range config {
+				valueString, _ := gohttp.ToString(value)
+				str += strings.Repeat(writeSpace, 4) + key + ": " + valueString + "\n"
+			}
+		}
+		return str
+	}
+	str := "config info:\n"
+	str += "[Inputs]\n"
+	str += Func(cfg.InputConfig)
+	str += "[Codecs]\n"
+	str += Func(cfg.HandleConfig)
+	str += "[Outputs]\n"
+	str += Func(cfg.OutputConfig)
+	return str
+}
+
 func NewConfig(path string) *Config {
 	cfg := new(Config)
 	err := cfg.Init(path)
@@ -118,7 +143,7 @@ func (cfg *Config) InitCodecs() ([]*Codec, error) {
 			return nil, fmt.Errorf("[%s] handle is not register in pluginsMap", handleName)
 		}
 		handle := NewCodec(handleName, handler, 1000)
-        handle.Handler.Init(config)
+		handle.Handler.Init(config)
 		handles = append(handles, handle)
 	}
 	return handles, nil

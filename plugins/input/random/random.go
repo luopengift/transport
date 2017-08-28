@@ -1,7 +1,7 @@
 package random
 
 import (
-    "github.com/luopengift/golibs/uuid"
+	"github.com/luopengift/golibs/uuid"
 	"github.com/luopengift/transport"
 )
 
@@ -17,9 +17,9 @@ func (in *RandomInput) Start() error {
 }
 
 func (in *RandomInput) Read(p []byte) (int, error) {
-    id := uuid.Rand()
-    n := copy(p,id.Hex())
-    return n,nil
+	id := uuid.Rand()
+	n := copy(p, id.Hex())
+	return n, nil
 }
 
 func (in *RandomInput) Close() error {

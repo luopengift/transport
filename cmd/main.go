@@ -2,16 +2,17 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"github.com/luopengift/golibs/logger"
 	"github.com/luopengift/transport"
-//	_ "github.com/luopengift/transport/api"
-	_ "github.com/luopengift/transport/plugins"
 	"net/http"
 	_ "net/http/pprof"
 	"os"
 	"os/signal"
 	"runtime"
 	"runtime/pprof"
+	//	_ "github.com/luopengift/transport/api"
+	_ "github.com/luopengift/transport/plugins"
 )
 
 /*
@@ -34,31 +35,13 @@ var t *transport.Transport
 
 func main() {
 
-	config := flag.String("f", "", "(config)配置文件")
-	flag.Parse()
-
-	if *config == "" {
-		logger.Error("config is null,exit...,please -h see help")
-		return
-	}
+	cfg := ParseConfig()
 
 	logger.Info("Transport starting...")
-
-	cfg := transport.NewConfig(*config)
-	if cfg.Runtime.VERSION != VERSION {
-		logger.Error("runtime version is %s,but config version is %s,NOT match!exit...", VERSION, cfg.Runtime.VERSION)
-		return
-	}
-
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
 	if cfg.Runtime.DEBUG {
-
 		DebugProfile()
-
-		go func() {
-			http.ListenAndServe("localhost:6060", nil)
-		}()
 	}
 	var err error
 	t, err = transport.NewTransport(cfg)
@@ -71,7 +54,40 @@ func main() {
 	select {}
 }
 
+func ParseConfig() *transport.Config {
+	version := flag.Bool("v", false, "(version)版本号")
+	config := flag.String("f", "", "(config)配置文件")
+	read := flag.Bool("r", false, "(read)读取当前配置文件")
+	flag.Parse()
+
+	if *version {
+		fmt.Println("version is", VERSION)
+		os.Exit(0)
+	}
+
+	if *config == "" {
+		logger.Error("config is null,exit...,please -h see help")
+		os.Exit(-1)
+	}
+
+	cfg := transport.NewConfig(*config)
+	if cfg.Runtime.VERSION != VERSION {
+		logger.Error("runtime version is %s,but config version is %s,NOT match!exit...", VERSION, cfg.Runtime.VERSION)
+		os.Exit(-1)
+	}
+
+	if *read {
+		fmt.Println(cfg)
+		os.Exit(0)
+	}
+	return cfg
+}
+
 func DebugProfile() {
+	go func() {
+		http.ListenAndServe("localhost:6060", nil)
+	}()
+
 	s := make(chan os.Signal, 1)
 	signal.Notify(s, os.Interrupt, os.Kill)
 	//cpu

@@ -7,8 +7,8 @@ import (
 	_ "github.com/luopengift/transport/plugins/input/file"
 	_ "github.com/luopengift/transport/plugins/input/http"
 	_ "github.com/luopengift/transport/plugins/input/kafka"
-	_ "github.com/luopengift/transport/plugins/input/std"
 	_ "github.com/luopengift/transport/plugins/input/random"
+	_ "github.com/luopengift/transport/plugins/input/std"
 
 	//_ "github.com/luopengift/transport/plugins/output/elasticsearch"
 	_ "github.com/luopengift/transport/plugins/output/file"
