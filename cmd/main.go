@@ -5,14 +5,14 @@ import (
 	"fmt"
 	"github.com/luopengift/golibs/logger"
 	"github.com/luopengift/transport"
+	_ "github.com/luopengift/transport/api"
+	_ "github.com/luopengift/transport/plugins"
 	"net/http"
 	_ "net/http/pprof"
 	"os"
 	"os/signal"
 	"runtime"
 	"runtime/pprof"
-	//	_ "github.com/luopengift/transport/api"
-	_ "github.com/luopengift/transport/plugins"
 )
 
 /*
@@ -31,8 +31,6 @@ const (
 	VERSION = "0.0.2"
 )
 
-var t *transport.Transport
-
 func main() {
 
 	cfg := ParseConfig()
@@ -44,13 +42,13 @@ func main() {
 		DebugProfile()
 	}
 	var err error
-	t, err = transport.NewTransport(cfg)
+	transport.T, err = transport.NewTransport(cfg)
 	if err != nil {
 		logger.Error("%v", err)
 		return
 	}
-	defer t.Stop()
-	t.Run()
+	defer transport.T.Stop()
+	transport.T.Run()
 	select {}
 }
 

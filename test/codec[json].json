@@ -19,7 +19,7 @@
   },
   "outputs": {
     "file": {
-      "path": "test.test"
+      "path": "/tmp/test.test"
     },
     "std":{}
   }

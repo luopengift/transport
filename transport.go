@@ -8,6 +8,15 @@ import (
 	"time"
 )
 
+const (
+	B = 1        //1B = 8bit
+	K = 1024 * B //1KB
+	M = 1024 * K //1MB
+	G = 1024 * M //1GB
+
+	MAX = 1 * K
+)
+
 type Transport struct {
 	Inputs    []*Input
 	Outputs   []*Output
@@ -112,27 +121,9 @@ func (t *Transport) RunOutputs() {
 }
 
 func (t *Transport) Run() {
-	go func() {
-		for {
-			input_stat := []string{}
-			for _, input := range t.Inputs {
-				input_stat = append(input_stat, fmt.Sprintf("%v:%v", input.Name, input.Cnt))
-			}
-			codec_stat := []string{}
-			for _, codec := range t.Codecs {
-				codec_stat = append(codec_stat, fmt.Sprintf("%v:%v", codec.Name, codec.Cnt))
-			}
-			output_stat := []string{}
-			for _, output := range t.Outputs {
-				output_stat = append(output_stat, fmt.Sprintf("%v:%v", output.Name, output.Cnt))
-			}
-			t.logs.Info("stat=> inputs:%s|codecs:%s|outputs:%s", strings.Join(input_stat, ","), strings.Join(codec_stat, ","), strings.Join(output_stat, ","))
-			time.Sleep(10 * time.Second)
-		}
-	}()
-	go t.RunInputs()
-	go t.RunCodecs()
 	go t.RunOutputs()
+	go t.RunCodecs()
+	go t.RunInputs()
 }
 
 func (t *Transport) Stop() {
@@ -147,3 +138,21 @@ func (t *Transport) Stop() {
 	}
 	t.logs.Info("stop success...%s", time.Now())
 }
+
+func (t *Transport) Stat() string {
+	input_stat := []string{}
+	for _, input := range t.Inputs {
+		input_stat = append(input_stat, fmt.Sprintf("%v:%v", input.Name, input.Cnt))
+	}
+	codec_stat := []string{}
+	for _, codec := range t.Codecs {
+		codec_stat = append(codec_stat, fmt.Sprintf("%v:%v", codec.Name, codec.Cnt))
+	}
+	output_stat := []string{}
+	for _, output := range t.Outputs {
+		output_stat = append(output_stat, fmt.Sprintf("%v:%v", output.Name, output.Cnt))
+	}
+	return fmt.Sprintf("stat=> inputs:%s|codecs:%s|outputs:%s", strings.Join(input_stat, ","), strings.Join(codec_stat, ","), strings.Join(output_stat, ","))
+}
+
+var T *Transport

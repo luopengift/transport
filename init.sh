@@ -37,7 +37,7 @@ LOGFile=$DIR/var/$APP.log
 
 #编译$2,默认$2未指定时编译main.go
 if [ -z $2 ];then #如果$2为空
-    main="main"
+    main="main.go"
 else
     main=$2
 fi 
@@ -56,7 +56,7 @@ function check_PID() {
 
 function build() {
     gofmt -w .
-    go build -o $APP $1.go
+    go build -o $APP $1
     if [ $? -ne 0 ]; then
         exit $?
     fi
@@ -101,7 +101,7 @@ function status() {
 
 
 function debug() {
-    go run $1.go
+    go run $1
 }
 
 function stop() {

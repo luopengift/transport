@@ -80,8 +80,6 @@ func (out *KafkaOutput) WriteToTopic() error {
 				}
 				if partition, offset, err := producer.SendMessage(msg); err != nil {
 					logger.Error("<write to kafka error,partition=%v,offset=%v> %v", partition, offset, err)
-				} else {
-					logger.Debug("<write to kafka success,partition=%v,offset=%v>", partition, offset)
 				}
 				out.channel.Done()
 			}(message)

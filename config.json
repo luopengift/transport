@@ -7,20 +7,17 @@
   "inputs": {
     "files": {
       "path": [
-        "/tmp/a.log",
-        "/tmp/b.log"
+        "/tmp/a.log"
       ],
       "endstop":false
-    },
-    "std":{}
+    }
   },
   "handles": {
     "addenter": {}
   },
   "outputs": {
     "file": {
-      "path": "test.test"
-    },
-    "std":{}
+      "path": "/tmp/test.test"
+    }
   }
 }
