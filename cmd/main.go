@@ -56,10 +56,28 @@ func ParseConfig() *transport.Config {
 	version := flag.Bool("v", false, "(version)版本号")
 	config := flag.String("f", "", "(config)配置文件")
 	read := flag.Bool("r", false, "(read)读取当前配置文件")
+	list := flag.Bool("l", false, "(list)查看插件列表")
 	flag.Parse()
 
 	if *version {
 		fmt.Println("version is", VERSION)
+		os.Exit(0)
+	}
+
+	if *list {
+		str := "[Inputs]\n"
+		for name, _ := range transport.Plugins.Inputers {
+			str += "  " + name + "\n"
+		}
+		str += "[Codecs]\n"
+		for name, _ := range transport.Plugins.Handlers {
+			str += "  " + name + "\n"
+		}
+		str += "[Outputs]\n"
+		for name, _ := range transport.Plugins.Outputers {
+			str += "  " + name + "\n"
+		}
+		fmt.Print(str)
 		os.Exit(0)
 	}
 

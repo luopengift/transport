@@ -110,7 +110,7 @@ func (cfg *Config) Init(path string) error {
 func (cfg *Config) InitInputs() ([]*Input, error) {
 	var inputs []*Input
 	for inputName, config := range cfg.InputConfig {
-		inputer, ok := pluginsMap.Input[inputName]
+		inputer, ok := Plugins.Inputers[inputName]
 		if !ok {
 			return nil, fmt.Errorf("[%s] input is not register in pluginsMap", inputName)
 		}
@@ -124,7 +124,7 @@ func (cfg *Config) InitInputs() ([]*Input, error) {
 func (cfg *Config) InitOutputs() ([]*Output, error) {
 	var outputs []*Output
 	for outputName, config := range cfg.OutputConfig {
-		outputer, ok := pluginsMap.Output[outputName]
+		outputer, ok := Plugins.Outputers[outputName]
 		if !ok {
 			return nil, fmt.Errorf("[%s] output is not register in pluginsMap", outputName)
 		}
@@ -138,7 +138,7 @@ func (cfg *Config) InitOutputs() ([]*Output, error) {
 func (cfg *Config) InitCodecs() ([]*Codec, error) {
 	var handles []*Codec
 	for handleName, config := range cfg.HandleConfig {
-		handler, ok := pluginsMap.Handle[handleName]
+		handler, ok := Plugins.Handlers[handleName]
 		if !ok {
 			return nil, fmt.Errorf("[%s] handle is not register in pluginsMap", handleName)
 		}

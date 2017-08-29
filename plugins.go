@@ -1,33 +1,33 @@
 package transport
 
 type PluginsMap struct {
-	Input  map[string]Inputer
-	Output map[string]Outputer
-	Handle map[string]Handler
+	Inputers  map[string]Inputer
+	Outputers map[string]Outputer
+	Handlers  map[string]Handler
 }
 
 func NewPluginsMap() *PluginsMap {
-	pluginsMap = new(PluginsMap)
-	pluginsMap.Input = make(map[string]Inputer)
-	pluginsMap.Output = make(map[string]Outputer)
-	pluginsMap.Handle = make(map[string]Handler)
-	return pluginsMap
+	Plugins = new(PluginsMap)
+	Plugins.Inputers = make(map[string]Inputer)
+	Plugins.Outputers = make(map[string]Outputer)
+	Plugins.Handlers = make(map[string]Handler)
+	return Plugins
 }
 
-var pluginsMap *PluginsMap
+var Plugins *PluginsMap
 
 func RegistInputer(key string, input Inputer) {
-	pluginsMap.Input[key] = input
+	Plugins.Inputers[key] = input
 }
 
 func RegistOutputer(key string, output Outputer) {
-	pluginsMap.Output[key] = output
+	Plugins.Outputers[key] = output
 }
 
 func RegistHandler(key string, handle Handler) {
-	pluginsMap.Handle[key] = handle
+	Plugins.Handlers[key] = handle
 }
 
 func init() {
-	pluginsMap = NewPluginsMap()
+	Plugins = NewPluginsMap()
 }
