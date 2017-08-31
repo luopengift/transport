@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/luopengift/golibs/logger"
 	"github.com/luopengift/transport"
-	_ "github.com/luopengift/transport/api"
+	"github.com/luopengift/transport/api"
 	_ "github.com/luopengift/transport/plugins"
 	"net/http"
 	_ "net/http/pprof"
@@ -48,6 +48,8 @@ func main() {
 		return
 	}
 	defer transport.T.Stop()
+
+	api.ApiHttp(cfg.Runtime.HTTP)
 	transport.T.Run()
 	select {}
 }

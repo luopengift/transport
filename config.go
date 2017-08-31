@@ -17,16 +17,15 @@ type RuntimeConfig struct {
 	DEBUG    bool   `json:"DEBUG"`
 	MAXPROCS int    `json:"MAXPROCS"`
 	VERSION  string `json:"VERSION"`
+	HTTP     string `json:"HTTP"`
 }
 
 func NewRuntimeConfig() *RuntimeConfig {
 	return &RuntimeConfig{
 		DEBUG:    true,
 		MAXPROCS: 1,
+		HTTP:     "0.0.0.0:12345",
 	}
-}
-
-type ApiConfig struct {
 }
 
 type Map map[string]interface{}
@@ -64,7 +63,6 @@ type Config struct {
 	InputConfig  map[string]Map `json:"inputs"`
 	HandleConfig map[string]Map `json:"handles"`
 	OutputConfig map[string]Map `json:"outputs"`
-	ApiConfig    *ApiConfig     `json:"api"`
 }
 
 func (cfg *Config) String() string {

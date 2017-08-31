@@ -1,23 +1,24 @@
 {
-  "runtime": {
-    "DEBUG": true,
-    "MAXPROCS": 4,
-    "VERSION": "0.0.2"
-  },
-  "inputs": {
-    "files": {
-      "path": [
-        "/tmp/a.log"
-      ],
-      "endstop":false
+    "runtime": {
+        "DEBUG": true,
+        "HTTP":"0.0.0.0:12345"
+        "MAXPROCS": 4,
+        "VERSION": "0.0.2"
+    },
+    "inputs": {
+        "files": {
+            "path": [
+                "/tmp/a.log"
+            ],
+            "endstop":false
+        }
+    },
+    "handles": {
+        "addenter": {}
+    },
+    "outputs": {
+        "file": {
+            "path": "/tmp/test.test"
+        }
     }
-  },
-  "handles": {
-    "addenter": {}
-  },
-  "outputs": {
-    "file": {
-      "path": "/tmp/test.test"
-    }
-  }
 }

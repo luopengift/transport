@@ -25,9 +25,9 @@ type StoreHandler struct {
 	gohttp.HttpHandler
 }
 
-func init() {
+func ApiHttp(addr string) {
 	app := gohttp.Init()
 	app.Route("^/$", &RootHandler{})
 	app.Route("^/stats$", &StatsHandler{})
-	go app.Run(":38888")
+	go app.Run(addr)
 }

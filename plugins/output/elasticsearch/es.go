@@ -23,7 +23,7 @@ func NewEsOutput() *EsOutput {
 }
 
 func (out *EsOutput) Init(config transport.Configer) error {
-    out.Timeout = 5
+	out.Timeout = 5
 	err := config.Parse(out)
 	if err != nil {
 		return err
@@ -36,10 +36,10 @@ func (out *EsOutput) Init(config transport.Configer) error {
 func (out *EsOutput) Write(p []byte) (int, error) {
 	bulk := NewBulkIndex(file.TimeRule.Handle(out.Index), out.Type, "", p)
 	b, err := bulk.Bytes()
-    if err != nil {
-        return 0, err
-    }
-    if out.Buffer.Cap()-out.Buffer.Len() < len(b) {
+	if err != nil {
+		return 0, err
+	}
+	if out.Buffer.Cap()-out.Buffer.Len() < len(b) {
 		err = Send(out.Addrs[0], out.Buffer.Bytes())
 		if err != nil {
 			logger.Error("send bulk error,%v", err)
