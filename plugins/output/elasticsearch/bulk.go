@@ -42,16 +42,16 @@ func (b *Bulk) Bytes() ([]byte, error) {
     if err != nil {
         return nil, err
     }
-    var b bytes.Buffer
-    b.Write(action)
-    b.Write('\n')
-    b.Write(b.Source)
-    b.Write('\n')
-    return b.Bytes(), nil
+    var buf bytes.Buffer
+    buf.Write(action)
+    buf.Write([]byte("\n"))
+    buf.Write(b.Source)
+    buf.Write([]byte("\n"))
+    return b.Bytes()
 }
 
 func Send(addr string, p []byte) error {
-    resp, err := gohttp.Url("http://"+addr).Path("/_bulk").Header("Accept", "application/json").Body(p).Post()
+    resp, err := gohttp.NewClient().Url("http://"+addr).Path("/_bulk").Header("Accept", "application/json").Body(p).Post()
     if err != nil {
         return err
     }

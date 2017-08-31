@@ -6,7 +6,6 @@ import (
 	"github.com/luopengift/golibs/file"
 	"github.com/luopengift/golibs/logger"
 	"github.com/luopengift/transport"
-	"os"
 )
 
 type EsOutput struct {
@@ -16,7 +15,7 @@ type EsOutput struct {
 	Timeout int      `json:"time"`
 
 	Pool   *gohttp.ClientPool
-	Buffer bytes.Buffer
+	Buffer *bytes.Buffer
 }
 
 func NewEsOutput() *EsOutput {
@@ -24,9 +23,8 @@ func NewEsOutput() *EsOutput {
 }
 
 func (out *EsOutput) Init(config transport.Configer) error {
-	err := config.Parse(out{
-		Timeout: 5,
-	})
+    out.Timeout = 5
+	err := config.Parse(out)
 	if err != nil {
 		return err
 	}
@@ -36,18 +34,19 @@ func (out *EsOutput) Init(config transport.Configer) error {
 }
 
 func (out *EsOutput) Write(p []byte) (int, error) {
-	bulk, err := NewBulkIndex(file.TimeRule.Handle(out.Index), out.Type, "", p)
-	if err != nil {
-		return 0, err
-	}
-	if out.Buffer.Cap()-out.Buffer.Len() < len(bulk) {
+	bulk := NewBulkIndex(file.TimeRule.Handle(out.Index), out.Type, "", p)
+	b, err := bulk.Bytes()
+    if err != nil {
+        return 0, err
+    }
+    if out.Buffer.Cap()-out.Buffer.Len() < len(b) {
 		err = Send(out.Addrs[0], out.Buffer.Bytes())
 		if err != nil {
 			logger.Error("send bulk error,%v", err)
 		}
 		out.Buffer.Reset()
 	}
-	return out.Buffer.Write(p)
+	return out.Buffer.Write(b)
 }
 
 func (out *EsOutput) Start() error {
