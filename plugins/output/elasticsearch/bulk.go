@@ -1,10 +1,13 @@
 package elasticsearch
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"github.com/luopengift/gohttp"
+)
+
+const (
+	enter = '\n'
 )
 
 type Meta struct {
@@ -38,16 +41,15 @@ func NewBulkUpdate(_index, _type, _id string, source []byte) *Bulk {
 
 //构建/_bulk接口所需的数据格式
 func (b *Bulk) Bytes() ([]byte, error) {
-	action, err := json.Marshal(b)
+	p, err := json.Marshal(b)
 	if err != nil {
 		return nil, err
 	}
-	var buf bytes.Buffer
-	buf.Write(action)
-	buf.Write([]byte("\n"))
-	buf.Write(b.Source)
-	buf.Write([]byte("\n"))
-	return b.Bytes()
+	p = append(p, enter)
+	p = append(p, b.Source...)
+	p = append(p, enter)
+	print(string(p))
+	return p, nil
 }
 
 func Send(addr string, p []byte) error {

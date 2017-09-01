@@ -1,0 +1,28 @@
+{
+    "runtime": {
+        "DEBUG": true,
+        "HTTP":"0.0.0.0:12345",
+        "MAXPROCS": 4,
+        "VERSION": "0.0.2"
+    },
+    "inputs": {
+        "file": {
+            "path":"test/es.log",
+            "endstop": false
+        }
+    },
+    "handles": {
+        "null": {}
+    },
+    "outputs": {
+        "elasticsearch": {
+            "addrs": [
+                "10.10.10.100:9200"
+            ],
+            "index":"lp_test.%Y%M%D",
+            "type":"logs",
+            "timeout":5,
+            "batch":100
+        }
+    }
+}
