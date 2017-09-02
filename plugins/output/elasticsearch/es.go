@@ -31,7 +31,7 @@ func (out *EsOutput) Init(config transport.Configer) error {
 		return err
 	}
 	out.Pool = gohttp.NewClientPool(5, 50, out.Timeout)
-	out.Buffer = make(chan []byte, out.Batch)
+	out.Buffer = make(chan []byte, out.Batch * 2)
 	return err
 }
 
@@ -49,7 +49,7 @@ func (out *EsOutput) Start() error {
 	cnt := 0
 	var buf bytes.Buffer
 	for b := range out.Buffer {
-		if cnt == 2 {
+		if cnt == out.Batch {
 			logger.Info("send:%v", string(buf.Bytes()))
 			err := Send(out.Addrs[0], buf.Bytes())
 			if err != nil {

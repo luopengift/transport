@@ -48,7 +48,6 @@ func (b *Bulk) Bytes() ([]byte, error) {
 	p = append(p, enter)
 	p = append(p, b.Source...)
 	p = append(p, enter)
-	print(string(p))
 	return p, nil
 }
 
