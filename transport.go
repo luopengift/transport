@@ -67,7 +67,7 @@ func (t *Transport) RunInputs() {
 					continue
 				}
 				t.recv_chan <- b[:n]
-				t.logs.Debug("recv %v", string(b[:n]))
+				//t.logs.Debug("recv %v", string(b[:n]))
 			}
 		}(input)
 	}
@@ -110,10 +110,10 @@ func (t *Transport) RunOutputs() {
 			break
 		}
 		for _, output := range t.Outputs {
-			func(out *Output) {
-				_, err := out.Write(value)
+			go func(out *Output) {
+				n, err := out.Write(value)
 				if err != nil {
-					t.logs.Error("[%s] write data err:%s", out.Name, err.Error())
+					t.logs.Error("[%s] write data err:%s,%v", out.Name, err.Error(),n)
 				}
 			}(output)
 		}
