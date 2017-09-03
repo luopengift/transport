@@ -113,7 +113,7 @@ func (t *Transport) RunOutputs() {
 			go func(out *Output) {
 				n, err := out.Write(value)
 				if err != nil {
-					t.logs.Error("[%s] write data err:%s,%v", out.Name, err.Error(),n)
+					t.logs.Error("[%s] write data err:%s,%v", out.Name, err.Error(), n)
 				}
 			}(output)
 		}

@@ -31,7 +31,7 @@ func (out *EsOutput) Init(config transport.Configer) error {
 		return err
 	}
 	out.Pool = gohttp.NewClientPool(5, 50, out.Timeout)
-	out.Buffer = make(chan []byte, out.Batch * 2)
+	out.Buffer = make(chan []byte, out.Batch*2)
 	return err
 }
 
