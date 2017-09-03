@@ -1,0 +1,26 @@
+{
+  "runtime": {
+    "DEBUG": true,
+    "MAXPROCS": 4,
+    "VERSION": "0.0.2"
+  },
+  "inputs": {
+    "files": {
+      "path": [
+        "/tmp/a.log"
+      ],
+      "endstop":false
+    }
+  },
+  "handles": {
+    "grok": {
+      "regex":"^(?P<time>[0-9]{4}-[0-9]{2}-[0-9]{2}\\s+[0-9]{2}:[0-9]{2}:[0-9]{2})\\s+(?P<level>[A-Z]{4,5})\\s+(?P<message>.*)$"
+    }
+  },
+  "outputs": {
+    "file": {
+      "path": "/tmp/test.test"
+    },
+    "std":{}
+  }
+}

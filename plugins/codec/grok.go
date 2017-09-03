@@ -7,13 +7,13 @@ import (
 	"regexp"
 )
 
-type JSONHandler struct {
+type GrokHandler struct {
 	Regex string `json:"regex"`
 
 	Regexp *regexp.Regexp
 }
 
-func (j *JSONHandler) Init(config transport.Configer) error {
+func (j *GrokHandler) Init(config transport.Configer) error {
 	err := config.Parse(j)
 	if err != nil {
 		return err
@@ -22,7 +22,7 @@ func (j *JSONHandler) Init(config transport.Configer) error {
 	return err
 }
 
-func (j *JSONHandler) Handle(in, out []byte) (int, error) {
+func (j *GrokHandler) Handle(in, out []byte) (int, error) {
 	match := j.Regexp.FindStringSubmatch(string(in))
 	if match == nil {
 		return 0, fmt.Errorf("can't regex input %v", string(in))
@@ -41,5 +41,5 @@ func (j *JSONHandler) Handle(in, out []byte) (int, error) {
 }
 
 func init() {
-	transport.RegistHandler("json", new(JSONHandler))
+	transport.RegistHandler("grok", new(GrokHandler))
 }
