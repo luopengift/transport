@@ -53,6 +53,14 @@ func NewTransport(cfg *Config) (*Transport, error) {
 	return transport, err
 }
 
+func (t *Transport) injectInput(p []byte) {
+	t.recv_chan <- p
+}
+
+func (t *Transport) injectOutput(p []byte) {
+	t.send_chan <- p
+}
+
 func (t *Transport) RunInputs() {
 	for _, input := range t.Inputs {
 		go input.Inputer.Start()

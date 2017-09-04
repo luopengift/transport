@@ -1,0 +1,19 @@
+{
+    "runtime": {
+        "DEBUG": true,
+        "HTTP":"0.0.0.0:12345",
+        "MAXPROCS": 4,
+        "VERSION": "0.0.2"
+    },
+    "inputs": {
+        "std": {}
+    },
+    "handles": {
+        "DEBUG_InjectInput": {}
+    },
+    "outputs": {
+        "file": {
+            "path": "/tmp/inject.log"
+        }
+    }
+}

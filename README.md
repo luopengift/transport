@@ -56,6 +56,35 @@ type Outputer interface {
 - [x] grok,正则格式化成json格式,说明: ^(?P<命名>子表达式)$  被捕获的组，该组被编号且被命名 (子匹配)"
 - [x] kv,string split 成json格式
 
+#### Handler可以组合Inject struct,以实现向Input/Output中注入数据,[示例](https://github.com/luopengift/transport/blob/master/plugins/codec/inject.go)
+```
+package codec
+
+import (
+    "github.com/luopengift/transport"
+    "time"
+)
+
+type DebugInjectHandler struct {
+    *transport.Inject
+}
+
+func (h *DebugInjectHandler) Init(config transport.Configer) error {
+    return nil
+}
+
+func (h *DebugInjectHandler) Handle(in, out []byte) (int, error) {
+    time.Sleep(1 * time.Second) // make program run slow down
+    h.InjectInput(in)   //将输入数据，再次inject回recv_chan，实现数据循环处理
+    n := copy(out, in)
+    return n, nil
+}
+
+func init() {
+    transport.RegistHandler("DEBUG_InjectInput", new(DebugInjectHandler))
+}
+```
+
 ## TODO
 1. 优化性能
 2. 加入更多组件
