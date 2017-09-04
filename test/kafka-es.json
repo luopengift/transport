@@ -6,7 +6,16 @@
         "VERSION": "0.0.2"
     },
     "inputs": {
-        "std": {}
+        "kafka": {
+            "addrs": [
+                "10.10.20.14:2181",
+                "10.10.20.15:2181",
+                "10.10.20.16:2181"
+            ],
+            "topics":[ "zhizi-log-format" ],
+            "group": "transport",
+            "offset":-1
+        }
     },
     "handles": {
         "null": {}
@@ -18,7 +27,7 @@
             ],
             "index":"lp_test.%Y%M%D",
             "type":"logs",
-            "batch": 2
+            "batch": 200
         }
     }
 }
