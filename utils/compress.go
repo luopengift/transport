@@ -3,7 +3,6 @@ package utils
 import (
 	"bytes"
 	"compress/zlib"
-	"fmt"
 	"io"
 )
 
