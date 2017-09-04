@@ -2,7 +2,7 @@ package codec
 
 import (
 	"github.com/luopengift/transport"
-    "time"
+	"time"
 )
 
 // add a enter symbol at end of line, classic written into file
@@ -15,7 +15,7 @@ func (h *DebugInjectHandler) Init(config transport.Configer) error {
 }
 
 func (h *DebugInjectHandler) Handle(in, out []byte) (int, error) {
-    time.Sleep(1 * time.Second) // make program run slow down
+	time.Sleep(1 * time.Second) // make program run slow down
 	h.InjectInput(in)
 	n := copy(out, in)
 	return n, nil
