@@ -1,19 +1,19 @@
 {
     "runtime": {
         "DEBUG": true,
-        "HTTP":"0.0.0.0:12345",
-        "MAXPROCS": 4,
+        "HTTP":"0.0.0.0:38888",
+        "MAXPROCS": 2,
         "VERSION": "0.0.2"
     },
     "inputs": {
         "kafka": {
             "addrs": [
-                "10.10.20.14:9092",
-                "10.10.20.15:9092",
-                "10.10.20.16:9092"
+                "10.10.20.14:2181",
+                "10.10.20.15:2181",
+                "10.10.20.16:2181"
             ],
-            "topics":[ "zhizi-log-format" ],
-            #"group": "transport",
+            "topics":[ "zhizi-log" ],
+            "group": "transport",
             "offset":-1
         }
     },
@@ -23,11 +23,12 @@
     "outputs": {
         "elasticsearch": {
             "addrs": [
-                "10.10.10.100:9200"
+                "10.10.10.100:9200",
+                "10.10.10.101:9200"
             ],
-            "index":"lp_test.%Y%M%D",
+            "index":"zhizi-log-%Y.%M.%D",
             "type":"logs",
-            "batch": 200
+            "batch": 500
         }
     }
 }

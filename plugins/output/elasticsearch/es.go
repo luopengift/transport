@@ -78,10 +78,8 @@ func (out *EsOutput) Start() error {
 		}
 		bulkResponse, err := bulkRequest.Do(out.ctx)
 		if err != nil {
-			logger.Error("bulkResponse error %v", err)
+			logger.Error("bulkResponse error: %v, %v", len(bulkResponse.Indexed()), err)
 		}
-		indexed := bulkResponse.Indexed()
-		logger.Debug("indexd %d items", len(indexed))
 	}
 	return nil
 }
