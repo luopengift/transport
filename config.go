@@ -25,6 +25,7 @@ func NewRuntimeConfig() *RuntimeConfig {
 		DEBUG:    true,
 		MAXPROCS: 1,
 		HTTP:     "0.0.0.0:12345",
+		VERSION:  "",
 	}
 }
 

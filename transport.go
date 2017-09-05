@@ -66,16 +66,14 @@ func (t *Transport) RunInputs() {
 		go input.Inputer.Start()
 		go func(in *Input) {
 			for {
-				//	in.Mutex.Lock()
-				//	defer in.Mutex.Unlock()
 				b := make([]byte, MAX, MAX)
 				n, err := in.Read(b)
 				if err != nil {
-					t.logs.Error("[%s] %s", in.Name, err.Error())
+					t.logs.Error("[%s] read error:%s", in.Name, err.Error())
 					continue
 				}
 				t.recv_chan <- b[:n]
-				//t.logs.Debug("recv %v", string(b[:n]))
+				t.logs.Debug("[%s] recv %v", in.Name, string(b[:n]))
 			}
 		}(input)
 	}
@@ -114,7 +112,7 @@ func (t *Transport) RunOutputs() {
 	for {
 		value, ok := <-t.send_chan
 		if !ok {
-			t.logs.Error("output send err:%v", ok)
+			t.logs.Error("%s", WriteBufferClosedError.Error())
 			break
 		}
 		for _, output := range t.Outputs {
@@ -160,7 +158,7 @@ func (t *Transport) Stat() string {
 	for _, output := range t.Outputs {
 		output_stat = append(output_stat, fmt.Sprintf("%v:%v", output.Name, output.Cnt))
 	}
-	return fmt.Sprintf("stat=> inputs:%s|codecs:%s|outputs:%s", strings.Join(input_stat, ","), strings.Join(codec_stat, ","), strings.Join(output_stat, ","))
+	return fmt.Sprintf("stat=> [inputs]:%s|[codecs]:%s|[outputs]:%s", strings.Join(input_stat, ","), strings.Join(codec_stat, ","), strings.Join(output_stat, ","))
 }
 
 var T *Transport

@@ -3,11 +3,11 @@ package random
 import (
 	"github.com/luopengift/golibs/uuid"
 	"github.com/luopengift/transport"
-    "time"
+	"time"
 )
 
 type RandomInput struct {
-    Interval    int `json:"interval"`
+	Interval int `json:"interval"`
 }
 
 func NewRandomInput() *RandomInput {
@@ -20,7 +20,7 @@ func (in *RandomInput) Start() error {
 
 func (in *RandomInput) Read(p []byte) (int, error) {
 	id := uuid.Rand()
-    time.Sleep(time.Duration(in.Interval) * time.Second)
+	time.Sleep(time.Duration(in.Interval) * time.Second)
 	n := copy(p, id.Hex())
 	return n, nil
 }
@@ -30,8 +30,8 @@ func (in *RandomInput) Close() error {
 }
 
 func (in *RandomInput) Init(config transport.Configer) error {
-    in.Interval = 0
-    err := config.Parse(in)
+	in.Interval = 0
+	err := config.Parse(in)
 	return err
 }
 
