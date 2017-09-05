@@ -1,35 +1,36 @@
 {
-  "runtime": {
-    "DEBUG": true,
-    "HTTP":"0.0.0.0:12345",
-    "MAXPROCS": 4,
-    "VERSION": "0.0.2"
-  },
-  "inputs": {
-    "kafka": {
-      "addrs": [
-        "10.10.20.14:9092",
-        "10.10.20.15:9092",
-        "10.10.20.16:9092"
-      ],
-      "topics":[ "zhizi-log" ],
-      "offset":-1
+    "runtime": {
+        "DEBUG": true,
+        "HTTP":"0.0.0.0:38888",
+        "MAXPROCS": 4,
+        "VERSION": "0.0.2"
+    },
+    "inputs": {
+        "kafka": {
+            "addrs": [
+                "10.10.20.14:2181",
+                "10.10.20.15:2181",
+                "10.10.20.16:2181"
+            ],
+            "topics": [
+                "zhizi-log"
+            ],
+            "group": "transport_elk",
+            "offset":-1
+        }
+    },
+    "handles": {
+        "zhizilog": {}
+    },
+    "outputs": {
+        "kafka": {
+        "addrs": [
+            "10.10.20.14:9092",
+            "10.10.20.15:9092",
+            "10.10.20.16:9092"
+        ],
+        "topic":"zhizi-log-format",
+        "max_procs": 10000
+        }
     }
-    #"std":{}
-  },
-  "handles": {
-    "zhizilog": {}
-  },
-  "outputs": {
-    "kafka": {
-      "addrs": [
-        "10.10.20.14:9092",
-        "10.10.20.15:9092",
-        "10.10.20.16:9092"
-      ],
-      "topic":"lp_test",
-      "max_procs": 1
-    }
-    #"std":{}
-  }
 }

@@ -1,0 +1,29 @@
+{
+    "runtime": {
+        "DEBUG": true,
+        "HTTP":"0.0.0.0:12345",
+        "MAXPROCS": 4,
+        "VERSION": "0.0.2"
+    },
+    "inputs": {
+        "random": {
+            "interval":1
+        }
+    },
+    "handles": {
+        "kv": {
+            "keys": ["uuid"],
+            "split":"|"
+        }
+    },
+    "outputs": {
+        "elasticsearch": {
+            "addrs": [
+                "10.10.10.100:9200"
+            ],
+            "index":"lp_test.%Y%M%D",
+            "type":"logs",
+            "batch": 10
+        }
+    }
+}

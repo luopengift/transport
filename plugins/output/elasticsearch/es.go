@@ -81,7 +81,7 @@ func (out *EsOutput) Start() error {
 			logger.Error("bulkResponse error %v", err)
 		}
 		indexed := bulkResponse.Indexed()
-		logger.Info("导入了%d条数据", len(indexed))
+		logger.Debug("indexd %d items", len(indexed))
 	}
 	return nil
 }
