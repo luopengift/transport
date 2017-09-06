@@ -40,7 +40,7 @@ func (i *Input) Set(in Inputer) error {
 func (i *Input) Read(p []byte) (int, error) {
 	n, err := i.Inputer.Read(p)
 	i.Mutex.Lock()
-	i.Cnt += 1
+	i.Cnt ++
 	i.Mutex.Unlock()
 	return n, err
 }

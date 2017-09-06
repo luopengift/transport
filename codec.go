@@ -33,8 +33,9 @@ func (m *Codec) Init(config Configer) error {
 }
 
 func (m *Codec) Handle(in, out []byte) (int, error) {
+	n, err := m.Handler.Handle(in, out)
 	m.Mutex.Lock()
-	m.Cnt += 1
+	m.Cnt ++
 	m.Mutex.Unlock()
-	return m.Handler.Handle(in, out)
+    return n, err
 }

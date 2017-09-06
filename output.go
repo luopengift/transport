@@ -40,7 +40,7 @@ func (o *Output) Set(out Outputer) error {
 func (o *Output) Write(p []byte) (int, error) {
 	n, err := o.Outputer.Write(p)
 	o.Mutex.Lock()
-	o.Cnt += 1
+	o.Cnt ++
 	o.Mutex.Unlock()
 	return n, err
 }
