@@ -16,6 +16,7 @@ type Configer interface {
 type RuntimeConfig struct {
 	DEBUG    bool   `json:"DEBUG"`
 	MAXPROCS int    `json:"MAXPROCS"`
+	CHANSIZE int    `json:"CHANSIZE"`
 	VERSION  string `json:"VERSION"`
 	HTTP     string `json:"HTTP"`
 }
@@ -24,6 +25,7 @@ func NewRuntimeConfig() *RuntimeConfig {
 	return &RuntimeConfig{
 		DEBUG:    true,
 		MAXPROCS: 1,
+		CHANSIZE: 100,
 		HTTP:     "0.0.0.0:12345",
 		VERSION:  "",
 	}
@@ -82,7 +84,7 @@ func (cfg *Config) String() string {
 	str := "config info:\n"
 	str += "[Inputs]\n"
 	str += Func(cfg.InputConfig)
-	str += "[Codecs]\n"
+	str += "[Adapts]\n"
 	str += Func(cfg.HandleConfig)
 	str += "[Outputs]\n"
 	str += Func(cfg.OutputConfig)
@@ -141,7 +143,7 @@ func (cfg *Config) InitCodecs() ([]*Codec, error) {
 		if !ok {
 			return nil, fmt.Errorf("[%s] codec is not register in pluginsMap", codecName)
 		}
-		handle := NewCodec(codecName, codec)
+		handle := NewCodec(codecName, codec, cfg.Runtime.CHANSIZE)
 		handle.Adapter.Init(config)
 		codecs = append(codecs, handle)
 	}

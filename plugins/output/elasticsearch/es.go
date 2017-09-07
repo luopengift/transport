@@ -50,10 +50,10 @@ func (out *EsOutput) Start() error {
 		for tmp := out.Batch; tmp > 0; tmp-- {
 			b, ok := <-out.buffer
 			if !ok {
-                logger.Error("buffer closed")
-                return nil
-            }
-            bulk := NewBulkIndex(file.TimeRule.Handle(out.Index), out.Type, "", b)
+				logger.Error("buffer closed")
+				return nil
+			}
+			bulk := NewBulkIndex(file.TimeRule.Handle(out.Index), out.Type, "", b)
 			bt, err := bulk.Bytes()
 			if err != nil {
 				logger.Error("bulk Bytes error:%v", err)
@@ -76,7 +76,7 @@ func (out *EsOutput) Start() error {
 
 func (out *EsOutput) Close() error {
 	close(out.buffer)
-    return nil
+	return nil
 }
 
 func init() {

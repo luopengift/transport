@@ -18,13 +18,13 @@ type Codec struct {
 	Adapter
 }
 
-func NewCodec(name string, a Adapter) *Codec {
+func NewCodec(name string, a Adapter, size int) *Codec {
 	c := new(Codec)
 	c.Cnt = 0
 	c.Name = name
 	c.Adapter = a
 	c.Mutex = new(sync.Mutex)
-	c.channel = channel.NewChannel(100)
+	c.channel = channel.NewChannel(size)
 	return c
 }
 

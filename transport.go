@@ -9,12 +9,14 @@ import (
 )
 
 const (
-	B = 1        //1B = 8bit
-	K = 1024 * B //1KB
-	M = 1024 * K //1MB
-	G = 1024 * M //1GB
+	B  = 1         //1B = 8bit
+	KB = 1024 * B  //1KB
+	MB = 1024 * KB //1MB
+	GB = 1024 * MB //1GB
+	TB = 1024 * GB //1TB
+	PB = 1024 * TB //1PB
 
-	MAX = 1 * K
+	MAX = 1 * KB
 )
 
 type Transport struct {
@@ -42,8 +44,8 @@ func NewTransport(cfg *Config) (*Transport, error) {
 	if err != nil {
 		return nil, err
 	}
-	transport.recvChan = make(chan []byte, 100)
-	transport.sendChan = make(chan []byte, 100)
+	transport.recvChan = make(chan []byte, cfg.Runtime.CHANSIZE)
+	transport.sendChan = make(chan []byte, cfg.Runtime.CHANSIZE)
 	transport.isEnd = make(chan bool)
 	transport.logs = logger.NewLogger(logger.INFO, os.Stdout)
 	transport.logs.SetPrefix("[transport]")
