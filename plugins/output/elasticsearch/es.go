@@ -1,24 +1,23 @@
 package elasticsearch
 
 import (
+	"bytes"
+	"github.com/luopengift/gohttp"
 	"github.com/luopengift/golibs/file"
 	"github.com/luopengift/golibs/logger"
 	"github.com/luopengift/transport"
-
-	"context"
-	es "gopkg.in/olivere/elastic.v5"
 )
 
 type EsOutput struct {
-	Addrs   []string `json:"addrs"` //es addrs
-	Index   string   `json:"index"` //es index
-	Type    string   `json:"type"`  //es type
-	Timeout int      `json:"time"`  //Pool timeout
-	Batch   int      `json:"batch"` //多少条数据提交一次
+	Addrs    []string `json:"addrs"`     //es addrs
+	Index    string   `json:"index"`     //es index
+	Type     string   `json:"type"`      //es type
+	Timeout  int      `json:"time"`      //Pool timeout
+	Batch    int      `json:"batch"`     //多少条数据提交一次
+	MaxProcs int      `json:"max_procs"` //最大并发写协程
 
 	buffer chan []byte
-	ctx    context.Context
-	client *es.Client
+	pool   *gohttp.ClientPool
 }
 
 func NewEsOutput() *EsOutput {
@@ -27,36 +26,17 @@ func NewEsOutput() *EsOutput {
 
 func (out *EsOutput) Init(config transport.Configer) error {
 	out.Timeout = 5
-	out.Batch = 1
+	out.Batch = 10
+	out.MaxProcs = 10
 	err := config.Parse(out)
 	if err != nil {
 		return err
 	}
 
 	out.buffer = make(chan []byte, out.Batch*2)
-
 	// 连接es
-	out.ctx = context.Background()
-	out.client, err = es.NewClient(es.SetURL("http://"+out.Addrs[0]), es.SetSniff(false))
-	if err != nil {
-		return err
-	}
+	out.pool = gohttp.NewClientPool(out.MaxProcs, out.MaxProcs, out.Timeout)
 	return nil
-}
-func (out *EsOutput) createIndex() (string, error) {
-	index := file.TimeRule.Handle(out.Index)
-	// 检查index是否存在，如果不存在则创建index
-	exists, err := out.client.IndexExists(index).Do(out.ctx)
-	if err != nil {
-		return index, err
-	}
-	if !exists {
-		_, err := out.client.CreateIndex(index).Do(out.ctx)
-		if err != nil {
-			return index, err
-		}
-	}
-	return index, nil
 }
 
 func (out *EsOutput) Write(p []byte) (int, error) {
@@ -66,26 +46,37 @@ func (out *EsOutput) Write(p []byte) (int, error) {
 
 func (out *EsOutput) Start() error {
 	for {
-		bulkRequest := out.client.Bulk()
+		var buf bytes.Buffer
 		for tmp := out.Batch; tmp > 0; tmp-- {
-			b := <-out.buffer
-			index, err := out.createIndex()
+			b, ok := <-out.buffer
+			if !ok {
+                logger.Error("buffer closed")
+                return nil
+            }
+            bulk := NewBulkIndex(file.TimeRule.Handle(out.Index), out.Type, "", b)
+			bt, err := bulk.Bytes()
 			if err != nil {
-				logger.Error("index error: %v", err)
+				logger.Error("bulk Bytes error:%v", err)
+				continue
 			}
-			req := es.NewBulkIndexRequest().Index(index).Type(out.Type).Doc(string(b))
-			bulkRequest.Add(req)
+			buf.Write(bt)
 		}
-		bulkResponse, err := bulkRequest.Do(out.ctx)
+		client, err := out.pool.Get()
 		if err != nil {
-			logger.Error("bulkResponse error: %v, %v", len(bulkResponse.Indexed()), err)
+			logger.Error("get client from pool error:%v", err)
 		}
+		response, err := client.Url("http://"+out.Addrs[0]).Path("/_bulk").Header("Accept", "application/json").Body(buf.Bytes()).Post()
+		if err != nil {
+			logger.Error("%v,%v", response.Code(), err)
+		}
+		out.pool.Put(client)
 	}
 	return nil
 }
 
 func (out *EsOutput) Close() error {
-	return nil
+	close(out.buffer)
+    return nil
 }
 
 func init() {

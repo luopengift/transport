@@ -7,7 +7,7 @@
     },
     "inputs": {
         "random": {
-            "interval":1
+            "interval":0
         }
     },
     "handles": {
@@ -19,11 +19,12 @@
     "outputs": {
         "elasticsearch": {
             "addrs": [
-                "10.10.10.100:9200"
+                "10.10.30.69:9200"
             ],
             "index":"lp_test.%Y%M%D",
             "type":"logs",
-            "batch": 10
+            "batch": 500,
+            "max_procs":100
         }
     }
 }

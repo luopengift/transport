@@ -135,15 +135,15 @@ func (cfg *Config) InitOutputs() ([]*Output, error) {
 }
 
 func (cfg *Config) InitCodecs() ([]*Codec, error) {
-	var handles []*Codec
-	for handleName, config := range cfg.HandleConfig {
-		handler, ok := Plugins.Handlers[handleName]
+	var codecs []*Codec
+	for codecName, config := range cfg.HandleConfig {
+		codec, ok := Plugins.Adapters[codecName]
 		if !ok {
-			return nil, fmt.Errorf("[%s] handle is not register in pluginsMap", handleName)
+			return nil, fmt.Errorf("[%s] codec is not register in pluginsMap", codecName)
 		}
-		handle := NewCodec(handleName, handler, 1000)
-		handle.Handler.Init(config)
-		handles = append(handles, handle)
+		handle := NewCodec(codecName, codec)
+		handle.Adapter.Init(config)
+		codecs = append(codecs, handle)
 	}
-	return handles, nil
+	return codecs, nil
 }

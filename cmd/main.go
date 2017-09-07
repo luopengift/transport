@@ -71,8 +71,8 @@ func ParseConfig() *transport.Config {
 		for name, _ := range transport.Plugins.Inputers {
 			str += "  " + name + "\n"
 		}
-		str += "[Codecs]\n"
-		for name, _ := range transport.Plugins.Handlers {
+		str += "[Adapters]\n"
+		for name, _ := range transport.Plugins.Adapters {
 			str += "  " + name + "\n"
 		}
 		str += "[Outputs]\n"

@@ -8,7 +8,8 @@
         "index":"lp_test.%Y%M%D",
         "type":"logs",
         "timeout":5,
-        "batch":100
+        "batch":500,
+        "max_procs": 100
     }
 }
 ```

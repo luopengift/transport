@@ -18,13 +18,13 @@ const (
 )
 
 type Transport struct {
-	Inputs    []*Input
-	Outputs   []*Output
-	Codecs    []*Codec
-	recv_chan chan []byte
-	send_chan chan []byte
-	isEnd     chan bool
-	logs      *logger.Logger
+	Inputs   []*Input
+	Outputs  []*Output
+	Codecs   []*Codec
+	recvChan chan []byte
+	sendChan chan []byte
+	isEnd    chan bool
+	logs     *logger.Logger
 }
 
 func NewTransport(cfg *Config) (*Transport, error) {
@@ -42,8 +42,8 @@ func NewTransport(cfg *Config) (*Transport, error) {
 	if err != nil {
 		return nil, err
 	}
-	transport.recv_chan = make(chan []byte, 100)
-	transport.send_chan = make(chan []byte, 100)
+	transport.recvChan = make(chan []byte, 100)
+	transport.sendChan = make(chan []byte, 100)
 	transport.isEnd = make(chan bool)
 	transport.logs = logger.NewLogger(logger.INFO, os.Stdout)
 	transport.logs.SetPrefix("[transport]")
@@ -54,11 +54,11 @@ func NewTransport(cfg *Config) (*Transport, error) {
 }
 
 func (t *Transport) injectInput(p []byte) {
-	t.recv_chan <- p
+	t.recvChan <- p
 }
 
 func (t *Transport) injectOutput(p []byte) {
-	t.send_chan <- p
+	t.sendChan <- p
 }
 
 func (t *Transport) RunInputs() {
@@ -72,7 +72,7 @@ func (t *Transport) RunInputs() {
 					t.logs.Error("[%s] read error:%s", in.Name, err.Error())
 					continue
 				}
-				t.recv_chan <- b[:n]
+				t.recvChan <- b[:n]
 				t.logs.Debug("[%s] recv %v", in.Name, string(b[:n]))
 			}
 		}(input)
@@ -82,24 +82,24 @@ func (t *Transport) RunInputs() {
 
 func (t *Transport) RunCodecs() {
 	for _, codec := range t.Codecs {
-		go func(h *Codec) {
+		go func(c *Codec) {
 			for {
-				value, ok := <-t.recv_chan
-				if !ok {
-					t.logs.Error("[%s] %s", h.Name, ReadBufferClosedError.Error())
+				if value, ok := <-t.recvChan; ok {
+					c.channel.Add()
+					go func() {
+						b := make([]byte, MAX, MAX)
+						n, err := c.Handle(value, b)
+						if err != nil {
+							t.logs.Error("[%s] %s", c.Name, err.Error())
+						} else {
+							t.sendChan <- b[:n]
+						}
+						c.channel.Done()
+					}()
+				} else {
+					t.logs.Error("[%s] %s", c.Name, ReadBufferClosedError.Error())
 					break
 				}
-				h.Channel.Add()
-				go func(value []byte) {
-					defer h.Channel.Done()
-					b := make([]byte, MAX, MAX)
-					n, err := h.Handle(value, b)
-					if err != nil {
-						t.logs.Error("[%s] %s", h.Name, err.Error())
-						return
-					}
-					t.send_chan <- b[:n]
-				}(value)
 			}
 		}(codec)
 	}
@@ -110,13 +110,13 @@ func (t *Transport) RunOutputs() {
 		go output.Start()
 	}
 	for {
-		value, ok := <-t.send_chan
+		value, ok := <-t.sendChan
 		if !ok {
 			t.logs.Error("%s", WriteBufferClosedError.Error())
 			break
 		}
 		for _, output := range t.Outputs {
-			go func(out *Output) {
+			func(out *Output) {
 				n, err := out.Write(value)
 				if err != nil {
 					t.logs.Error("[%s] write data err:%s,%v", out.Name, err.Error(), n)
@@ -137,8 +137,8 @@ func (t *Transport) Stop() {
 	for _, input := range t.Inputs {
 		input.Inputer.Close()
 	}
-	close(t.recv_chan)
-	close(t.send_chan)
+	close(t.recvChan)
+	close(t.sendChan)
 	for _, output := range t.Outputs {
 		output.Outputer.Close()
 	}

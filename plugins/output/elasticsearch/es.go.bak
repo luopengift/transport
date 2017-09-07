@@ -1,0 +1,104 @@
+package elasticsearch
+
+import (
+	"github.com/luopengift/golibs/channel"
+	"github.com/luopengift/golibs/file"
+	"github.com/luopengift/golibs/logger"
+	"github.com/luopengift/transport"
+
+	"context"
+	es "gopkg.in/olivere/elastic.v5"
+)
+
+type EsOutput struct {
+	Addrs    []string `json:"addrs"`     //es addrs
+	Index    string   `json:"index"`     //es index
+	Type     string   `json:"type"`      //es type
+	Timeout  int      `json:"time"`      //Pool timeout
+	Batch    int      `json:"batch"`     //多少条数据提交一次
+	MaxProcs int      `json:"max_procs"` //最大并发写协程
+
+	buffer chan []byte
+	// 并发写topic的协程控制
+	// 由于并发写入topic,写入顺序不可控,想要严格数序的话,maxThreads = 1即可
+	channel *channel.Channel //并发写topic的协程控制
+
+	ctx    context.Context
+	client *es.Client
+}
+
+func NewEsOutput() *EsOutput {
+	return new(EsOutput)
+}
+
+func (out *EsOutput) Init(config transport.Configer) error {
+	out.Timeout = 5
+	out.Batch = 1
+	out.MaxProcs = 100
+	err := config.Parse(out)
+	if err != nil {
+		return err
+	}
+
+	out.buffer = make(chan []byte, out.Batch*2)
+	out.channel = channel.NewChannel(out.MaxProcs)
+	// 连接es
+	out.ctx = context.Background()
+	out.client, err = es.NewClient(es.SetURL("http://"+out.Addrs[0]), es.SetSniff(false))
+	if err != nil {
+		return err
+	}
+	return nil
+}
+func (out *EsOutput) createIndex() (string, error) {
+	index := file.TimeRule.Handle(out.Index)
+	// 检查index是否存在，如果不存在则创建index
+	exists, err := out.client.IndexExists(index).Do(out.ctx)
+	if err != nil {
+		return index, err
+	}
+	if !exists {
+		_, err := out.client.CreateIndex(index).Do(out.ctx)
+		if err != nil {
+			return index, err
+		}
+	}
+	return index, nil
+}
+
+func (out *EsOutput) Write(p []byte) (int, error) {
+	out.buffer <- p
+	return len(p), nil
+}
+
+func (out *EsOutput) Start() error {
+	for {
+		out.channel.Add()
+		go func() {
+			bulkRequest := out.client.Bulk()
+			for tmp := out.Batch; tmp > 0; tmp-- {
+				b := <-out.buffer
+				index, err := out.createIndex()
+				if err != nil {
+					logger.Error("index error: %v", err)
+				}
+				req := es.NewBulkIndexRequest().Index(index).Type(out.Type).Doc(string(b))
+				bulkRequest.Add(req)
+			}
+			bulkResponse, err := bulkRequest.Do(out.ctx)
+			if err != nil {
+				logger.Error("bulkResponse error: %v, %v", len(bulkResponse.Indexed()), err)
+			}
+			out.channel.Done()
+		}()
+	}
+	return nil
+}
+
+func (out *EsOutput) Close() error {
+	return nil
+}
+
+func init() {
+	transport.RegistOutputer("elasticsearch", NewEsOutput())
+}

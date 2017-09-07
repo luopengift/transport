@@ -19,9 +19,8 @@ func (in *RandomInput) Start() error {
 }
 
 func (in *RandomInput) Read(p []byte) (int, error) {
-	id := uuid.Rand()
-	time.Sleep(time.Duration(in.Interval) * time.Second)
-	n := copy(p, id.Hex())
+	time.Sleep(time.Duration(in.Interval) * time.Millisecond)
+	n := copy(p, uuid.Rand().Hex())
 	return n, nil
 }
 

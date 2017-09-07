@@ -5,7 +5,7 @@ import (
 	"sync"
 )
 
-type Handler interface {
+type Adapter interface {
 	Init(config Configer) error
 	Handle(in, out []byte) (n int, err error)
 }
@@ -13,29 +13,29 @@ type Handler interface {
 type Codec struct {
 	Name string
 	Cnt  int64
-	Handler
 	*sync.Mutex
-	*channel.Channel
+	channel *channel.Channel
+	Adapter
 }
 
-func NewCodec(name string, h Handler, max int) *Codec {
-	m := new(Codec)
-	m.Cnt = 0
-	m.Name = name
-	m.Handler = h
-	m.Mutex = new(sync.Mutex)
-	m.Channel = channel.NewChannel(max)
-	return m
+func NewCodec(name string, a Adapter) *Codec {
+	c := new(Codec)
+	c.Cnt = 0
+	c.Name = name
+	c.Adapter = a
+	c.Mutex = new(sync.Mutex)
+	c.channel = channel.NewChannel(100)
+	return c
 }
 
-func (m *Codec) Init(config Configer) error {
+func (c *Codec) Init(config Configer) error {
 	return nil
 }
 
-func (m *Codec) Handle(in, out []byte) (int, error) {
-	n, err := m.Handler.Handle(in, out)
-	m.Mutex.Lock()
-	m.Cnt ++
-	m.Mutex.Unlock()
-    return n, err
+func (c *Codec) Handle(in, out []byte) (int, error) {
+	n, err := c.Adapter.Handle(in, out)
+	c.Mutex.Lock()
+	c.Cnt++
+	c.Mutex.Unlock()
+	return n, err
 }
