@@ -54,7 +54,7 @@ type Outputer interface {
 - [x] null,直接连接input,output
 - [x] addenter,在行尾加入换行符,例子:写文件
 - [x] grok,正则格式化成json格式,说明: ^(?P<命名>子表达式)$  被捕获的组，该组被编号且被命名 (子匹配)"
-- [x] kv,string split 成json格式
+- [x] [kv](https://github.com/luopengift/transport/blob/master/plugins/codec/README.md),string split 成json格式
 
 #### Handler可以组合Inject struct,以实现向Input/Output中注入数据,[示例](https://github.com/luopengift/transport/blob/master/plugins/codec/inject.go)
 ```

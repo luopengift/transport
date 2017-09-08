@@ -8,18 +8,10 @@ import (
 	"time"
 )
 
-const (
-	B  = 1         //1B = 8bit
-	KB = 1024 * B  //1KB
-	MB = 1024 * KB //1MB
-	GB = 1024 * MB //1GB
-	TB = 1024 * GB //1TB
-	PB = 1024 * TB //1PB
-
-	MAX = 1 * KB
-)
-
 type Transport struct {
+	byteSize int
+	chanSize int
+
 	Inputs   []*Input
 	Outputs  []*Output
 	Codecs   []*Codec
@@ -44,8 +36,10 @@ func NewTransport(cfg *Config) (*Transport, error) {
 	if err != nil {
 		return nil, err
 	}
-	transport.recvChan = make(chan []byte, cfg.Runtime.CHANSIZE)
-	transport.sendChan = make(chan []byte, cfg.Runtime.CHANSIZE)
+	transport.byteSize = cfg.Runtime.BYTESIZE
+	transport.chanSize = cfg.Runtime.CHANSIZE
+	transport.recvChan = make(chan []byte, transport.chanSize)
+	transport.sendChan = make(chan []byte, transport.chanSize)
 	transport.isEnd = make(chan bool)
 	transport.logs = logger.NewLogger(logger.INFO, os.Stdout)
 	transport.logs.SetPrefix("[transport]")
@@ -68,7 +62,7 @@ func (t *Transport) RunInputs() {
 		go input.Inputer.Start()
 		go func(in *Input) {
 			for {
-				b := make([]byte, MAX, MAX)
+				b := make([]byte, t.byteSize, t.byteSize)
 				n, err := in.Read(b)
 				if err != nil {
 					t.logs.Error("[%s] read error:%s", in.Name, err.Error())
@@ -89,7 +83,7 @@ func (t *Transport) RunCodecs() {
 				if value, ok := <-t.recvChan; ok {
 					c.channel.Add()
 					go func() {
-						b := make([]byte, MAX, MAX)
+						b := make([]byte, t.byteSize, t.byteSize)
 						n, err := c.Handle(value, b)
 						if err != nil {
 							t.logs.Error("[%s] %s", c.Name, err.Error())

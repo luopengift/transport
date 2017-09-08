@@ -14,12 +14,26 @@
 ### [codec] plugin kv
 2017-01-02 13:58:43||INFO||This is a debug Test
 =>
-{"Level":"DEBUG","msg":"This is a debug Test","time":"2017-01-02 13:58:44"}
+{"Level":"DEBUG","msg":"This is a debug Test","time":"2017-01-02 13:58:44", "T1": "G!" }
 ```
 {
     "kv": {
-        "keys": ["time","Level","msg"],
-        "split": "||"
+        "keys": [
+            [ "time", "string" ],
+            [ "Level","string" ],
+            [ "msg", "string" ]
+        ],
+        "split": "||",
+        "ignore": "-",
+        "tags": {
+            "T1": "G!"
+        }
     }
 }
 ```
+说明:
+keys 格式为[][]string <key, type> 
+type: string, int, int64, float64, json
+split: 分隔符
+ignore: keys中为ignore的字段，为忽略字段
+tags: 额外新增的字段

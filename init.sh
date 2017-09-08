@@ -1,14 +1,13 @@
 #!/bin/sh
 #
-# collect - this script starts and stops the collect daemon
+# transport - this script start and stop the transport daemon
 #
 # chkconfig:
 # description:
 #               
-# processname: 
+# process name: transport
 # config:      config.json
-# config:      config.json
-# pidfile:     /var/collect.pid
+# pidfile:     var/transport.pid
 
 # Source env
 #. /etc/profile

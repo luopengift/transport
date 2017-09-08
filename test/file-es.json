@@ -3,25 +3,59 @@
         "DEBUG": true,
         "HTTP":"0.0.0.0:12345",
         "MAXPROCS": 4,
+        "BYTESIZE": 10000,
+        "CHANSIZE": 1000,
         "VERSION": "0.0.2"
     },
     "inputs": {
         "file": {
-            "path":"test/es.log",
+            #"path": "/data/logs/nginx/access.log",
+            "path": "test/logs/nginx.log",
             "endstop": false
         }
     },
     "handles": {
-        "null": {}
+        "kv": {
+          "keys": [
+                ["@timestamp","string"],
+                ["ip","string"],
+                ["client","string"],
+                ["domain","string"],
+                ["status","int"],
+                ["size","int"],
+                ["upstreamtime","float64"],
+                ["responsetime","float64"],
+                ["request_method","string"],
+                ["request","string"],
+                ["-","string"],
+                ["-","string"]
+            ],
+            "split":"|",
+            "ignore":"-",
+            "Tags": {
+                "@version": "1",
+                "args": "-",
+                "http_user_agent": "Dalvik/2.1.0 (Linux; U; Android 7.0; Moto G (5) Build/NPP25.137-72)",
+                "@source": "10.10.20.227",
+                "scheme": "http",
+                "referer":"-",
+                "https":"",
+                "upstreamaddr": "127.0.0.1:9000",
+                "path": "/data/logs/nginx/access.log",
+                "hostname": "ip-10-10-20-227",
+                "host": "ip-10-10-20-227.ec2.internal"
+            }
+        }
     },
     "outputs": {
         "elasticsearch": {
             "addrs": [
-                "10.10.10.100:9200"
+                "10.10.30.69:9200"
             ],
-            "index":"lp_test.%Y%M%D",
+            "index":"nginx_access_log.%Y%M%D",
             "type":"logs",
-            "batch":100
+            "batch":1,
+            "max_procs": 1000
         }
     }
 }

@@ -9,6 +9,16 @@ import (
 	"strings"
 )
 
+const (
+	B  = 1         //1B = 8bit
+	KB = 1024 * B  //1KB
+	MB = 1024 * KB //1MB
+	GB = 1024 * MB //1GB
+	TB = 1024 * GB //1TB
+	PB = 1024 * TB //1PB
+
+)
+
 type Configer interface {
 	Parse(interface{}) error
 }
@@ -16,6 +26,7 @@ type Configer interface {
 type RuntimeConfig struct {
 	DEBUG    bool   `json:"DEBUG"`
 	MAXPROCS int    `json:"MAXPROCS"`
+	BYTESIZE int    `json:"BYTESIZE"`
 	CHANSIZE int    `json:"CHANSIZE"`
 	VERSION  string `json:"VERSION"`
 	HTTP     string `json:"HTTP"`
@@ -25,6 +36,7 @@ func NewRuntimeConfig() *RuntimeConfig {
 	return &RuntimeConfig{
 		DEBUG:    true,
 		MAXPROCS: 1,
+		BYTESIZE: 1000,
 		CHANSIZE: 100,
 		HTTP:     "0.0.0.0:12345",
 		VERSION:  "",
