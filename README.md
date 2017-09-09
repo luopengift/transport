@@ -47,6 +47,7 @@ type Outputer interface {
 - [x] [null](https://github.com/luopengift/transport/blob/master/plugins/output/null/README.md): 类似于/dev/null,输出到空
 - [x] [std](https://github.com/luopengift/transport/blob/master/plugins/output/std/README.md): stdout,标准输出
 - [x] [elasticsearch](https://github.com/luopengift/transport/blob/master/plugins/output/elasticsearch/README.md): es
+- [x] [tcp](https://github.com/luopengift/transport/blob/master/plugins/output/tcp/README.md): tcp
 
 - [ ] hdfs
 

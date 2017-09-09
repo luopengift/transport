@@ -1,28 +1,38 @@
 {
-  "runtime": {
-    "DEBUG": true,
-    "HTTP":"0.0.0.0:12347",
-    "MAXPROCS": 4,
-    "VERSION": "0.0.2"
-  },
-  "inputs": {
-    "files": {
-      "path": [
-        "test/logs/kv.log"
-      ],
-      "endstop":false
-    }
-  },
-  "handles": {
-    "kv": {
-        "keys": ["time","Level","msg"],
-        "split": "||"
-    }
-  },
-  "outputs": {
-    "file": {
-      "path": "/tmp/test.test"
+    "runtime": {
+        "DEBUG": true,
+        "HTTP":"0.0.0.0:12347",
+        "BYTESIZE": 1000,
+        "CHANSIZE": 1000,
+        "MAXPROCS": 4,
+        "VERSION": "0.0.2"
     },
-    "std":{}
-  }
+    "inputs": {
+        "files": {
+        "path": [
+            "test/logs/kv.log"
+        ],
+        "endstop":false
+        }
+    },
+    "handles": {
+        "kv": {
+            "keys": [
+                [ "time", "string" ],
+                [ "Level", "string" ],
+                [ "msg", "string"]
+            ]
+            "split": "||",
+            "ignore":"",
+            "tags": {
+                "type":"logs"
+            }
+        }
+    },
+    "outputs": {
+        "file": {
+        "path": "/tmp/test.test"
+        },
+        "std":{}
+    }
 }

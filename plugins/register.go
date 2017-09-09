@@ -15,6 +15,7 @@ import (
 	_ "github.com/luopengift/transport/plugins/output/kafka"
 	_ "github.com/luopengift/transport/plugins/output/null"
 	_ "github.com/luopengift/transport/plugins/output/std"
+	_ "github.com/luopengift/transport/plugins/output/tcp"
 )
 
 func init() {}

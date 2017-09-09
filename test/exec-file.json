@@ -1,24 +1,26 @@
 {
   "runtime": {
-    "DEBUG": true,
-    "HTTP":"0.0.0.0:12345",
-    "MAXPROCS": 4,
-    "VERSION": "0.0.2"
-  },
-  "inputs": {
-    "exec": {
-      "script": "python /tmp/t.py",
-      "cron":"*/2 * * * * *"
+        "DEBUG": true,
+        "HTTP":"0.0.0.0:12345",
+        "BYTESIZE": 1000,
+        "CHANSIZE": 1000,
+        "MAXPROCS": 4,
+        "VERSION": "0.0.2"
     },
-    "std":{}
-  },
-  "handles": {
-    "null": {}
-  },
-  "outputs": {
-    "file": {
-      "path": "/tmp/test.test"
+    "inputs": {
+        "exec": {
+            "script": "python /tmp/t.py",
+            "cron":"*/2 * * * * *"
+        },
+        "std":{}
     },
-    "std":{}
-  }
+    "handles": {
+        "null": {}
+    },
+    "outputs": {
+        "file": {
+            "path": "/tmp/test.test"
+        },
+        "std":{}
+    }
 }

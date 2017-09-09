@@ -2,6 +2,8 @@
     "runtime": {
         "DEBUG": true,
         "HTTP":"0.0.0.0:38888",
+        "BYTESIZE": 1000,
+        "CHANSIZE": 1000,
         "MAXPROCS": 2,
         "VERSION": "0.0.2"
     },

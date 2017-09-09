@@ -1,24 +1,26 @@
 {
-  "runtime": {
-    "DEBUG": true,
-    "HTTP": "0.0.0.0:12345",
-    "MAXPROCS": 4,
-    "VERSION": "0.0.2"
-  },
-  "inputs": {
-    "http": {
-      "addr":":12345",
-      "path":"/post"
+    "runtime": {
+        "DEBUG": true,
+        "HTTP": "0.0.0.0:12345",
+        "BYTESIZE": 1000,
+        "CHANSIZE": 1000,
+        "MAXPROCS": 4,
+        "VERSION": "0.0.2"
     },
-    "std":{}
-  },
-  "handles": {
-    "addenter": {}
-  },
-  "outputs": {
-    "file": {
-      "path": "/tmp/test.test"
+    "inputs": {
+        "http": {
+            "addr":":12345",
+            "path":"/post"
+        },
+        "std":{}
     },
-    "std":{}
-  }
+    "handles": {
+        "addenter": {}
+    },
+    "outputs": {
+        "file": {
+            "path": "/tmp/test.test"
+        },
+        "std":{}
+    }
 }

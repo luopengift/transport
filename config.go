@@ -43,25 +43,9 @@ func NewRuntimeConfig() *RuntimeConfig {
 	}
 }
 
-type Map map[string]interface{}
+type pluginConfig map[string]interface{}
 
-func (m Map) Int(key string) int {
-	return m[key].(int)
-}
-
-func (m Map) Strings(key string) []string {
-	var ret []string
-	for _, v := range m[key].([]interface{}) {
-		ret = append(ret, v.(string))
-	}
-	return ret
-}
-
-func (m Map) String(key string) string {
-	return m[key].(string)
-}
-
-func (m Map) Parse(v interface{}) error {
+func (m pluginConfig) Parse(v interface{}) error {
 	b, err := json.Marshal(m)
 	if err != nil {
 		return err
@@ -74,14 +58,14 @@ func (m Map) Parse(v interface{}) error {
 }
 
 type Config struct {
-	Runtime      *RuntimeConfig `json:"runtime"`
-	InputConfig  map[string]Map `json:"inputs"`
-	HandleConfig map[string]Map `json:"handles"`
-	OutputConfig map[string]Map `json:"outputs"`
+	Runtime      *RuntimeConfig          `json:"runtime"`
+	InputConfig  map[string]pluginConfig `json:"inputs"`
+	HandleConfig map[string]pluginConfig `json:"handles"`
+	OutputConfig map[string]pluginConfig `json:"outputs"`
 }
 
 func (cfg *Config) String() string {
-	var Func = func(cfg map[string]Map) string {
+	var Func = func(cfg map[string]pluginConfig) string {
 		str := ""
 		writeSpace := " "
 		for plugin, config := range cfg {
@@ -125,7 +109,7 @@ func (cfg *Config) InitInputs() ([]*Input, error) {
 	for inputName, config := range cfg.InputConfig {
 		inputer, ok := Plugins.Inputers[inputName]
 		if !ok {
-			return nil, fmt.Errorf("[%s] input is not register in pluginsMap", inputName)
+			return nil, fmt.Errorf("[%s] input is not register in pluginspluginConfig", inputName)
 		}
 		input := NewInput(inputName, inputer)
 		input.Inputer.Init(config)
@@ -139,7 +123,7 @@ func (cfg *Config) InitOutputs() ([]*Output, error) {
 	for outputName, config := range cfg.OutputConfig {
 		outputer, ok := Plugins.Outputers[outputName]
 		if !ok {
-			return nil, fmt.Errorf("[%s] output is not register in pluginsMap", outputName)
+			return nil, fmt.Errorf("[%s] output is not register in pluginspluginConfig", outputName)
 		}
 		output := NewOutput(outputName, outputer)
 		output.Outputer.Init(config)
@@ -153,7 +137,7 @@ func (cfg *Config) InitCodecs() ([]*Codec, error) {
 	for codecName, config := range cfg.HandleConfig {
 		codec, ok := Plugins.Adapters[codecName]
 		if !ok {
-			return nil, fmt.Errorf("[%s] codec is not register in pluginsMap", codecName)
+			return nil, fmt.Errorf("[%s] codec is not register in pluginspluginConfig", codecName)
 		}
 		handle := NewCodec(codecName, codec, cfg.Runtime.CHANSIZE)
 		handle.Adapter.Init(config)
