@@ -4,6 +4,10 @@ import (
 	"github.com/luopengift/transport"
 )
 
+const (
+	VERSION = "0.0.1"
+)
+
 type NullOutput struct {
 }
 
@@ -25,6 +29,10 @@ func (n *NullOutput) Start() error {
 
 func (n *NullOutput) Close() error {
 	return nil
+}
+
+func (n *NullOutput) Version() string {
+	return VERSION
 }
 
 func init() {

@@ -8,8 +8,10 @@ import (
 type Outputer interface {
 	Init(Configer) error
 	Write(p []byte) (n int, err error)
-	Close() error
 	Start() error
+	Close() error
+
+	Version() string
 }
 
 type Output struct {

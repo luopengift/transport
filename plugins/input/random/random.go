@@ -6,6 +6,10 @@ import (
 	"time"
 )
 
+const (
+	VERSION = "0.0.1"
+)
+
 type RandomInput struct {
 	Interval int `json:"interval"`
 }
@@ -32,6 +36,10 @@ func (in *RandomInput) Init(config transport.Configer) error {
 	in.Interval = 0
 	err := config.Parse(in)
 	return err
+}
+
+func (in *RandomInput) Version() string {
+	return VERSION
 }
 
 func init() {

@@ -10,6 +10,10 @@ import (
 	"time"
 )
 
+const (
+	VERSION = "0.0.1"
+)
+
 /*
 一些使用说明:
 sarame.OffsetNewest int64 = -1
@@ -134,6 +138,10 @@ func (in *KafkaInput) ReadWithGroup() error {
 
 func (in *KafkaInput) Close() error {
 	return in.Close()
+}
+
+func (in *KafkaInput) Version() string {
+	return VERSION
 }
 
 func init() {

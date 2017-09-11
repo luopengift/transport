@@ -8,6 +8,7 @@ import (
 type Adapter interface {
 	Init(config Configer) error
 	Handle(in, out []byte) (n int, err error)
+	Version() string
 }
 
 type Codec struct {

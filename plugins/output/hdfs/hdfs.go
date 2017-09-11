@@ -8,6 +8,10 @@ import (
 	"path/filepath"
 )
 
+const (
+	VERSION = "0.0.1"
+)
+
 type HDFSOutput struct {
 	NameNode string `json:"namenode"`
 	File     string `json:"file"`
@@ -80,6 +84,9 @@ func (out *HDFSOutput) Write(p []byte) (int, error) {
 func (out *HDFSOutput) Close() error {
 	out.fd.Close()
 	return out.client.Close()
+}
+func (out *HDFSOutput) Version() string {
+	return VERSION
 }
 
 func init() {

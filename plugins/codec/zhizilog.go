@@ -74,6 +74,10 @@ func (d *ZhiziLogFormat) Handle(in, out []byte) (int, error) {
 
 }
 
+func (d *ZhiziLogFormat) Version() string {
+	return "0.0.1"
+}
+
 func init() {
 	transport.RegistHandler("zhizilog", new(ZhiziLogFormat))
 }

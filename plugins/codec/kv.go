@@ -68,6 +68,10 @@ func (kv *KVHandler) Handle(in, out []byte) (int, error) {
 	return n, nil
 }
 
+func (kv *KVHandler) Version() string {
+	return "0.0.1"
+}
+
 func init() {
 	transport.RegistHandler("kv", new(KVHandler))
 }

@@ -6,6 +6,10 @@ import (
 	"os"
 )
 
+const (
+	VERSION = "0.0.1"
+)
+
 type FileOutput struct {
 	Path  string `json:"path"` //配置路径
 	cpath string //真实路径
@@ -46,6 +50,9 @@ func (out *FileOutput) Close() error {
 	return out.fd.Close()
 }
 
+func (out *FileOutput) Version() string {
+	return VERSION
+}
 func init() {
 	transport.RegistOutputer("file", NewFileOutput())
 }

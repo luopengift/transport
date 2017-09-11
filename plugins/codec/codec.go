@@ -17,6 +17,10 @@ func (h *AddEnterHandler) Handle(in, out []byte) (int, error) {
 	return n, nil
 }
 
+func (h *AddEnterHandler) Version() string {
+	return "0.0.1"
+}
+
 // direct connect input and output, do nothing
 type NullHandler struct{}
 
@@ -26,6 +30,10 @@ func (h *NullHandler) Init(config transport.Configer) error {
 func (h *NullHandler) Handle(in, out []byte) (int, error) {
 	n := copy(out, in)
 	return n, nil
+}
+
+func (h *NullHandler) Version() string {
+	return "0.0.1"
 }
 
 func init() {

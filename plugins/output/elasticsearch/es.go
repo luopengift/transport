@@ -8,6 +8,10 @@ import (
 	"github.com/luopengift/transport"
 )
 
+const (
+	VERSION = "0.0.1"
+)
+
 type EsOutput struct {
 	Addrs    []string `json:"addrs"`     //es addrs
 	Index    string   `json:"index"`     //es index
@@ -77,6 +81,10 @@ func (out *EsOutput) Start() error {
 func (out *EsOutput) Close() error {
 	close(out.buffer)
 	return nil
+}
+
+func (out *EsOutput) Version() string {
+	return VERSION
 }
 
 func init() {

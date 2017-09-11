@@ -27,10 +27,6 @@ SIGUSR1	Reopens the log file for log rotation
 SIGHUP	Reloads server configuration file
 */
 
-const (
-	VERSION = "0.0.2"
-)
-
 func main() {
 
 	cfg := ParseConfig()
@@ -58,28 +54,16 @@ func ParseConfig() *transport.Config {
 	version := flag.Bool("v", false, "(version)版本号")
 	config := flag.String("f", "", "(config)配置文件")
 	read := flag.Bool("r", false, "(read)读取当前配置文件")
-	list := flag.Bool("l", false, "(list)查看插件列表")
+	list := flag.Bool("l", false, "(list)查看插件列表和插件版本")
 	flag.Parse()
 
 	if *version {
-		fmt.Println("version is", VERSION)
+		fmt.Println("version is", transport.VERSION)
 		os.Exit(0)
 	}
 
 	if *list {
-		str := "[Inputs]\n"
-		for name, _ := range transport.Plugins.Inputers {
-			str += "  " + name + "\n"
-		}
-		str += "[Adapters]\n"
-		for name, _ := range transport.Plugins.Adapters {
-			str += "  " + name + "\n"
-		}
-		str += "[Outputs]\n"
-		for name, _ := range transport.Plugins.Outputers {
-			str += "  " + name + "\n"
-		}
-		fmt.Print(str)
+		fmt.Println(transport.PluginDetail())
 		os.Exit(0)
 	}
 
@@ -89,8 +73,8 @@ func ParseConfig() *transport.Config {
 	}
 
 	cfg := transport.NewConfig(*config)
-	if cfg.Runtime.VERSION != VERSION {
-		logger.Error("runtime version is %s,but config version is %s,NOT match!exit...", VERSION, cfg.Runtime.VERSION)
+	if cfg.Runtime.VERSION != transport.VERSION {
+		logger.Error("runtime version is %s,but config version is %s,NOT match!exit...", transport.VERSION, cfg.Runtime.VERSION)
 		os.Exit(-1)
 	}
 
@@ -103,7 +87,7 @@ func ParseConfig() *transport.Config {
 
 func DebugProfile() {
 	go func() {
-		http.ListenAndServe("localhost:6060", nil)
+		http.ListenAndServe("0.0.0.0:6060", nil)
 	}()
 
 	s := make(chan os.Signal, 1)

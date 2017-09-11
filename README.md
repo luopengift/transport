@@ -14,12 +14,14 @@ type Inputer interface {
     Start() error
     Read([]byte) (int, error)
     Close() error
+    Version() string
 }
 
 任何实现了Adapter接口，即可做为数据处理组件
 type Adapter interface {
     Init(config Configer) error
     Handle(in, out byte) error
+    Version() string
 }
 
 
@@ -29,6 +31,7 @@ type Outputer interface {
     Start() error
     Write([]byte) (int, error)
     Close() error
+    Version() string
 }
 ```
 ### Input组件:

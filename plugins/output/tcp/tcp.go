@@ -5,6 +5,10 @@ import (
 	"net"
 )
 
+const (
+	VERSION = "0.0.1"
+)
+
 type TcpOutput struct {
 	Addr string `json:"addr"`
 }
@@ -37,6 +41,10 @@ func (out *TcpOutput) Close() error {
 
 func (out *TcpOutput) Start() error {
 	return nil
+}
+
+func (out *TcpOutput) Version() string {
+	return VERSION
 }
 
 func init() {

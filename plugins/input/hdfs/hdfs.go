@@ -10,6 +10,10 @@ import (
 	"io"
 )
 
+const (
+	VERSION = "0.0.1"
+)
+
 type HDFSInput struct {
 	NameNode string `json:"namenode"`
 	File     string `json:"file"`
@@ -23,21 +27,21 @@ func NewHDFSInput() *HDFSInput {
 	return new(HDFSInput)
 }
 
-func (out *HDFSInput) Init(config transport.Configer) error {
-	err := config.Parse(out)
+func (in *HDFSInput) Init(config transport.Configer) error {
+	err := config.Parse(in)
 	if err != nil {
 		return err
 	}
 
-	out.buffer = make(chan []byte, 100)
-	out.client, err = hdfs.New(out.NameNode)
+	in.buffer = make(chan []byte, 100)
+	in.client, err = hdfs.New(in.NameNode)
 	return err
 }
 
-func (out *HDFSInput) Start() error {
+func (in *HDFSInput) Start() error {
 	for {
-		out.realFile = file.TimeRule.Handle(out.File)
-		r, err := out.client.Open(out.realFile)
+		in.realFile = file.TimeRule.Handle(in.File)
+		r, err := in.client.Open(in.realFile)
 		if err != nil {
 			logger.Error("client open file error:%v", err)
 			continue
@@ -47,13 +51,13 @@ func (out *HDFSInput) Start() error {
 			line, err := reader.ReadBytes('\n')
 			switch {
 			case err != nil && err == io.EOF:
-				logger.Warn("%v EOF", out.realFile)
-				return out.Close()
+				logger.Warn("%v EOF", in.realFile)
+				return in.Close()
 			case err != nil && err != io.EOF:
 				logger.Error("error:%v", err)
 				return err
 			default:
-				out.buffer <- bytes.TrimRight(line, "\n")
+				in.buffer <- bytes.TrimRight(line, "\n")
 			}
 		}
 		r.Close()
@@ -61,14 +65,18 @@ func (out *HDFSInput) Start() error {
 	return nil
 }
 
-func (out *HDFSInput) Read(p []byte) (int, error) {
-	n := copy(p, <-out.buffer)
+func (in *HDFSInput) Read(p []byte) (int, error) {
+	n := copy(p, <-in.buffer)
 	return n, nil
 }
 
-func (out *HDFSInput) Close() error {
-	close(out.buffer)
-	return out.client.Close()
+func (in *HDFSInput) Close() error {
+	close(in.buffer)
+	return in.client.Close()
+}
+
+func (in *HDFSInput) Version() string {
+	return VERSION
 }
 
 func init() {

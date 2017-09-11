@@ -10,6 +10,7 @@ type Inputer interface {
 	Start() error
 	Read(p []byte) (n int, err error)
 	Close() error
+	Version() string
 }
 
 type Input struct {
@@ -51,4 +52,7 @@ func (i *Input) Start() error {
 
 func (i *Input) Close() error {
 	return i.Inputer.Close()
+}
+func (i *Input) Version() string {
+	return ""
 }

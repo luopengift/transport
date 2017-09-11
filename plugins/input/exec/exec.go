@@ -6,6 +6,10 @@ import (
 	"github.com/luopengift/transport"
 )
 
+const (
+	VERSION = "0.0.1"
+)
+
 type ExecInput struct {
 	Script  string `json:"script"`
 	Crontab string `json:"cron"`
@@ -61,6 +65,10 @@ func (in *ExecInput) run() error {
 
 func (in *ExecInput) Close() error {
 	return nil
+}
+
+func (in *ExecInput) Version() string {
+	return VERSION
 }
 
 func init() {

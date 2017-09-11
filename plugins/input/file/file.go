@@ -6,6 +6,10 @@ import (
 	"github.com/luopengift/transport"
 )
 
+const (
+	VERSION = "0.0.1"
+)
+
 type FileInput struct {
 	Path    string `json:"path"`
 	EndStop bool   `json:"endstop"`
@@ -41,6 +45,10 @@ func (in *FileInput) Start() error {
 
 func (in *FileInput) Close() error {
 	return in.Tail.Close()
+}
+
+func (in *FileInput) Version() string {
+	return VERSION
 }
 
 func init() {

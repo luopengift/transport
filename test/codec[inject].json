@@ -1,0 +1,21 @@
+{
+    "runtime": {
+        "DEBUG": true,
+        "HTTP":"0.0.0.0:12345",
+        "BYTESIZE": 1000,
+        "CHANSIZE": 1000,
+        "MAXPROCS": 4,
+        "VERSION": "0.0.2"
+    },
+    "inputs": {
+        "std": {}
+    },
+    "handles": {
+        "inject": {}
+    },
+    "outputs": {
+        "file": {
+            "path": "/tmp/inject.log"
+        }
+    }
+}

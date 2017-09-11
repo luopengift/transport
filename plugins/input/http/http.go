@@ -6,6 +6,10 @@ import (
 	"github.com/luopengift/transport"
 )
 
+const (
+	VERSION = "0.0.1"
+)
+
 var Ch chan []byte
 
 type HttpInput struct {
@@ -52,6 +56,10 @@ func (in *HttpInput) Start() error {
 func (in *HttpInput) Close() error {
 	close(Ch)
 	return nil
+}
+
+func (in *HttpInput) Version() string {
+	return VERSION
 }
 
 func init() {

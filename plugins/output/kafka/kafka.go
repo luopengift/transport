@@ -7,6 +7,10 @@ import (
 	"github.com/luopengift/transport"
 )
 
+const (
+	VERSION = "0.0.1"
+)
+
 type KafkaOutput struct {
 	Addrs    []string `json:"addrs"`
 	Topic    string   `json:"topic"`
@@ -86,6 +90,10 @@ func (out *KafkaOutput) WriteToTopic() error {
 		}
 	}
 	return nil
+}
+
+func (out *KafkaOutput) Version() string {
+	return VERSION
 }
 
 func init() {

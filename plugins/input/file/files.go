@@ -60,6 +60,10 @@ func (in *FilesInput) Close() error {
 	return nil
 }
 
+func (in *FilesInput) Version() string {
+	return "0.0.1"
+}
+
 func init() {
 	transport.RegistInputer("files", NewFilesInput())
 }

@@ -5,6 +5,10 @@ import (
 	"os"
 )
 
+const (
+	VERSION = "0.0.1"
+)
+
 type StdInput struct {
 	*os.File
 }
@@ -24,6 +28,10 @@ func (in *StdInput) Close() error {
 func (in *StdInput) Init(config transport.Configer) error {
 	in.File = os.Stdin
 	return nil
+}
+
+func (in *StdInput) Version() string {
+	return VERSION
 }
 
 func init() {

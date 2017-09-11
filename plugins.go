@@ -1,5 +1,7 @@
 package transport
 
+import "fmt"
+
 type PluginsMap struct {
 	Inputers  map[string]Inputer
 	Outputers map[string]Outputer
@@ -26,6 +28,22 @@ func RegistOutputer(key string, output Outputer) {
 
 func RegistHandler(key string, a Adapter) {
 	Plugins.Adapters[key] = a
+}
+
+func PluginDetail() string {
+	str := fmt.Sprintf("%-16s %s\n", "[Inputs]", "version")
+	for name, inputer := range Plugins.Inputers {
+		str += fmt.Sprintf("  %-15s %s\n", name, inputer.Version())
+	}
+	str += fmt.Sprintf("%-17s\n", "[Adapters]")
+	for name, adapter := range Plugins.Adapters {
+		str += fmt.Sprintf("  %-15s %s\n", name, adapter.Version())
+	}
+	str += fmt.Sprintf("%-17s\n", "[Outputers]")
+	for name, outputer := range Plugins.Outputers {
+		str += fmt.Sprintf("  %-15s %s\n", name, outputer.Version())
+	}
+	return str
 }
 
 func init() {
