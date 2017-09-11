@@ -2,6 +2,7 @@ package transport
 
 import (
 	"sync"
+    "sync/atomic"
 )
 
 // 数据输入接口
@@ -15,7 +16,7 @@ type Inputer interface {
 
 type Input struct {
 	Name string
-	Cnt  int64 //count numbers of input message
+	cnt  uint64 //count numbers of input message
 	*sync.Mutex
 	Inputer
 }
@@ -38,11 +39,13 @@ func (i *Input) Set(in Inputer) error {
 	return nil
 }
 
+func (i *Input) Count() uint64 {
+    return i.cnt
+}
+
 func (i *Input) Read(p []byte) (int, error) {
 	n, err := i.Inputer.Read(p)
-	i.Mutex.Lock()
-	i.Cnt++
-	i.Mutex.Unlock()
+	i.cnt = atomic.AddUint64(&i.cnt, 1)
 	return n, err
 }
 

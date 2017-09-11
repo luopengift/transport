@@ -2,6 +2,7 @@ package transport
 
 import (
 	"sync"
+    "sync/atomic"
 )
 
 // 数据输入接口, 实现了标准io库中的ReadCloser接口
@@ -16,7 +17,7 @@ type Outputer interface {
 
 type Output struct {
 	Name string
-	Cnt  int64
+	cnt  uint64
 	*sync.Mutex
 	Outputer
 }
@@ -24,7 +25,7 @@ type Output struct {
 func NewOutput(name string, out Outputer) *Output {
 	o := new(Output)
 	o.Name = name
-	o.Cnt = 0
+	o.cnt = 0
 	o.Outputer = out
 	o.Mutex = new(sync.Mutex)
 	return o
@@ -39,11 +40,13 @@ func (o *Output) Set(out Outputer) error {
 
 }
 
+func (o *Output) Count() uint64 {
+    return o.cnt
+}
+
 func (o *Output) Write(p []byte) (int, error) {
 	n, err := o.Outputer.Write(p)
-	o.Mutex.Lock()
-	o.Cnt++
-	o.Mutex.Unlock()
+	o.cnt = atomic.AddUint64(&o.cnt, 1)
 	return n, err
 }
 

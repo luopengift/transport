@@ -144,15 +144,15 @@ func (t *Transport) Stop() {
 func (t *Transport) Stat() string {
 	input_stat := []string{}
 	for _, input := range t.Inputs {
-		input_stat = append(input_stat, fmt.Sprintf("%v:%v", input.Name, input.Cnt))
+		input_stat = append(input_stat, fmt.Sprintf("%v:%v", input.Name, input.Count()))
 	}
 	codec_stat := []string{}
 	for _, codec := range t.Codecs {
-		codec_stat = append(codec_stat, fmt.Sprintf("%v:%v", codec.Name, codec.Cnt))
+		codec_stat = append(codec_stat, fmt.Sprintf("%v:%v", codec.Name, codec.Count()))
 	}
 	output_stat := []string{}
 	for _, output := range t.Outputs {
-		output_stat = append(output_stat, fmt.Sprintf("%v:%v", output.Name, output.Cnt))
+		output_stat = append(output_stat, fmt.Sprintf("%v:%v", output.Name, output.Count()))
 	}
 	return fmt.Sprintf("stat=> [inputs]:%s|[codecs]:%s|[outputs]:%s", strings.Join(input_stat, ","), strings.Join(codec_stat, ","), strings.Join(output_stat, ","))
 }

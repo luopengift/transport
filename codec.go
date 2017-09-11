@@ -3,6 +3,7 @@ package transport
 import (
 	"github.com/luopengift/golibs/channel"
 	"sync"
+    "sync/atomic"
 )
 
 type Adapter interface {
@@ -13,7 +14,7 @@ type Adapter interface {
 
 type Codec struct {
 	Name string
-	Cnt  int64
+	cnt  uint64
 	*sync.Mutex
 	channel *channel.Channel
 	Adapter
@@ -21,8 +22,8 @@ type Codec struct {
 
 func NewCodec(name string, a Adapter, size int) *Codec {
 	c := new(Codec)
-	c.Cnt = 0
 	c.Name = name
+	c.cnt = 0
 	c.Adapter = a
 	c.Mutex = new(sync.Mutex)
 	c.channel = channel.NewChannel(size)
@@ -33,10 +34,11 @@ func (c *Codec) Init(config Configer) error {
 	return nil
 }
 
+func (c *Codec) Count() uint64 {
+    return c.cnt
+}
 func (c *Codec) Handle(in, out []byte) (int, error) {
 	n, err := c.Adapter.Handle(in, out)
-	c.Mutex.Lock()
-	c.Cnt++
-	c.Mutex.Unlock()
+	c.cnt = atomic.AddUint64(&c.cnt, 1)
 	return n, err
 }
