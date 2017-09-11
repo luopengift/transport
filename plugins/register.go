@@ -12,6 +12,7 @@ import (
 
 	_ "github.com/luopengift/transport/plugins/output/elasticsearch"
 	_ "github.com/luopengift/transport/plugins/output/file"
+	_ "github.com/luopengift/transport/plugins/output/hdfs"
 	_ "github.com/luopengift/transport/plugins/output/kafka"
 	_ "github.com/luopengift/transport/plugins/output/null"
 	_ "github.com/luopengift/transport/plugins/output/std"

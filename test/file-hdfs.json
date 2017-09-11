@@ -1,0 +1,26 @@
+{
+    "runtime": {
+        "DEBUG": true,
+        "HTTP":"0.0.0.0:12345",
+        "BYTESIZE": 1000,
+        "CHANSIZE": 1000,
+        "MAXPROCS": 4,
+        "VERSION": "0.0.2"
+    },
+    "inputs": {
+        "file": {
+            "path": "test/logs/kv.log",
+            "endstop": false
+        }
+    },
+    "handles": {
+        "addenter": {}
+    },
+    "outputs": {
+        "hdfs": {
+            "namenode": "10.10.40.212:8020",
+            "file": "/tmp/luopeng/test.log",
+            "batch": 1
+        }
+    }
+}

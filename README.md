@@ -48,8 +48,7 @@ type Outputer interface {
 - [x] [std](https://github.com/luopengift/transport/blob/master/plugins/output/std/README.md): stdout,标准输出
 - [x] [elasticsearch](https://github.com/luopengift/transport/blob/master/plugins/output/elasticsearch/README.md): es
 - [x] [tcp](https://github.com/luopengift/transport/blob/master/plugins/output/tcp/README.md): tcp
-
-- [ ] hdfs
+- [x] [hdfs](https://github.com/luopengift/transport/blob/master/plugins/output/hdfs/README.md): hdfs
 
 ### Handler组件:
 - [x] null,直接连接input,output
