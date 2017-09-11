@@ -23,7 +23,6 @@ func (out *TcpOutput) Init(config transport.Configer) error {
 }
 
 func (out *TcpOutput) Write(p []byte) (int, error) {
-	print(1)
 	conn, err := net.Dial("tcp", out.Addr)
 	if err != nil {
 		return 0, err
