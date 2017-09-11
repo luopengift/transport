@@ -1,0 +1,33 @@
+{
+    "runtime": {
+        "DEBUG": true,
+        "HTTP":"0.0.0.0:12345",
+        "BYTESIZE": 1000,
+        "CHANSIZE": 1000,
+        "MAXPROCS": 4,
+        "VERSION": "0.0.2"
+    },
+    "inputs": {
+        "kafka": {
+            "addrs": [
+                "10.10.20.14:9092",
+                "10.10.20.15:9092",
+                "10.10.20.16:9092"
+            ],
+            "topics": [
+                "zhizi-log"
+            ],
+            "offset":-1
+        }
+    },
+    "handles": {
+        "null": {}
+    },
+    "outputs": {
+        "hdfs": {
+            "namenode": "10.10.40.212:8020",
+            "file": "/tmp/luopeng/%Y%M%D/test_%h.log",
+            "batch": 100
+        }
+    }
+}

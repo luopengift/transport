@@ -112,9 +112,9 @@ func (cfg *Config) InitInputs() ([]*Input, error) {
 			return nil, fmt.Errorf("[%s] input is not register in pluginspluginConfig", inputName)
 		}
 		input := NewInput(inputName, inputer)
-		if err := input.Inputer.Init(config); err!= nil {
-            return nil, fmt.Errorf("[%s] input init error:%v",inputName, err)
-        }
+		if err := input.Inputer.Init(config); err != nil {
+			return nil, fmt.Errorf("[%s] input init error:%v", inputName, err)
+		}
 		inputs = append(inputs, input)
 	}
 	return inputs, nil
@@ -129,8 +129,8 @@ func (cfg *Config) InitOutputs() ([]*Output, error) {
 		}
 		output := NewOutput(outputName, outputer)
 		if err := output.Outputer.Init(config); err != nil {
-            return nil, fmt.Errorf("[%s] output init error:%v",outputName, err)
-        }
+			return nil, fmt.Errorf("[%s] output init error:%v", outputName, err)
+		}
 		outputs = append(outputs, output)
 	}
 	return outputs, nil
@@ -145,8 +145,8 @@ func (cfg *Config) InitCodecs() ([]*Codec, error) {
 		}
 		handle := NewCodec(codecName, codec, cfg.Runtime.CHANSIZE)
 		if err := handle.Adapter.Init(config); err != nil {
-            return nil, fmt.Errorf("[%s] codec init error:%v",codecName, err)
-        }
+			return nil, fmt.Errorf("[%s] codec init error:%v", codecName, err)
+		}
 		codecs = append(codecs, handle)
 	}
 	return codecs, nil

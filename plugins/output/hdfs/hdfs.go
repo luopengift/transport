@@ -32,17 +32,17 @@ func (out *HDFSOutput) Init(config transport.Configer) error {
 
 	out.path = filepath.Dir(out.File)
 	out.file = filepath.Base(out.File)
-    out.buffer = make(chan []byte, out.Batch*2)
+	out.buffer = make(chan []byte, out.Batch*2)
 	out.client, err = hdfs.New(out.NameNode)
-    return err
+	return err
 }
 
 func (out *HDFSOutput) prepareFd() (*hdfs.FileWriter, error) {
 	err := out.client.MkdirAll(file.TimeRule.Handle(out.path), 755)
-    if err != nil {
-        return nil, err
-    }
-    out.fd, err = out.client.Append(file.TimeRule.Handle(out.File))
+	if err != nil {
+		return nil, err
+	}
+	out.fd, err = out.client.Append(file.TimeRule.Handle(out.File))
 	if err != nil {
 		out.fd, err = out.client.Create(file.TimeRule.Handle(out.File))
 	}

@@ -34,6 +34,7 @@ type Outputer interface {
 ### Input组件:
 - [x] [exec](https://github.com/luopengift/transport/blob/master/plugins/input/exec/README.md): 执行程序/脚本
 - [x] [file(s)](https://github.com/luopengift/transport/blob/master/plugins/input/file/README.md): 文件
+- [x] [hdfs](https://github.com/luopengift/transport/blob/master/plugins/input/hdfs/README.md): hdfs
 - [x] [http](https://github.com/luopengift/transport/blob/master/plugins/input/http/README.md): HTTP POST方法
 - [x] [kafka](https://github.com/luopengift/transport/blob/master/plugins/input/kafka/README.md): kafka
 - [x] [std](https://github.com/luopengift/transport/blob/master/plugins/input/std/README.md): stdin,标准输入

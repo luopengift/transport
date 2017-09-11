@@ -1,0 +1,26 @@
+##testing kafkaGroup
+
+{
+    "runtime": {
+        "DEBUG": true,
+        "HTTP":"0.0.0.0:12345",
+        "BYTESIZE": 1000,
+        "CHANSIZE": 1000,
+        "MAXPROCS": 4,
+        "VERSION": "0.0.2"
+    },
+    "inputs": {
+        "hdfs": {
+            "namenode": "10.10.40.212:8020",
+            "file": "/tmp/luopeng/20170911/test_15.log"
+        }
+    },
+    "handles": {
+        "addenter": {}
+    },
+    "outputs": {
+        "file":{
+            "path":"/tmp/tmp.log"
+        }
+    }
+}
