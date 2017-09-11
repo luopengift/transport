@@ -16,8 +16,8 @@ type Inputer interface {
     Close() error
 }
 
-任何实现了Handler接口，即可做为数据处理组件
-type Handler interface {
+任何实现了Adapter接口，即可做为数据处理组件
+type Adapter interface {
     Init(config Configer) error
     Handle(in, out byte) error
 }
@@ -40,14 +40,14 @@ type Outputer interface {
 - [x] [std](https://github.com/luopengift/transport/blob/master/plugins/input/std/README.md): stdin,标准输入
 - [x] [random](https://github.com/luopengift/transport/blob/master/plugins/input/random/README.md): 随机生成UUID,用于测试
 
-- [ ] elasticsearch
+- [ ] [elasticsearch]():es API scroll query
 
 ### Output组件:
 - [x] [file](https://github.com/luopengift/transport/blob/master/plugins/output/file/README.md): 文件
 - [x] [kafka](https://github.com/luopengift/transport/blob/master/plugins/output/kafka/README.md): kafka
 - [x] [null](https://github.com/luopengift/transport/blob/master/plugins/output/null/README.md): 类似于/dev/null,输出到空
 - [x] [std](https://github.com/luopengift/transport/blob/master/plugins/output/std/README.md): stdout,标准输出
-- [x] [elasticsearch](https://github.com/luopengift/transport/blob/master/plugins/output/elasticsearch/README.md): es
+- [x] [elasticsearch](https://github.com/luopengift/transport/blob/master/plugins/output/elasticsearch/README.md): es API /_bulk
 - [x] [tcp](https://github.com/luopengift/transport/blob/master/plugins/output/tcp/README.md): tcp
 - [x] [hdfs](https://github.com/luopengift/transport/blob/master/plugins/output/hdfs/README.md): hdfs
 
