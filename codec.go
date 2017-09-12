@@ -3,7 +3,7 @@ package transport
 import (
 	"github.com/luopengift/golibs/channel"
 	"sync"
-    "sync/atomic"
+	"sync/atomic"
 )
 
 type Adapter interface {
@@ -35,7 +35,7 @@ func (c *Codec) Init(config Configer) error {
 }
 
 func (c *Codec) Count() uint64 {
-    return c.cnt
+	return c.cnt
 }
 func (c *Codec) Handle(in, out []byte) (int, error) {
 	n, err := c.Adapter.Handle(in, out)

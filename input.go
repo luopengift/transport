@@ -2,7 +2,7 @@ package transport
 
 import (
 	"sync"
-    "sync/atomic"
+	"sync/atomic"
 )
 
 // 数据输入接口
@@ -40,7 +40,7 @@ func (i *Input) Set(in Inputer) error {
 }
 
 func (i *Input) Count() uint64 {
-    return i.cnt
+	return i.cnt
 }
 
 func (i *Input) Read(p []byte) (int, error) {

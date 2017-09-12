@@ -2,7 +2,7 @@ package transport
 
 import (
 	"sync"
-    "sync/atomic"
+	"sync/atomic"
 )
 
 // 数据输入接口, 实现了标准io库中的ReadCloser接口
@@ -41,7 +41,7 @@ func (o *Output) Set(out Outputer) error {
 }
 
 func (o *Output) Count() uint64 {
-    return o.cnt
+	return o.cnt
 }
 
 func (o *Output) Write(p []byte) (int, error) {

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/luopengift/gohttp"
+	"github.com/luopengift/golibs/logger"
 	"github.com/luopengift/transport"
 	"strconv"
 	"strings"
@@ -28,6 +29,10 @@ func (kv *KVHandler) Init(config transport.Configer) error {
 func (kv *KVHandler) Handle(in, out []byte) (int, error) {
 	o := make(map[string]interface{})
 	for index, value := range strings.Split(string(in), kv.Split) {
+		if index == len(kv.Keys) {
+			logger.Warn("index<%d> out of len(kv.Keys)<%d>: %s", index, len(kv.Keys), string(in))
+			return 0, fmt.Errorf("index out of range")
+		}
 		key := kv.Keys[index][0]
 		valueType := kv.Keys[index][1]
 		if key == kv.Ignore || valueType == kv.Ignore {
@@ -69,7 +74,7 @@ func (kv *KVHandler) Handle(in, out []byte) (int, error) {
 }
 
 func (kv *KVHandler) Version() string {
-	return "0.0.1"
+	return "0.0.2"
 }
 
 func init() {
