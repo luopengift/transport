@@ -78,7 +78,8 @@ func (kv *KVHandler) Handle(in, out []byte) (int, error) {
 
 	if kv.GeoIP != "" {
 		for key, value := range kv.geomap {
-			geoip, err := utils.GeoIPClient.Search(o[key].(string))
+			ip := strings.TrimSpace(strings.Split(o[key].(string), ",")[0]) //spilt "ip1,ip2, ..." and only use the first ip
+			geoip, err := utils.GeoIPClient.Search(ip)
 			if err == nil {
 				o[value] = *utils.GeoToEsIP(geoip)
 				continue
