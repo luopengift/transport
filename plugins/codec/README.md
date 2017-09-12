@@ -27,7 +27,10 @@
         "ignore": "-",
         "tags": {
             "T1": "G!"
-        }
+        },
+        "geoip":"ip => geoip",
+        "ipdb": "utils/GeoLite2-City.mmdb"
+
     }
 }
 ```
@@ -37,3 +40,5 @@ type: string, int, int64, float64, json
 split: 分隔符
 ignore: keys中为ignore的字段，为忽略字段
 tags: 额外新增的字段
+geoip: 将指定字段转换成位置格式
+ipdb: GeoIP数据库地址

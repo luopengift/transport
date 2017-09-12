@@ -1,9 +1,9 @@
 package utils
 
 import (
+	"github.com/luopengift/golibs/logger"
 	"github.com/oschwald/maxminddb-golang"
-    "github.com/luopengift/golibs/logger"
-    "net"
+	"net"
 )
 
 type ID = uint64
@@ -70,7 +70,7 @@ type GeoIP struct {
 }
 
 var (
-    GeoDB = "GeoLite2-City.mmdb"
+	GeoDB = "GeoLite2-City.mmdb"
 )
 
 type Client struct {
@@ -78,13 +78,13 @@ type Client struct {
 }
 
 func NewClient(db string) (*Client, error) {
-    var err error
+	var err error
 	c := new(Client)
 	c.Reader, err = maxminddb.Open(db)
-    if err != nil {
-        logger.Error("GeoIP db open error: %v", err)
-        return nil, err
-    }
+	if err != nil {
+		logger.Error("GeoIP db open error: %v", err)
+		return nil, err
+	}
 	return c, nil
 }
 
@@ -102,3 +102,5 @@ func (c *Client) Search(ip string) (*GeoIP, error) {
 	err = Format(record, geoip)
 	return geoip, err
 }
+
+var GeoIPClient *Client

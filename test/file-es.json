@@ -44,7 +44,9 @@
                 "path": "/data/logs/nginx/access.log",
                 "hostname": "ip-10-10-20-227",
                 "host": "ip-10-10-20-227.ec2.internal"
-            }
+            },
+            "geoip":"ip => geoip",
+            "ipdb": "utils/GeoLite2-City.mmdb"
         }
     },
     "outputs": {
@@ -52,7 +54,7 @@
             "addrs": [
                 "10.10.30.69:9200"
             ],
-            "index":"nginx_access_log.%Y%M%D",
+            "index":"testnginx_access_log.%Y%M%D",
             "type":"logs",
             "batch":1,
             "max_procs": 1000

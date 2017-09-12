@@ -1,8 +1,8 @@
 package utils
 
 import (
+	"encoding/json"
 	"strconv"
-    "encoding/json"
 )
 
 func Int(v interface{}) int {
@@ -17,13 +17,12 @@ func Int(v interface{}) int {
 	}
 }
 
-
 // in format out
 // eg: Format(map[string]interface{...}, &Struct{})
 func Format(in, out interface{}) error {
-    var err error
-    if b, err := json.Marshal(in); err == nil {
-        err = json.Unmarshal(b, out)
-    }
-    return err
+	var err error
+	if b, err := json.Marshal(in); err == nil {
+		err = json.Unmarshal(b, out)
+	}
+	return err
 }

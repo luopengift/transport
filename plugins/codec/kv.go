@@ -6,6 +6,7 @@ import (
 	"github.com/luopengift/gohttp"
 	"github.com/luopengift/golibs/logger"
 	"github.com/luopengift/transport"
+	"github.com/luopengift/transport/utils"
 	"strconv"
 	"strings"
 )
@@ -14,14 +15,26 @@ type KVHandler struct {
 	Keys   [][]string             `json:"keys"`
 	Split  string                 `json:"split"`
 	Ignore string                 `json:"ignore"`
+	GeoIP  string                 `json:"geoip"` //tell program which keys format to geoip, eg: "ip => geoip"
+	IpDB   string                 `json:"ipdb"`
 	Tags   map[string]interface{} `json:"tags"`
+
+	geomap map[string]string
 }
 
 func (kv *KVHandler) Init(config transport.Configer) error {
 	kv.Ignore = "-"
+	kv.GeoIP = ""
+	kv.IpDB = utils.GeoDB
+	kv.geomap = map[string]string{}
 	err := config.Parse(kv)
 	if err != nil {
 		return err
+	}
+	if kv.GeoIP != "" && strings.Count(kv.GeoIP, "=>") == 1 {
+		geo := strings.Split(kv.GeoIP, "=>") //key is need to geoip, value is return key
+		kv.geomap[strings.TrimSpace(geo[0])] = strings.TrimSpace(geo[1])
+		utils.GeoIPClient, err = utils.NewClient(kv.IpDB)
 	}
 	return err
 }
@@ -39,7 +52,7 @@ func (kv *KVHandler) Handle(in, out []byte) (int, error) {
 			continue
 		}
 		switch valueType {
-		case "string":
+		case "string", "geoip":
 			o[key] = value
 		case "int":
 			if v, err := strconv.Atoi(value); err == nil {
@@ -62,9 +75,22 @@ func (kv *KVHandler) Handle(in, out []byte) (int, error) {
 			return 0, fmt.Errorf("type<%v> is unknown", valueType)
 		}
 	}
+
+	if kv.GeoIP != "" {
+		for key, value := range kv.geomap {
+			geoip, err := utils.GeoIPClient.Search(o[key].(string))
+			if err == nil {
+				o[value] = *utils.GeoToEsIP(geoip)
+				continue
+			}
+			logger.Warn("GeoIP is fail:%v", o[key])
+		}
+	}
+
 	for key, value := range kv.Tags {
 		o[key] = value
 	}
+
 	b, err := gohttp.ToBytes(o)
 	if err != nil {
 		return 0, err
@@ -74,7 +100,7 @@ func (kv *KVHandler) Handle(in, out []byte) (int, error) {
 }
 
 func (kv *KVHandler) Version() string {
-	return "0.0.2"
+	return "0.0.3"
 }
 
 func init() {
