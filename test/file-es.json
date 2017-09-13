@@ -54,7 +54,7 @@
             "addrs": [
                 "10.10.30.69:9200"
             ],
-            "index":"testnginx_access_log.%Y%M%D",
+            "index":"nginx_access_log.%Y%M%D",
             "type":"logs",
             "batch":1,
             "max_procs": 1000
