@@ -89,7 +89,7 @@ func init() {
 }
 ```
 
-### 使用
+### [使用](https://github.com/luopengift/transport/wiki/Useage)
 1. 下载
 ```
 git clone https://github.com/luopengift/transport.git
