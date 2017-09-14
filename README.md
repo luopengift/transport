@@ -2,6 +2,9 @@
 data transportation tool, from one to another.such as,file, kafka, hdfs etc.
 
 
+* Demo: [Example](https://github.com/luopengift/transport/blob/master/doc/EXAMPLE.md)
+
+## 接口
 ```
 // 将配置文件解析成制定格式v的结构
 type Configer interface {
