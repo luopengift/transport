@@ -141,7 +141,7 @@ Usage of ./transport:
 
 ```
 
-3. 查看当前配置文件是否可以加载成功
+4. 查看当前配置文件是否可以加载成功
 ```
 [root@iZm5egf7xb48axmu4z1t3fZ transport]# ./transport -f test/kafka-file.json -r
 2017-09-14 15:11:59.955 [I] <file test/kafka-file.json is END:EOF> 
@@ -158,7 +158,7 @@ config info:
     path: /tmp/tmp.log
 
 ```
-4. 运行
+5. 运行
 ```
 [root@iZm5egf7xb48axmu4z1t3fZ transport]# ./transport -f test/kafka-file.json  
 2017-09-14 15:13:22.107 [I] <file test/kafka-file.json is END:EOF> 
@@ -169,7 +169,7 @@ HttpsServer Start 0.0.0.0:12345
 ^C2017-09-14 15:13:31.526 [W] Get signal:interrupt, Profile File is cpu.prof/mem.prof
 ```
 
-5. 启动服务[加载config.json配置文件]
+6. 启动服务[加载config.json配置文件]
 ```
 [root@iZm5egf7xb48axmu4z1t3fZ transport]# ./init.sh start
 2017-09-14.15:16:45
@@ -179,7 +179,7 @@ transport started..., PID=22778
 root     22778     1  0 15:18 pts/0    00:00:00 ./transport -f config.json
 ```
 
-6. 查看服务状态
+7. 查看服务状态
 ```
 [root@iZm5egf7xb48axmu4z1t3fZ transport]# ./init.sh status
 2017-09-14.15:18:24
@@ -187,7 +187,7 @@ GOPATH init Finished. GOPATH=/data/golang:/data/golang/src
 root     22778     1  0 15:18 pts/0    00:00:00 ./transport -f config.json
 transport now is running already, PID=22778
 ```
-7. 查看运行日志
+8. 查看运行日志
 ```
 [root@iZm5egf7xb48axmu4z1t3fZ transport]# ./init.sh tail 
 2017-09-14.15:22:07
@@ -198,7 +198,7 @@ GOPATH init Finished. GOPATH=/data/golang:/data/golang/src
 ......
 ```
 
-8. 停止服务
+9. 停止服务
 ```
 [root@iZm5egf7xb48axmu4z1t3fZ transport]# ./init.sh stop
 2017-09-14.15:19:09
