@@ -1,7 +1,7 @@
 language: go
 
 install:
-  - go get -d -t -v ./... && go build -v cmd/mai.go
+  - go get -d -t -v ./... && go build -v cmd/main.go
 
 go:
   - 1.9
