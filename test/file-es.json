@@ -2,8 +2,8 @@
     "runtime": {
         "DEBUG": true,
         "HTTP":"0.0.0.0:12345",
-        "MAXPROCS": 4,
-        "BYTESIZE": 10000,
+        "MAXPROCS": 2,
+        "BYTESIZE": 100000,
         "CHANSIZE": 1000,
         "VERSION": "0.0.2"
     },
@@ -16,37 +16,38 @@
     },
     "handles": {
         "kv": {
-          "keys": [
-                ["@timestamp","string"],
-                ["ip","string"],
-                ["client","string"],
-                ["domain","string"],
-                ["status","int"],
-                ["size","int"],
-                ["upstreamtime","float64"],
-                ["responsetime","float64"],
-                ["request_method","string"],
-                ["request","string"],
-                ["-","string"],
-                ["-","string"]
+            "keys": [
+                #parse                            nginx log_format          proxy        direct
+                ["@timestamp","string"],          # $time_iso8601           时间
+                ["ip","string"],              # $http_x_forwarded_for   真实请求IP
+                ["client","string"],                  # $remote_addr            请求Nginx的IP[elb]
+                ["upstream_addr","string"],       # $upstream_addr          后端服务IP:PORT
+                ["@source","string"],             # $server_addr            本机的IP
+                ["hostname","string"],              # $hostname               本机的主机名
+                ["domain","string"],            # $http_host              请求的域名
+                ["-","string"],                   # $server_name            [localhost]?
+                ["refer","string"],               # $http_referer           [-]?
+                ["status","int"],                 # $status                 httpcode
+                ["size","int"],                   # $body_bytes_sent
+                ["upstreamtime","float64"],       # $upstream_response_time
+                ["responsetime","float64"],       # $request_time
+                ["request_method","string"],      # $request_method
+                ["https","string"],               # $https
+                ["scheme","string"],              # $scheme
+                ["uri","string"],                 # $request_uri
+                ["http_user_agent","string"],     # $http_user_agent
+                ["args","string"],                # $args
+                ["body","string"]                 # $request_body
             ],
             "split":"|",
             "ignore":"-",
             "Tags": {
                 "@version": "1",
-                "args": "-",
-                "http_user_agent": "Dalvik/2.1.0 (Linux; U; Android 7.0; Moto G (5) Build/NPP25.137-72)",
-                "@source": "10.10.20.227",
-                "scheme": "http",
-                "referer":"-",
-                "https":"",
-                "upstreamaddr": "127.0.0.1:9000",
-                "path": "/data/logs/nginx/access.log",
-                "hostname": "ip-10-10-20-227",
-                "host": "ip-10-10-20-227.ec2.internal"
+                "path": "/data/logs/nginx/access.log"
             },
             "geoip":"ip => geoip",
             "ipdb": "utils/GeoLite2-City.mmdb"
+
         }
     },
     "outputs": {

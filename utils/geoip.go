@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"github.com/luopengift/golibs/logger"
 	"github.com/oschwald/maxminddb-golang"
 	"net"
 )
@@ -82,7 +81,6 @@ func NewClient(db string) (*Client, error) {
 	c := new(Client)
 	c.Reader, err = maxminddb.Open(db)
 	if err != nil {
-		logger.Error("GeoIP db open error: %v", err)
 		return nil, err
 	}
 	return c, nil

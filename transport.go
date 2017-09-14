@@ -41,7 +41,11 @@ func NewTransport(cfg *Config) (*Transport, error) {
 	transport.recvChan = make(chan []byte, transport.chanSize)
 	transport.sendChan = make(chan []byte, transport.chanSize)
 	transport.isEnd = make(chan bool)
-	transport.logs = logger.NewLogger(logger.INFO, os.Stdout)
+	if cfg.Runtime.DEBUG {
+		transport.logs = logger.NewLogger(logger.DEBUG, os.Stdout)
+	} else {
+		transport.logs = logger.NewLogger(logger.INFO, os.Stdout)
+	}
 	transport.logs.SetPrefix("[transport]")
 
 	startCronTask()
@@ -111,6 +115,7 @@ func (t *Transport) RunOutputs() {
 			t.logs.Error("%s", WriteBufferClosedError.Error())
 			break
 		}
+		t.logs.Debug("send %v", string(value))
 		for _, output := range t.Outputs {
 			func(out *Output) {
 				n, err := out.Write(value)

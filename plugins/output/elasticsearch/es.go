@@ -71,7 +71,7 @@ func (out *EsOutput) Start() error {
 		}
 		response, err := client.Url("http://"+out.Addrs[0]).Path("/_bulk").Header("Accept", "application/json").Body(buf.Bytes()).Post()
 		if err != nil {
-			logger.Error("%v,%v", response.Code(), err)
+			logger.Error("%v,%v", err, response)
 		}
 		out.pool.Put(client)
 	}
