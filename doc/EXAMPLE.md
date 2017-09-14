@@ -3,7 +3,7 @@
 
 1. 先放图
 ![nginx](https://github.com/luopengift/transport/blob/master/Image/png/nginx_log_analysis.png)
-![nginx](https://github.com/luopengift/transport/blob/master/Image/png/worldmap.png.png)
+![nginx](https://github.com/luopengift/transport/blob/master/Image/png/worldmap.png)
 
 2. 需要的工具
   * Nginx
@@ -23,9 +23,9 @@ file-kv-elasticsearch [详情](https://github.com/luopengift/transport/blob/mast
 添加template解析geo_point类型, [详情](https://github.com/luopengift/transport/blob/master/test/elasticsearch/geoip.template.json)
 
 6. Grafana配置
-  * ./grafana-cli plugins install grafana-worldmap-panel
-  * ./grafana-cli plugins install grafana-piechart-pane
-  * ttps://github.com/luopengift/transport/blob/master/test/grafana/nginx_es.template.json
+  * [plugin] ./grafana-cli plugins install grafana-worldmap-panel
+  * [plugin] ./grafana-cli plugins install grafana-piechart-pane
+  * [template](https://github.com/luopengift/transport/blob/master/test/grafana/nginx_es.template.json)
 
 
 
