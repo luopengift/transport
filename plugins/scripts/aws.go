@@ -1,5 +1,5 @@
 package aws
 
 import (
-	"github.com/aws/aws-sdk-go"
+	//"github.com/aws/aws-sdk-go"
 )
