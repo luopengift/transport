@@ -26,7 +26,7 @@ file-kv-elasticsearch [详情](https://github.com/luopengift/transport/blob/mast
   * [plugin] ./grafana-cli plugins install grafana-worldmap-panel
   * [plugin] ./grafana-cli plugins install grafana-piechart-pane
   * [Dashboard](https://github.com/luopengift/transport/blob/master/test/grafana/nginx_es.template.json)
-  * NOTE: Dashboard由vincentliu提供的[Elasticserch Nginx Logs](https://grafana.com/dashboards/2292)改进而来
+  * NOTE: Dashboard由vincentliu提供的[Elasticserch Nginx Logs](https://grafana.com/dashboards/2292)改进而来
 
 
 
