@@ -89,6 +89,125 @@ func init() {
 }
 ```
 
+###使用
+1. 下载
+```
+git clone https://github.com/luopengift/transport.git
+cd transport
+```
+
+2. 编译
+```
+[root@iZm5egf7xb48axmu4z1t3fZ transport]# ./init.sh build cmd/main.go 
+2017-09-14.15:09:14
+GOPATH init Finished. GOPATH=/data/golang:/data/golang/src
+build transport success.
+```
+
+3. 查看插件列表
+```
+[root@iZm5egf7xb48axmu4z1t3fZ transport]# ./transport -h
+Usage of ./transport:
+  -f string
+        (config)配置文件
+  -l    (list)查看插件列表和插件版本
+  -r    (read)读取当前配置文件
+  -v    (version)版本号
+[root@iZm5egf7xb48axmu4z1t3fZ transport]# ./transport -l
+[Inputs]         version
+  random          0.0.1
+  std             0.0.1
+  exec            0.0.1
+  file            0.0.1
+  files           0.0.1
+  hdfs            0.0.1
+  http            0.0.1
+  kafka           0.0.1
+[Adapters]       
+  kv              0.0.3
+  zhizilog        0.0.1
+  null            0.0.1
+  addenter        0.0.1
+  grok            0.0.1
+  inject          0.0.1_debug
+[Outputers]      
+  elasticsearch   0.0.1
+  file            0.0.1
+  hdfs            0.0.1
+  kafka           0.0.1
+  null            0.0.1
+  std             0.0.1
+  tcp             0.0.1
+
+```
+
+3. 查看当前配置文件是否可以加载成功
+```
+[root@iZm5egf7xb48axmu4z1t3fZ transport]# ./transport -f test/kafka-file.json -r
+2017-09-14 15:11:59.955 [I] <file test/kafka-file.json is END:EOF> 
+config info:
+[Inputs]
+  kafka:
+    offset: -1
+    addrs: ["10.10.20.14:9092","10.10.20.15:9092","10.10.20.16:9092"]
+    topics: ["zhizi-log"]
+[Adapts]
+  addenter:
+[Outputs]
+  file:
+    path: /tmp/tmp.log
+
+```
+4. 运行
+```
+[root@iZm5egf7xb48axmu4z1t3fZ transport]# ./transport -f test/kafka-file.json  
+2017-09-14 15:13:22.107 [I] <file test/kafka-file.json is END:EOF> 
+2017-09-14 15:13:22.107 [I] Transport starting... 
+2017-09-14 15:13:22.107 [W] Starting loading performance data, please press CTRL+C exit... 
+HttpsServer Start 0.0.0.0:12345
+
+^C2017-09-14 15:13:31.526 [W] Get signal:interrupt, Profile File is cpu.prof/mem.prof
+```
+
+5. 启动服务[加载config.json配置文件]
+```
+[root@iZm5egf7xb48axmu4z1t3fZ transport]# ./init.sh start
+2017-09-14.15:16:45
+GOPATH init Finished. GOPATH=/data/golang:/data/golang/src
+transport started..., PID=22778
+[root@iZm5egf7xb48axmu4z1t3fZ transport]# ps -ef |grep -v grep |grep transport
+root     22778     1  0 15:18 pts/0    00:00:00 ./transport -f config.json
+```
+
+6. 查看服务状态
+```
+[root@iZm5egf7xb48axmu4z1t3fZ transport]# ./init.sh status
+2017-09-14.15:18:24
+GOPATH init Finished. GOPATH=/data/golang:/data/golang/src
+root     22778     1  0 15:18 pts/0    00:00:00 ./transport -f config.json
+transport now is running already, PID=22778
+```
+7. 查看运行日志
+```
+[root@iZm5egf7xb48axmu4z1t3fZ transport]# ./init.sh tail 
+2017-09-14.15:22:07
+GOPATH init Finished. GOPATH=/data/golang:/data/golang/src
+2017-09-14 15:18:16.399 [D] [transport] [files] recv 2017-01-02 15:58:43 DEBUG This is a debug Test 
+2017-09-14 15:18:16.399 [D] [transport] [files] recv 44 
+2017-09-14 15:18:16.399 [D] [transport] send 44
+......
+```
+
+8. 停止服务
+```
+[root@iZm5egf7xb48axmu4z1t3fZ transport]# ./init.sh stop
+2017-09-14.15:19:09
+GOPATH init Finished. GOPATH=/data/golang:/data/golang/src
+transport stoped...
+```
+
+
+
 ## TODO
 1. 优化性能
 2. 加入更多组件

@@ -33,7 +33,7 @@ APP=$(basename $DIR)
 mkdir -p $DIR/var
 PIDFile=$DIR/var/$APP.pid
 LOGFile=$DIR/var/$APP.log
-
+CONFIG=config.json
 #编译$2,默认$2未指定时编译main.go
 if [ -z $2 ];then #如果$2为空
     main="main.go"
@@ -71,7 +71,7 @@ function start() {
         return 1
     fi
 
-    nohup  ./$APP  >$LOGFile 2>&1 &
+    nohup  ./$APP -f $CONFIG >$LOGFile 2>&1 &
     sleep 1
     running=`ps -p $! | grep -v "PID TTY" | wc -l`
     if [ $running -gt 0 ];then
