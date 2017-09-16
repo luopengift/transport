@@ -20,7 +20,7 @@ type data struct {
 type InfluxOutput struct {
 	Addr      string `json:"addr"`
 	DB        string `json:"database"`
-	precision string `json:"precision"`
+	Precision string `json:"precision"`
 	User      string `json:"username"`
 	Pass      string `json:"password"`
 	Batch     int    `json:"batch"`
