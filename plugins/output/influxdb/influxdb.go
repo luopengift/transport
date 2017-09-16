@@ -1,28 +1,29 @@
 package influxdb
 
 import (
-    "github.com/luopengift/golibs/logger"
+	"encoding/json"
+	"fmt"
 	"github.com/influxdata/influxdb/client/v2"
+	"github.com/luopengift/golibs/logger"
 	"github.com/luopengift/transport"
-    "time"
-    "encoding/json"
-    "fmt"
-    "net/url"
+	"net/url"
+	"time"
 )
 
 type data struct {
 	Name   string                 `json:"name"`
 	Fields map[string]interface{} `json:"fields"`
 	Tags   map[string]string      `json:"tags"`
-	Time   int64              `json:"time"`
+	Time   int64                  `json:"time"`
 }
 
 type InfluxOutput struct {
-	Addr  string `json:"addr"`
-	DB    string `json:"database"`
-    User    string  `json:"username"`
-    Pass    string  `json:"password"`
-	Batch int    `json:"batch"`
+	Addr      string `json:"addr"`
+	DB        string `json:"database"`
+	precision string `json:"precision"`
+	User      string `json:"username"`
+	Pass      string `json:"password"`
+	Batch     int    `json:"batch"`
 
 	buffer chan *client.Point
 	client client.Client
@@ -34,8 +35,9 @@ func NewInfluxOutput() *InfluxOutput {
 
 func (out *InfluxOutput) Init(cfg transport.Configer) error {
 	out.Batch = 1
-    out.DB = "test"
-    err := cfg.Parse(out)
+	out.DB = "mydb"
+	out.Precision = "ns"
+	err := cfg.Parse(out)
 	if err != nil {
 		return err
 	}
@@ -68,7 +70,7 @@ func (out *InfluxOutput) Start() error {
 		bp, err := client.NewBatchPoints(client.BatchPointsConfig{
 			Database: out.DB,
 			//Precision is the write precision of the points, defaults to "ns"
-			Precision: "ns",
+			Precision: out.Precision,
 		})
 		if err != nil {
 			return err
@@ -80,25 +82,24 @@ func (out *InfluxOutput) Start() error {
 				logger.Error("buffer closed")
 				return nil
 			}
-            bp.AddPoint(point)
+			bp.AddPoint(point)
 		}
-	    err = out.client.Write(bp)
-        if err != nil {
-            logger.Error("write error:%v", err)
-        }
-        logger.Info("%#v",bp.Points()[0].String())
-    }
+		err = out.client.Write(bp)
+		if err != nil {
+			logger.Error("write error:%v", err)
+		}
+		logger.Info("%#v", bp.Points()[0].String())
+	}
 	return nil
 }
 
 func (out *InfluxOutput) Write(p []byte) (int, error) {
 	dat := data{}
-    logger.Warn("=>",string(p))
 	err := json.Unmarshal(p, &dat)
 	if err != nil {
 		return 0, err
 	}
-//	pt, err := client.NewPoint(dat.Name, dat.Tags, dat.Fields, time.Unix(dat.Time, 0))
+	//	pt, err := client.NewPoint(dat.Name, dat.Tags, dat.Fields, time.Unix(dat.Time, 0))
 	pt, err := client.NewPoint(dat.Name, dat.Tags, dat.Fields, time.Now())
 	if err != nil {
 		return 0, err
