@@ -1,0 +1,27 @@
+{
+    "runtime": {
+        "DEBUG": true,
+        "HTTP":"0.0.0.0:12345",
+        "BYTESIZE": 1000,
+        "CHANSIZE": 1000,
+        "MAXPROCS": 4,
+        "VERSION": "0.0.2"
+    },
+    "inputs": {
+        "files": {
+            "path": [
+                "/tmp/influx.txt"
+            ],
+            "endstop":false
+        }
+    },
+    "handles": {
+        "addenter": {}
+    },
+    "outputs": {
+        "influxdb": {
+            "addr": "http://127.0.0.1:8086",
+            "database": "test"
+        }
+    }
+}

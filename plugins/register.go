@@ -18,6 +18,7 @@ import (
 	_ "github.com/luopengift/transport/plugins/output/null"
 	_ "github.com/luopengift/transport/plugins/output/std"
 	_ "github.com/luopengift/transport/plugins/output/tcp"
+	_ "github.com/luopengift/transport/plugins/output/influxdb"
 )
 
 func init() {}
