@@ -99,8 +99,8 @@ func (out *InfluxOutput) Write(p []byte) (int, error) {
 	if err != nil {
 		return 0, err
 	}
-	//	pt, err := client.NewPoint(dat.Name, dat.Tags, dat.Fields, time.Unix(dat.Time, 0))
-	pt, err := client.NewPoint(dat.Name, dat.Tags, dat.Fields, time.Now())
+	pt, err := client.NewPoint(dat.Name, dat.Tags, dat.Fields, time.Unix(dat.Time, 0))
+	//pt, err := client.NewPoint(dat.Name, dat.Tags, dat.Fields, time.Now())
 	if err != nil {
 		return 0, err
 	}

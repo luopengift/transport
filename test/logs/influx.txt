@@ -1,0 +1,3 @@
+{"time": 1505571666, "fields": {"cpu": 10, "mem": 70.9}, "tags": {"idc": "test"}, "name": "system"}
+{"time": 1505571766, "fields": {"cpu": 20, "mem": 80.9}, "tags": {"idc": "test"}, "name": "system"}
+{"time": 1505571866, "fields": {"cpu": 30, "mem": 90.9}, "tags": {"idc": "test"}, "name": "system"}

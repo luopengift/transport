@@ -10,7 +10,7 @@
     "inputs": {
         "files": {
             "path": [
-                "/tmp/influx.txt"
+                "test/logs/influx.txt"
             ],
             "endstop":false
         }
