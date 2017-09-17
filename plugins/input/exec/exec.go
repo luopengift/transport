@@ -11,8 +11,8 @@ const (
 )
 
 type ExecInput struct {
-    Commands    []string    `json:"commands"`
-	Crontab string `json:"cron"`
+	Commands []string `json:"commands"`
+	Crontab  string   `json:"cron"`
 
 	result  chan []byte
 	errchan chan error
@@ -30,16 +30,16 @@ func (in *ExecInput) Init(config transport.Configer) error {
 	}
 	in.result = make(chan []byte, 1)
 	in.errchan = make(chan error, 1)
-    for _, command := range in.Commands {
-        cmd := command
-        transport.AddCronTask(
-            cmd,
-            in.Crontab,
-            func() error {
-                return in.run(cmd)
-            },
-        )
-    }
+	for _, command := range in.Commands {
+		cmd := command
+		transport.AddCronTask(
+			cmd,
+			in.Crontab,
+			func() error {
+				return in.run(cmd)
+			},
+		)
+	}
 	return nil
 }
 
