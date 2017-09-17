@@ -7,11 +7,11 @@ import (
 )
 
 const (
-	VERSION = "0.0.1"
+	VERSION = "0.0.2"
 )
 
 type ExecInput struct {
-	Script  string `json:"script"`
+    Commands    []string    `json:"commands"`
 	Crontab string `json:"cron"`
 
 	result  chan []byte
@@ -30,13 +30,16 @@ func (in *ExecInput) Init(config transport.Configer) error {
 	}
 	in.result = make(chan []byte, 1)
 	in.errchan = make(chan error, 1)
-	transport.AddCronTask(
-		"exec",
-		in.Crontab,
-		func() error {
-			return in.run()
-		},
-	)
+    for _, command := range in.Commands {
+        cmd := command
+        transport.AddCronTask(
+            cmd,
+            in.Crontab,
+            func() error {
+                return in.run(cmd)
+            },
+        )
+    }
 	return nil
 }
 
@@ -53,8 +56,8 @@ func (in *ExecInput) Start() error {
 	return nil
 }
 
-func (in *ExecInput) run() error {
-	result, err := exec.CmdOut("/bin/bash", "-c", in.Script)
+func (in *ExecInput) run(cmd string) error {
+	result, err := exec.CmdOut("/bin/bash", "-c", cmd)
 	if err != nil {
 		in.errchan <- err
 		return err

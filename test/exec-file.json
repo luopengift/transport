@@ -9,7 +9,11 @@
     },
     "inputs": {
         "exec": {
-            "script": "python /tmp/t.py",
+            "commands": [
+                "python test/scripts/hello.py",
+                "python test/scripts/world.py",
+                "go run test/scripts/go.go"
+            ],
             "cron":"*/2 * * * * *"
         },
         "std":{}
