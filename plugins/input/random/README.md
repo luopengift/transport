@@ -1,6 +1,8 @@
 ### [inputs] plugin random
 ```
 {
-    "random": {}
+    "random": {
+        "interval": 1000 #ms
+    }
 }
 ```

@@ -131,6 +131,7 @@ function help() {
 
 case "$1"  in
     build) build $main ;;
+    install) mv $APP /usr/local/bin;;
     start) start ;;
     debug) debug $main ;;
     stop) stop ;;

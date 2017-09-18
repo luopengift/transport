@@ -101,6 +101,25 @@ func init() {
     transport.RegistHandler("DEBUG_InjectInput", new(DebugInjectHandler))
 }
 ```
+### [Docker Useage]
+1. install docker
+
+2. download src code
+```
+git clone https://github.com/luopengift/transport.git
+cd transport
+```
+
+3. build Docker image
+```
+docker build -t transport:0.0.3 .
+```
+
+4. run with docker
+```
+docker run -p 12345:12345 transport:0.0.3 -f docker-test.json
+```
+
 
 ### [使用](https://github.com/luopengift/transport/wiki/Useage)
 1. 下载

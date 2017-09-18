@@ -74,8 +74,7 @@ func ParseConfig() *transport.Config {
 
 	cfg := transport.NewConfig(*config)
 	if cfg.Runtime.VERSION != transport.VERSION {
-		logger.Error("runtime version is %s,but config version is %s,NOT match!exit...", transport.VERSION, cfg.Runtime.VERSION)
-		os.Exit(-1)
+		logger.Warn("runtime version is %s,but config version is %s,NOT match!exit...", transport.VERSION, cfg.Runtime.VERSION)
 	}
 
 	if *read {

@@ -1,0 +1,29 @@
+{
+    "runtime": {
+        "DEBUG": false,
+        "HTTP":"0.0.0.0:12345",
+        "BYTESIZE": 1000,
+        "CHANSIZE": 1000,
+        "MAXPROCS": 1,
+        "VERSION": "0.0.2"
+    },
+    "inputs": {
+        "random": {
+            "interval": 1000    # 间隔1000ms
+        }
+    },
+    "handles": {
+        "kv": {
+            "keys": [
+                ["uuid", "string"]
+            ],
+            "split": "|",
+            "tags": {
+                "tags": "This is docker test"
+            }
+        }
+    },
+    "outputs": {
+        "std": {}
+    }
+}
