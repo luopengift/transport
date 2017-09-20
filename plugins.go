@@ -5,13 +5,6 @@ import (
 	"github.com/luopengift/transport/utils"
 )
 
-// Implement Configer interface.
-type pluginConfig map[string]interface{}
-
-func (m pluginConfig) Parse(v interface{}) error {
-	return utils.Format(m, v)
-}
-
 // Store available plugins, include input, adapt, output.
 type PluginsMap struct {
 	Inputers  map[string]Inputer

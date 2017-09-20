@@ -22,6 +22,13 @@ type Configer interface {
 	Parse(interface{}) error
 }
 
+// Implement Configer interface.
+type PluginConfig map[string]interface{}
+
+func (pc PluginConfig) Parse(v interface{}) error {
+    return utils.Format(pc, v)
+}
+
 type RuntimeConfig struct {
 	DEBUG    bool   `json:"DEBUG"`
 	MAXPROCS int    `json:"MAXPROCS"`

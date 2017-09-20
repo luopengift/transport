@@ -1,10 +1,10 @@
 APP = transport
 MAIN = cmd/main.go
 
-fmt:
-	go fmt ./...
 build:
 	go build -o $(APP) $(MAIN)
+fmt:
+	go fmt ./...
 lint:
 	go vet ./...
 test:
