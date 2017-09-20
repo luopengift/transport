@@ -60,9 +60,7 @@ func (in *HDFSInput) Start() error {
 				in.buffer <- bytes.TrimRight(line, "\n")
 			}
 		}
-		r.Close()
 	}
-	return nil
 }
 
 func (in *HDFSInput) Read(p []byte) (int, error) {

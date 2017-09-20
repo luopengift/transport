@@ -75,7 +75,6 @@ func (out *EsOutput) Start() error {
 		}
 		out.pool.Put(client)
 	}
-	return nil
 }
 
 func (out *EsOutput) Close() error {

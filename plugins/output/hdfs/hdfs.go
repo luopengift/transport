@@ -73,7 +73,6 @@ func (out *HDFSOutput) Start() error {
 		}
 		out.fd.Close()
 	}
-	return err
 }
 
 func (out *HDFSOutput) Write(p []byte) (int, error) {

@@ -89,7 +89,6 @@ func (out *KafkaOutput) WriteToTopic() error {
 			}(message)
 		}
 	}
-	return nil
 }
 
 func (out *KafkaOutput) Version() string {

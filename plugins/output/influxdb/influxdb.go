@@ -80,7 +80,7 @@ func (out *InfluxOutput) Start() error {
 			point, ok := <-out.buffer
 			if !ok {
 				logger.Error("buffer closed")
-				return nil
+				return transport.BufferClosedError
 			}
 			bp.AddPoint(point)
 		}
@@ -90,7 +90,6 @@ func (out *InfluxOutput) Start() error {
 		}
 		logger.Info("%#v", bp.Points()[0].String())
 	}
-	return nil
 }
 
 func (out *InfluxOutput) Write(p []byte) (int, error) {
@@ -100,7 +99,6 @@ func (out *InfluxOutput) Write(p []byte) (int, error) {
 		return 0, err
 	}
 	pt, err := client.NewPoint(dat.Name, dat.Tags, dat.Fields, time.Unix(dat.Time, 0))
-	//pt, err := client.NewPoint(dat.Name, dat.Tags, dat.Fields, time.Now())
 	if err != nil {
 		return 0, err
 	}

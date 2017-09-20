@@ -1,7 +1,6 @@
 package transport
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/luopengift/gohttp"
 	"github.com/luopengift/golibs/file"
@@ -41,20 +40,6 @@ func NewRuntimeConfig() *RuntimeConfig {
 		HTTP:     "0.0.0.0:12345",
 		VERSION:  "",
 	}
-}
-
-type pluginConfig map[string]interface{}
-
-func (m pluginConfig) Parse(v interface{}) error {
-	b, err := json.Marshal(m)
-	if err != nil {
-		return err
-	}
-	err = json.Unmarshal(b, v)
-	if err != nil {
-		return err
-	}
-	return nil
 }
 
 type Config struct {
