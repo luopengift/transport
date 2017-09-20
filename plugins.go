@@ -2,7 +2,6 @@ package transport
 
 import (
 	"fmt"
-	"github.com/luopengift/transport/utils"
 )
 
 // Store available plugins, include input, adapt, output.
