@@ -129,18 +129,18 @@ func (cfg *Config) InitOutputs() ([]*Output, error) {
 	return outputs, nil
 }
 
-func (cfg *Config) InitCodecs() ([]*Codec, error) {
-	var codecs []*Codec
-	for codecName, config := range cfg.HandleConfig {
-		codec, ok := Plugins.Adapters[codecName]
+func (cfg *Config) InitAdapts() ([]*Adapt, error) {
+	var adapts []*Adapt
+	for adaptName, config := range cfg.HandleConfig {
+		adapt, ok := Plugins.Adapters[adaptName]
 		if !ok {
-			return nil, fmt.Errorf("[%s] codec is not register in pluginsPluginConfig", codecName)
+			return nil, fmt.Errorf("[%s] adapt is not register in pluginsPluginConfig", adaptName)
 		}
-		handle := NewCodec(codecName, codec, cfg.Runtime.CHANSIZE)
+		handle := NewAdapt(adaptName, adapt, cfg.Runtime.CHANSIZE)
 		if err := handle.Adapter.Init(config); err != nil {
-			return nil, fmt.Errorf("[%s] codec init error:%v", codecName, err)
+			return nil, fmt.Errorf("[%s] adapt init error:%v", adaptName, err)
 		}
-		codecs = append(codecs, handle)
+		adapts = append(adapts, handle)
 	}
-	return codecs, nil
+	return adapts, nil
 }

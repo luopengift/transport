@@ -14,7 +14,7 @@ type Transport struct {
 
 	Inputs   []*Input
 	Outputs  []*Output
-	Codecs   []*Codec
+	Adapts   []*Adapt
 	recvChan chan []byte
 	sendChan chan []byte
 	isEnd    chan bool
@@ -28,7 +28,7 @@ func NewTransport(cfg *Config) (*Transport, error) {
 	if err != nil {
 		return nil, err
 	}
-	transport.Codecs, err = cfg.InitCodecs()
+	transport.Adapts, err = cfg.InitAdapts()
 	if err != nil {
 		return nil, err
 	}
@@ -80,9 +80,9 @@ func (t *Transport) RunInputs() {
 
 }
 
-func (t *Transport) RunCodecs() {
-	for _, codec := range t.Codecs {
-		go func(c *Codec) {
+func (t *Transport) RunAdapts() {
+	for _, adapt := range t.Adapts {
+		go func(c *Adapt) {
 			for {
 				if value, ok := <-t.recvChan; ok {
 					c.channel.Add()
@@ -101,7 +101,7 @@ func (t *Transport) RunCodecs() {
 					break
 				}
 			}
-		}(codec)
+		}(adapt)
 	}
 }
 
@@ -129,7 +129,7 @@ func (t *Transport) RunOutputs() {
 
 func (t *Transport) Run() {
 	go t.RunOutputs()
-	go t.RunCodecs()
+	go t.RunAdapts()
 	go t.RunInputs()
 }
 
@@ -151,15 +151,15 @@ func (t *Transport) Stat() string {
 	for _, input := range t.Inputs {
 		input_stat = append(input_stat, fmt.Sprintf("%v:%v", input.Name, input.Count()))
 	}
-	codec_stat := []string{}
-	for _, codec := range t.Codecs {
-		codec_stat = append(codec_stat, fmt.Sprintf("%v:%v", codec.Name, codec.Count()))
+	adapt_stat := []string{}
+	for _, adapt := range t.Adapts {
+		adapt_stat = append(adapt_stat, fmt.Sprintf("%v:%v", adapt.Name, adapt.Count()))
 	}
 	output_stat := []string{}
 	for _, output := range t.Outputs {
 		output_stat = append(output_stat, fmt.Sprintf("%v:%v", output.Name, output.Count()))
 	}
-	return fmt.Sprintf("stat=> [inputs]:%s|[codecs]:%s|[outputs]:%s", strings.Join(input_stat, ","), strings.Join(codec_stat, ","), strings.Join(output_stat, ","))
+	return fmt.Sprintf("stat=> [inputs]:%s|[adapts]:%s|[outputs]:%s", strings.Join(input_stat, ","), strings.Join(adapt_stat, ","), strings.Join(output_stat, ","))
 }
 
 var T *Transport
