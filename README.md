@@ -46,13 +46,11 @@ type Outputer interface {
     Close() error
     Version() string
 }
-
-
+```
 #### Handler可以组合Inject struct,以实现向Input/Output中注入数据,[示例](https://github.com/luopengift/transport/blob/master/plugins/codec/inject.go)
 
 #### Transport作为library使用Input/Output,[示例](https://github.com/luopengift/transport/blob/master/plugins/output/elasticsearch/README.md)
 
-```
 ### Input组件:
 - [x] [exec](https://github.com/luopengift/transport/blob/master/plugins/input/exec/README.md): 执行程序/脚本
 - [x] [file(s)](https://github.com/luopengift/transport/blob/master/plugins/input/file/README.md): 文件

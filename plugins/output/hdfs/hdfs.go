@@ -6,16 +6,18 @@ import (
 	"github.com/luopengift/golibs/logger"
 	"github.com/luopengift/transport"
 	"path/filepath"
+	"time"
 )
 
 const (
-	VERSION = "0.0.1"
+	VERSION = "0.0.2"
 )
 
 type HDFSOutput struct {
 	NameNode string `json:"namenode"`
 	File     string `json:"file"`
 	Batch    int    `json:"batch"`
+	RollSize int64  `json:"rollsize"` //bytes
 
 	path   string
 	file   string
@@ -29,6 +31,8 @@ func NewHDFSOutput() *HDFSOutput {
 }
 
 func (out *HDFSOutput) Init(config transport.Configer) error {
+	out.Batch = 1
+	out.RollSize = 10 * transport.MB
 	err := config.Parse(out)
 	if err != nil {
 		return err
@@ -39,6 +43,15 @@ func (out *HDFSOutput) Init(config transport.Configer) error {
 	out.buffer = make(chan []byte, out.Batch*2)
 	out.client, err = hdfs.New(out.NameNode)
 	return err
+}
+
+func (out *HDFSOutput) Size() int64 {
+	stat, err := out.client.Stat(file.TimeRule.Handle(out.File))
+	if err != nil {
+		logger.Error("stat file error:%v", err)
+		return 0
+	}
+	return stat.Size()
 }
 
 func (out *HDFSOutput) prepareFd() (*hdfs.FileWriter, error) {
@@ -56,6 +69,13 @@ func (out *HDFSOutput) prepareFd() (*hdfs.FileWriter, error) {
 func (out *HDFSOutput) Start() error {
 	var err error
 	for {
+		if out.RollSize <= out.Size() {
+			fname := file.TimeRule.Handle(out.File)
+			if err = out.client.Rename(fname, fname+"."+time.Now().Format("20060102150405")); err != nil {
+				logger.Error("rename file error:%v", err)
+				continue
+			}
+		}
 		out.fd, err = out.prepareFd()
 		if err != nil {
 			logger.Error("prepare fd error:%v", err)

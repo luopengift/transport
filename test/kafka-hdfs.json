@@ -25,8 +25,9 @@
     },
     "outputs": {
         "hdfs": {
-            "namenode": "10.10.40.212:8020",
+            "namenode": "10.10.20.64:8020",
             "file": "/tmp/luopeng/%Y%M%D/test_%h.log",
+            "rollsize": 10000;
             "batch": 100
         }
     }
