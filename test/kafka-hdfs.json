@@ -1,6 +1,6 @@
 {
     "runtime": {
-        "DEBUG": true,
+        "DEBUG": false,
         "HTTP":"0.0.0.0:12345",
         "BYTESIZE": 1000,
         "CHANSIZE": 1000,
