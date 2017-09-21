@@ -7,6 +7,7 @@ import (
 	"github.com/luopengift/transport"
 	"path/filepath"
 	"time"
+    "sync"
 )
 
 const (
@@ -21,6 +22,7 @@ type HDFSOutput struct {
 
 	path   string
 	file   string
+    mux *sync.Mutex
 	client *hdfs.Client
 	fd     *hdfs.FileWriter
 	buffer chan []byte
@@ -40,6 +42,7 @@ func (out *HDFSOutput) Init(config transport.Configer) error {
 
 	out.path = filepath.Dir(out.File)
 	out.file = filepath.Base(out.File)
+    out.mux = new(sync.Mutex)
 	out.buffer = make(chan []byte, out.Batch*2)
 	out.client, err = hdfs.New(out.NameNode)
 	return err
@@ -59,9 +62,14 @@ func (out *HDFSOutput) prepareFd() (*hdfs.FileWriter, error) {
 	if err != nil {
 		return nil, err
 	}
-	out.fd, err = out.client.Append(file.TimeRule.Handle(out.File))
+	_, err = out.client.Stat(file.TimeRule.Handle(out.File))
 	if err != nil {
+		logger.Error("stat create error:%v", err)
 		out.fd, err = out.client.Create(file.TimeRule.Handle(out.File))
+        logger.Warn("create file:%v", err)
+	} else {
+		out.fd, err = out.client.Append(file.TimeRule.Handle(out.File))
+        logger.Warn("append file:%v", err)
 	}
 	return out.fd, err
 }
@@ -73,12 +81,14 @@ func (out *HDFSOutput) Start() error {
 			fname := file.TimeRule.Handle(out.File)
 			if err = out.client.Rename(fname, fname+"."+time.Now().Format("20060102150405")); err != nil {
 				logger.Error("rename file error:%v", err)
+                time.Sleep(1 * time.Second)
 				continue
 			}
 		}
 		out.fd, err = out.prepareFd()
 		if err != nil {
 			logger.Error("prepare fd error:%v", err)
+            time.Sleep(1 * time.Second)
 			continue
 		}
 		for tmp := out.Batch; tmp > 0; tmp-- {
@@ -91,7 +101,9 @@ func (out *HDFSOutput) Start() error {
 				logger.Error("write %s error,len=%v,%v", file.TimeRule.Handle(out.File), n, err)
 			}
 		}
-		out.fd.Close()
+		if out.fd.Close(); err != nil {
+			logger.Error("fd close error:%v", err)
+		}
 	}
 }
 

@@ -27,7 +27,7 @@
         "hdfs": {
             "namenode": "10.10.20.64:8020",
             "file": "/tmp/luopeng/%Y%M%D/test_%h.log",
-            "rollsize": 10000000,
+            "rollsize": 10000,
             "batch": 100
         }
     }
