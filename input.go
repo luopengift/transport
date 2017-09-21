@@ -45,7 +45,7 @@ func (i *Input) Count() uint64 {
 
 func (i *Input) Read(p []byte) (int, error) {
 	n, err := i.Inputer.Read(p)
-	i.cnt = atomic.AddUint64(&i.cnt, 1)
+	atomic.AddUint64(&i.cnt, 1)
 	return n, err
 }
 

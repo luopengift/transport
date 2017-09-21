@@ -39,6 +39,6 @@ func (c *Codec) Count() uint64 {
 }
 func (c *Codec) Handle(in, out []byte) (int, error) {
 	n, err := c.Adapter.Handle(in, out)
-	c.cnt = atomic.AddUint64(&c.cnt, 1)
+	atomic.AddUint64(&c.cnt, 1)
 	return n, err
 }

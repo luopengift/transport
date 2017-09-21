@@ -46,7 +46,7 @@ func (o *Output) Count() uint64 {
 
 func (o *Output) Write(p []byte) (int, error) {
 	n, err := o.Outputer.Write(p)
-	o.cnt = atomic.AddUint64(&o.cnt, 1)
+	atomic.AddUint64(&o.cnt, 1)
 	return n, err
 }
 
