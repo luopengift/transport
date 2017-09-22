@@ -28,29 +28,23 @@ SIGHUP	Reloads server configuration file
 */
 
 func main() {
-
 	cmd := ParseCmdLine()
-
 	if cmd.Version {
 		fmt.Println("version is", transport.VERSION)
 		os.Exit(0)
 	}
-
 	if cmd.List {
 		fmt.Println(transport.PluginDetail())
 		os.Exit(0)
 	}
-
 	if cmd.Config == "" {
 		logger.Error("config is null,exit...,please -h see help")
 		os.Exit(-1)
 	}
-
 	cfg := transport.NewConfig(cmd.Config)
 	if cfg.Runtime.VERSION != transport.VERSION {
 		logger.Warn("runtime version is %s,but config version is %s,NOT match!exit...", transport.VERSION, cfg.Runtime.VERSION)
 	}
-
 	if cmd.Read {
 		fmt.Println(cfg)
 		os.Exit(0)
@@ -84,16 +78,20 @@ type CmdLine struct {
 }
 
 func ParseCmdLine() *CmdLine {
-	cmdline := new(CmdLine)
-	cmdline.Version = *flag.Bool("v", false, "(version)版本号")
-	cmdline.Config = *flag.String("f", "", "(config)配置文件")
-	cmdline.Read = *flag.Bool("r", false, "(read)读取当前配置文件")
-	cmdline.List = *flag.Bool("l", false, "(list)查看插件列表和插件版本")
-	cmdline.Pprof = *flag.Bool("p", false, "(pprof)性能")
-
+	version := flag.Bool("v", false, "(version)版本号")
+	config := flag.String("f", "", "(config)配置文件")
+	read := flag.Bool("r", false, "(read)读取当前配置文件")
+	list := flag.Bool("l", false, "(list)查看插件列表和插件版本")
+	pprof := flag.Bool("p", false, "(pprof)性能")
 	flag.Parse()
 
-	return cmdline
+	return &CmdLine{
+		Version: *version,
+		Config:  *config,
+		Read:    *read,
+		List:    *list,
+		Pprof:   *pprof,
+	}
 }
 
 func DebugProfile() {
