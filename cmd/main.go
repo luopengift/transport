@@ -30,8 +30,8 @@ SIGHUP	Reloads server configuration file
 func main() {
 
 	cmd := ParseCmdLine()
-	
-    if cmd.Version {
+
+	if cmd.Version {
 		fmt.Println("version is", transport.VERSION)
 		os.Exit(0)
 	}
@@ -59,7 +59,7 @@ func main() {
 	logger.Info("Transport starting...")
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
-	if cfg.Runtime.DEBUG {
+	if cmd.Pprof {
 		DebugProfile()
 	}
 	var err error
@@ -76,16 +76,15 @@ func main() {
 }
 
 type CmdLine struct {
-    Version bool
-    Config  string
-    Read    bool
-    List    bool
-    Pprof   bool
+	Version bool
+	Config  string
+	Read    bool
+	List    bool
+	Pprof   bool
 }
 
-
 func ParseCmdLine() *CmdLine {
-    cmdline := new(CmdLine)
+	cmdline := new(CmdLine)
 	cmdline.Version = *flag.Bool("v", false, "(version)版本号")
 	cmdline.Config = *flag.String("f", "", "(config)配置文件")
 	cmdline.Read = *flag.Bool("r", false, "(read)读取当前配置文件")
@@ -94,7 +93,7 @@ func ParseCmdLine() *CmdLine {
 
 	flag.Parse()
 
-    return cmdline
+	return cmdline
 }
 
 func DebugProfile() {
