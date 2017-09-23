@@ -42,9 +42,9 @@ func NewTransport(cfg *Config) (*Transport, error) {
 	transport.sendChan = make(chan []byte, transport.chanSize)
 	transport.isEnd = make(chan bool)
 	if cfg.Runtime.DEBUG {
-		transport.logs = logger.NewLogger(logger.DEBUG, os.Stdout)
+		transport.logs = logger.NewLogger("2006/01/02 15:03:04.000", logger.DEBUG, os.Stdout)
 	} else {
-		transport.logs = logger.NewLogger(logger.INFO, os.Stdout)
+		transport.logs = logger.NewLogger("2006/01/02 15:03:04.000", logger.INFO, os.Stdout)
 	}
 	transport.logs.SetPrefix("[transport]")
 
