@@ -2,6 +2,7 @@ package hdfs
 
 import (
 	"github.com/colinmarc/hdfs"
+	"github.com/luopengift/types"
 	"github.com/luopengift/golibs/file"
 	"github.com/luopengift/golibs/logger"
 	"github.com/luopengift/transport"
@@ -10,7 +11,7 @@ import (
 )
 
 const (
-	VERSION = "0.0.2"
+	VERSION = "0.0.3"
 )
 
 type HDFSOutput struct {
@@ -32,7 +33,7 @@ func NewHDFSOutput() *HDFSOutput {
 
 func (out *HDFSOutput) Init(config transport.Configer) error {
 	out.Batch = 1
-	out.RollSize = 10 * transport.MB
+	out.RollSize = 10 * types.MB
 	err := config.Parse(out)
 	if err != nil {
 		return err

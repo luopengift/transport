@@ -2,6 +2,7 @@ package utils
 
 import (
 	"github.com/oschwald/maxminddb-golang"
+	"github.com/luopengift/types"
 	"net"
 )
 
@@ -97,7 +98,7 @@ func (c *Client) Search(ip string) (*GeoIP, error) {
 		return nil, err
 	}
 	geoip := &GeoIP{IP: ip}
-	err = Format(record, geoip)
+	err = types.Format(record, geoip)
 	return geoip, err
 }
 

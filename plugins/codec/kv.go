@@ -1,13 +1,11 @@
 package codec
 
 import (
-	"encoding/json"
 	"fmt"
-	"github.com/luopengift/gohttp"
 	"github.com/luopengift/golibs/logger"
 	"github.com/luopengift/transport"
 	"github.com/luopengift/transport/utils"
-	"strconv"
+	"github.com/luopengift/types"
 	"strings"
 )
 
@@ -55,20 +53,19 @@ func (kv *KVHandler) Handle(in, out []byte) (int, error) {
 		case "string", "geoip":
 			o[key] = value
 		case "int":
-			if v, err := strconv.Atoi(value); err == nil {
+			if v, err := types.StringToInt(value); err == nil {
 				o[key] = v
 			}
 		case "int64":
-			if v, err := strconv.ParseInt(value, 10, 64); err == nil {
+			if v, err := types.StringToInt64(value); err == nil {
 				o[key] = v
 			}
 		case "float64":
-			if v, err := strconv.ParseFloat(value, 64); err == nil {
+			if v, err := types.StringToFloat64(value); err == nil {
 				o[key] = v
 			}
 		case "json":
-			v := map[string]interface{}{}
-			if err := json.Unmarshal(gohttp.StringToBytes(value), &v); err == nil {
+			if v, err := types.StringToJSON(value); err == nil {
 				o[key] = v
 			}
 		default:
@@ -92,7 +89,7 @@ func (kv *KVHandler) Handle(in, out []byte) (int, error) {
 		o[key] = value
 	}
 
-	b, err := gohttp.ToBytes(o)
+	b, err := types.JSONToBytes(o)
 	if err != nil {
 		return 0, err
 	}
@@ -101,7 +98,7 @@ func (kv *KVHandler) Handle(in, out []byte) (int, error) {
 }
 
 func (kv *KVHandler) Version() string {
-	return "0.0.3"
+	return "0.0.4"
 }
 
 func init() {
