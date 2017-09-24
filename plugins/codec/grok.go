@@ -2,7 +2,7 @@ package codec
 
 import (
 	"fmt"
-	"github.com/luopengift/gohttp"
+	"github.com/luopengift/types"
 	"github.com/luopengift/transport"
 	"regexp"
 )
@@ -32,7 +32,7 @@ func (j *GrokHandler) Handle(in, out []byte) (int, error) {
 		kv[value] = match[key]
 	}
 	delete(kv, "")
-	b, err := gohttp.ToBytes(kv)
+	b, err := types.ToBytes(kv)
 	if err != nil {
 		return 0, err
 	}
@@ -41,7 +41,7 @@ func (j *GrokHandler) Handle(in, out []byte) (int, error) {
 }
 
 func (j *GrokHandler) Version() string {
-	return "0.0.1"
+	return "0.0.2"
 }
 
 func init() {

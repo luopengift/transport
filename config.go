@@ -3,7 +3,6 @@ package transport
 import (
 	"fmt"
 	"github.com/luopengift/types"
-	"github.com/luopengift/gohttp"
 	"github.com/luopengift/golibs/file"
 	"github.com/luopengift/golibs/logger"
 	"strings"
@@ -54,7 +53,7 @@ func (cfg *Config) String() string {
 		for plugin, config := range cfg {
 			str += strings.Repeat(writeSpace, 2) + plugin + ":\n"
 			for key, value := range config {
-				valueString, _ := gohttp.ToString(value)
+				valueString, _ := types.ToString(value)
 				str += strings.Repeat(writeSpace, 4) + key + ": " + valueString + "\n"
 			}
 		}
