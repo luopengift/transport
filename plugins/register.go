@@ -1,7 +1,7 @@
 package plugins
 
 import (
-	_ "github.com/luopengift/transport/plugins/codec"
+	_ "github.com/luopengift/transport/plugins/adapt"
 
 	_ "github.com/luopengift/transport/plugins/input/exec"
 	_ "github.com/luopengift/transport/plugins/input/file"
