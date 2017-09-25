@@ -2,10 +2,10 @@ package hdfs
 
 import (
 	"github.com/colinmarc/hdfs"
-	"github.com/luopengift/types"
 	"github.com/luopengift/golibs/file"
 	"github.com/luopengift/golibs/logger"
 	"github.com/luopengift/transport"
+	"github.com/luopengift/types"
 	"path/filepath"
 	"time"
 )

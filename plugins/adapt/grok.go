@@ -2,8 +2,8 @@ package codec
 
 import (
 	"fmt"
-	"github.com/luopengift/types"
 	"github.com/luopengift/transport"
+	"github.com/luopengift/types"
 	"regexp"
 )
 

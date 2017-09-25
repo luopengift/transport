@@ -1,8 +1,8 @@
 package utils
 
 import (
-	"github.com/oschwald/maxminddb-golang"
 	"github.com/luopengift/types"
+	"github.com/oschwald/maxminddb-golang"
 	"net"
 )
 
