@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	VERSION = "0.0.3"
+	VERSION = "0.0.4"
 )
 
 type HDFSOutput struct {
@@ -95,7 +95,7 @@ func (out *HDFSOutput) Start() error {
 				logger.Error("write %s error,len=%v,%v", file.TimeRule.Handle(out.File), n, err)
 			}
 		}
-		if out.fd.Close(); err != nil {
+		if err = out.fd.Close(); err != nil {
 			logger.Error("fd close error:%v", err)
 		}
 	}
