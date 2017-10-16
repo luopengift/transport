@@ -65,7 +65,7 @@ func (kv *KVHandler) Handle(in, out []byte) (int, error) {
 				o[key] = v
 			}
 		case "json":
-			if v, err := types.StringToJSON(value); err == nil {
+			if v, err := types.StringToMap(value); err == nil {
 				o[key] = v
 			}
 		default:
@@ -89,7 +89,7 @@ func (kv *KVHandler) Handle(in, out []byte) (int, error) {
 		o[key] = value
 	}
 
-	b, err := types.JSONToBytes(o)
+	b, err := types.MapToBytes(o)
 	if err != nil {
 		return 0, err
 	}
@@ -98,7 +98,7 @@ func (kv *KVHandler) Handle(in, out []byte) (int, error) {
 }
 
 func (kv *KVHandler) Version() string {
-	return "0.0.4"
+	return "0.0.5"
 }
 
 func init() {

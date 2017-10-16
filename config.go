@@ -2,7 +2,7 @@ package transport
 
 import (
 	"fmt"
-	"github.com/luopengift/golibs/file"
+//	"github.com/luopengift/golibs/file"
 	"github.com/luopengift/golibs/logger"
 	"github.com/luopengift/types"
 	"strings"
@@ -73,9 +73,10 @@ func NewConfig(path string) *Config {
 }
 
 func (cfg *Config) Init(path string) error {
-	conf := file.NewConfig(path)
-	err := conf.Parse(cfg)
-	return err
+	//conf := file.NewConfig(path)
+	//err := conf.Parse(cfg)
+	err := types.ParseConfigFile(path, cfg)
+    return err
 
 }
 
