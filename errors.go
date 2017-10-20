@@ -7,6 +7,8 @@ import (
 var (
 	ClosedError = errors.New("Closed")
 
+	OperationTimeoutError = errors.New("OperationTimeoutError: timeout")
+
 	BufferClosedError      = errors.New("BufferClosedError:chan is closed")
 	ReadBufferClosedError  = errors.New("ReadBufferClosedError:chan is closed")
 	WriteBufferClosedError = errors.New("WriteBufferClosedError:chan is closed")

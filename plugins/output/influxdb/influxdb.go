@@ -107,11 +107,11 @@ func (out *InfluxOutput) Write(p []byte) (int, error) {
 }
 
 func (out *InfluxOutput) Close() error {
-	return nil
+	return out.Close()
 }
 
 func (out *InfluxOutput) Version() string {
-	return "0.0.1"
+	return "0.0.2"
 }
 
 func init() {

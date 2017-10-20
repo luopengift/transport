@@ -7,6 +7,7 @@ import (
 	_ "github.com/luopengift/transport/plugins/input/file"
 	_ "github.com/luopengift/transport/plugins/input/hdfs"
 	_ "github.com/luopengift/transport/plugins/input/http"
+	_ "github.com/luopengift/transport/plugins/input/influxdb"
 	_ "github.com/luopengift/transport/plugins/input/kafka"
 	_ "github.com/luopengift/transport/plugins/input/random"
 	_ "github.com/luopengift/transport/plugins/input/std"
