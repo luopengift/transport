@@ -15,6 +15,7 @@ import (
 	_ "github.com/luopengift/transport/plugins/output/elasticsearch"
 	_ "github.com/luopengift/transport/plugins/output/file"
 	_ "github.com/luopengift/transport/plugins/output/hdfs"
+	_ "github.com/luopengift/transport/plugins/output/http"
 	_ "github.com/luopengift/transport/plugins/output/influxdb"
 	_ "github.com/luopengift/transport/plugins/output/kafka"
 	_ "github.com/luopengift/transport/plugins/output/null"

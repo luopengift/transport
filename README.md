@@ -66,6 +66,7 @@ type Outputer interface {
 ### Output组件:
 - [x] [file](https://github.com/luopengift/transport/blob/master/plugins/output/file/README.md): 文件
 - [x] [kafka](https://github.com/luopengift/transport/blob/master/plugins/output/kafka/README.md): kafka
+- [x] [http](https://github.com/luopengift/transport/blob/master/plugins/output/http/README.md): http, Post to a endpoint
 - [x] [null](https://github.com/luopengift/transport/blob/master/plugins/output/null/README.md): 类似于/dev/null,输出到空
 - [x] [std](https://github.com/luopengift/transport/blob/master/plugins/output/std/README.md): stdout,标准输出
 - [x] [elasticsearch](https://github.com/luopengift/transport/blob/master/plugins/output/elasticsearch/README.md): es API `/_bulk`

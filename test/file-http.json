@@ -1,0 +1,26 @@
+{
+    "runtime": {
+        "DEBUG": true,
+        "HTTP":"0.0.0.0:12345",
+        "BYTESIZE": 1000,
+        "CHANSIZE": 1000,
+        "MAXPROCS": 4,
+        "VERSION": "0.0.2"
+    },
+    "inputs": {
+        "files": {
+            "path": [
+                "/tmp/a.log"
+            ],
+            "endstop":false
+        }
+    },
+    "handles": {
+        "addenter": {}
+    },
+    "outputs": {
+        "http": {
+            "addr": "http://127.0.0.1:8080/test"
+        }
+    }
+}
