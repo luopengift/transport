@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	VERSION = "0.0.1"
+	VERSION = "0.0.2"
 )
 
 type HTTPOutput struct {
@@ -44,7 +44,7 @@ func (out *HTTPOutput) Write(p []byte) (int, error) {
 		return 0, err
 	}
 	if resp.Code() != 200 {
-		logger.Error("plugin out http post status not 200, response is: %#v", resp)
+		logger.Error("plugin out http post status not 200, response is: %#v", string(resp.Byte))
 		return 0, err
 	}
 	return len(p), nil
