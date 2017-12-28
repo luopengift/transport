@@ -8,9 +8,9 @@ import (
 type Alert struct {
 	Labels	map[string]interface{}		`json:"labels"`
 	Annotations	map[string]string	`json:"annotations"`
-	StartsAt	string			`json:"startsAt"`
-	EndsAt		string			`json:"endsAt"`
-	generatorURL	string			`json:"generatorURL"`
+	StartsAt	string			`json:"startsAt,omitempty"`
+	EndsAt		string			`json:"endsAt,omitempty"`
+	GeneratorURL	string			`json:"generatorURL,omitempty"`
 }
 
 
@@ -27,6 +27,7 @@ func (h *PrometheusAlertHandler) Handle(in, out []byte) (int, error) {
 		return 0, err
 	}
 	labels := map[string]interface{}{
+		"alertname": "ERROR_LOG",
 		"type": src["fields"].(map[string]interface{})["service_type"],//"error_log"
 		"file":src["source"].(string),
 		"host": src["beat"].(map[string]interface{})["hostname"],
@@ -38,7 +39,8 @@ func (h *PrometheusAlertHandler) Handle(in, out []byte) (int, error) {
 		Labels: labels,
 		Annotations: annotations,
 		StartsAt: src["@timestamp"].(string),
-		EndsAt: "0001-01-01T00:00:00Z",
+		//EndsAt: "0001-01-01T00:00:00Z",
+		GeneratorURL: "",
 	}
 	alerts := []*Alert{&dest}
 	b, err := types.ToBytes(alerts)

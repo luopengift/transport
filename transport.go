@@ -3,9 +3,9 @@ package transport
 import (
 	"fmt"
 	"github.com/luopengift/golibs/logger"
-	"os"
 	"strings"
 	"time"
+	"os"
 )
 
 type Transport struct {
@@ -41,10 +41,11 @@ func NewTransport(cfg *Config) (*Transport, error) {
 	transport.recvChan = make(chan []byte, transport.chanSize)
 	transport.sendChan = make(chan []byte, transport.chanSize)
 	transport.isEnd = make(chan bool)
+	f := os.Stdout//logger.NewFileWriter("logs/transport_%Y%M%D.log", 1024 * 1024 * 1024)
 	if cfg.Runtime.DEBUG {
-		transport.logs = logger.NewLogger("2006/01/02 15:03:04.000", logger.DEBUG, os.Stdout)
+		transport.logs = logger.NewLogger("2006/01/02 15:03:04.000", logger.DEBUG, f)
 	} else {
-		transport.logs = logger.NewLogger("2006/01/02 15:03:04.000", logger.INFO, os.Stdout)
+		transport.logs = logger.NewLogger("2006/01/02 15:03:04.000", logger.INFO, f)
 	}
 	transport.logs.SetPrefix("[transport]")
 

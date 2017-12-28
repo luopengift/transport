@@ -29,7 +29,7 @@ func (out *HTTPOutput) Init(config transport.Configer) error {
 }
 
 func (out *HTTPOutput) Start() error {
-	out.pool = gohttp.NewClientPool(10, 10, 10)
+	out.pool = gohttp.NewClientPool(100, 100, 100)
 	return nil
 }
 
@@ -39,7 +39,8 @@ func (out *HTTPOutput) Write(p []byte) (int, error) {
 		return 0, err
 	}
 	defer out.pool.Put(client)
-	resp, err := client.Url(out.Addr).Header("Content-Type", "application/json;charset=utf-8").Body(p).Post()
+	resp, err := client.KeepAlived(false).Url(out.Addr).Header("Content-Type", "application/json;charset=utf-8").Body(p).Post()
+	//resp, err := gohttp.NewClient().KeepAlived(false).Url(out.Addr).Header("Content-Type", "application/json;charset=utf-8").Body(p).Post()
 	if err != nil {
 		return 0, err
 	}
