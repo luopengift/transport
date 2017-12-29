@@ -25,11 +25,11 @@ func (out *HTTPOutput) Init(config transport.Configer) error {
 	if err != nil {
 		return err
 	}
+	out.pool = gohttp.NewClientPool(100, 100, 100)
 	return err
 }
 
 func (out *HTTPOutput) Start() error {
-	out.pool = gohttp.NewClientPool(100, 100, 100)
 	return nil
 }
 

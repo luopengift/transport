@@ -6,7 +6,7 @@ import (
 )
 
 type Alert struct {
-	Labels	map[string]interface{}		`json:"labels"`
+	Labels	map[string]string		`json:"labels"`
 	Annotations	map[string]string	`json:"annotations"`
 	StartsAt	string			`json:"startsAt,omitempty"`
 	EndsAt		string			`json:"endsAt,omitempty"`
@@ -26,14 +26,17 @@ func (h *PrometheusAlertHandler) Handle(in, out []byte) (int, error) {
 	if err != nil {
 		return 0, err
 	}
-	labels := map[string]interface{}{
+	labels := map[string]string{
 		"alertname": "ERROR_LOG",
-		"type": src["fields"].(map[string]interface{})["service_type"],//"error_log"
+		"service": src["serviceName"].(string),//"error_log"
 		"file":src["source"].(string),
-		"host": src["beat"].(map[string]interface{})["hostname"],
+		"host": src["beat"].(map[string]interface{})["hostname"].(string),
 	}
 	annotations := map[string]string{
 		"summary": src["message"].(string),
+	}
+	for k, v := range src["error_stack"].(map[string]interface{}) {
+		annotations[k] = v.(string)
 	}
 	dest := Alert{
 		Labels: labels,
@@ -45,7 +48,7 @@ func (h *PrometheusAlertHandler) Handle(in, out []byte) (int, error) {
 	alerts := []*Alert{&dest}
 	b, err := types.ToBytes(alerts)
 	if err != nil {
-		return 0,nil
+		return 0, nil
 	}
 	n := copy(out, b)
 	return n, nil
