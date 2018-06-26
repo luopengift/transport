@@ -1,0 +1,53 @@
+{
+	"ImportPath": "github.com/luopengift/transport",
+	"GoVersion": "go1.10",
+	"GodepVersion": "v80",
+	"Deps": [
+		{
+			"ImportPath": "github.com/luopengift/golibs/channel",
+			"Rev": "c06a1a376906ab9aacba9ac52a38788705b06642"
+		},
+		{
+			"ImportPath": "github.com/luopengift/golibs/cron",
+			"Rev": "c06a1a376906ab9aacba9ac52a38788705b06642"
+		},
+		{
+			"ImportPath": "github.com/luopengift/golibs/logger",
+			"Rev": "c06a1a376906ab9aacba9ac52a38788705b06642"
+		},
+		{
+			"ImportPath": "github.com/luopengift/types",
+			"Rev": "51edeb0cce50f8fdabf69695e8b876060a5dc8aa"
+		},
+		{
+			"ImportPath": "gopkg.in/gcfg.v1",
+			"Comment": "v1.2.3",
+			"Rev": "61b2c08bc8f6068f7c5ca684372f9a6cb1c45ebe"
+		},
+		{
+			"ImportPath": "gopkg.in/gcfg.v1/scanner",
+			"Comment": "v1.2.3",
+			"Rev": "61b2c08bc8f6068f7c5ca684372f9a6cb1c45ebe"
+		},
+		{
+			"ImportPath": "gopkg.in/gcfg.v1/token",
+			"Comment": "v1.2.3",
+			"Rev": "61b2c08bc8f6068f7c5ca684372f9a6cb1c45ebe"
+		},
+		{
+			"ImportPath": "gopkg.in/gcfg.v1/types",
+			"Comment": "v1.2.3",
+			"Rev": "61b2c08bc8f6068f7c5ca684372f9a6cb1c45ebe"
+		},
+		{
+			"ImportPath": "gopkg.in/warnings.v0",
+			"Comment": "v0.1.2",
+			"Rev": "ec4a0fea49c7b46c2aeb0b51aac55779c607e52b"
+		},
+		{
+			"ImportPath": "gopkg.in/yaml.v2",
+			"Comment": "v2.2.1",
+			"Rev": "5420a8b6744d3b0345ab293f6fcba19c978f1183"
+		}
+	]
+}
