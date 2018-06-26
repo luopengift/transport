@@ -1,0 +1,36 @@
+{
+    "runtime": {
+        "DEBUG": true,
+        "HTTP":"0.0.0.0:12345",
+        "BYTESIZE": 1048578,
+        "CHANSIZE": 500,
+        "MAXPROCS": 4,
+        "VERSION": "0.0.2"
+    },
+    "inputs": {
+        "kafka": {
+            "addrs": [
+                "10.28.13.24:2181",
+                "10.28.13.25:2181",
+                "10.28.13.26:2181"
+            ],
+            "topics": [
+                "logstash-error"
+            ],
+            "group":"transport_errorlog_group_test",
+            "offset": -2
+        }
+    },
+    "handles": {
+        "prometheusalert": {
+	    "cmdbLink": "http://10.100.50.82:8080/aws/ec2",
+        "serviceLink": "http://10.100.50.82:8080/service",
+	    "generatorURL": "http://10.28.13.66:5601/app/kibana#/discover?_g=(refreshInterval:(display:Off,pause:!f,value:0),time:(from:now-24h,mode:quick,to:now))&_a=(columns:!(_source),index:'logstash-*',interval:auto,query:(query_string:(analyze_wildcard:!t,query:'serviceName:%22SERVICE%22%20AND%20host:%22HOST%22%20')),sort:!('@timestamp',desc))"
+	}
+    },
+    "outputs": {
+        "http": {
+            "addr": "http://10.100.50.202:9093/api/v1/alerts"
+        }
+    }
+}

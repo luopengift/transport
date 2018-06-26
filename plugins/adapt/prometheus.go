@@ -1,11 +1,13 @@
 package codec
 
 import (
-	"time"
+	"bytes"
 	"fmt"
+	"github.com/luopengift/gohttp"
 	"github.com/luopengift/transport"
 	"github.com/luopengift/types"
 	"strings"
+	"time"
 )
 
 type Alert struct {
@@ -17,24 +19,136 @@ type Alert struct {
 }
 
 // add a enter symbol at end of line, classic written into file
-type PrometheusAlertHandler struct{}
+type PrometheusAlertHandler struct {
+	GeneratorURL string `json:"generatorURL"`
+	CmdbLink     string `json:"cmdbLink"`
+	ServiceLink  string `json:"serviceLink"`
+
+	cmdb    []interface{}
+	service []interface{}
+}
+
+func (h *PrometheusAlertHandler) QueryCMDB(k, v string) string {
+	for _, value := range h.cmdb {
+		ec2 := value.(map[string]interface{})
+		if tags := ec2["Tags"]; tags != nil {
+			for _, tag := range tags.([]interface{}) {
+				item := tag.(map[string]interface{})
+				if item["Key"].(string) == k && item["Value"].(string) == v {
+					return ec2["PrivateIpAddress"].(string)
+				}
+			}
+		} else {
+			fmt.Println("Tags 为空: ", ec2["InstanceId"])
+		}
+	}
+	return fmt.Sprintf("IP查询失败:无法查询到%s=%s的资产", k, v)
+}
+
+func (h *PrometheusAlertHandler) QuerySERVICE(k, v string) string {
+	for _, value := range h.service {
+		service := value.(map[string]interface{})
+		s, ok := service[k].(string)
+		if !ok {
+			fmt.Println("service[k].(string) error!", service[k])
+			continue
+		}
+
+		if s == v {
+			if devusers, ok := service["dev_user"].([]interface{}); ok {
+				var devs []string
+				for _, dev := range devusers {
+					devs = append(devs, dev.(string))
+				}
+
+				return strings.Join(devs, ",")
+			}
+			return "devuser为空"
+		}
+	}
+	fmt.Println("service query null", k, v)
+	return fmt.Sprintf("开发者查询失败:无法查询到%s=%s的开发者", k, v)
+}
+
+func GetExtraInfo(url string) ([]interface{}, error) {
+	resp, err := gohttp.NewClient().Url(url).Get()
+	if err != nil {
+		return nil, err
+	}
+	if resp.Code()/100 > 2 {
+		errMsg := fmt.Sprintf("%s http response is %d", url, resp.Code())
+		return nil, fmt.Errorf(errMsg)
+	}
+	result, err := types.ToMap(resp.Bytes())
+	if err != nil {
+		return nil, err
+	}
+	return result["data"].([]interface{}), nil
+
+}
+
+func GetCMDBInfo(url string) ([]interface{}, error) {
+	resp, err := gohttp.NewClient().Url(url).Get()
+	if err != nil {
+		return nil, err
+	}
+	if resp.Code()/100 > 2 {
+		errMsg := fmt.Sprintf("%s http response is %d", url, resp.Code())
+		return nil, fmt.Errorf(errMsg)
+	}
+
+	result, err := types.ToMap(resp.Bytes())
+	if err != nil {
+		return nil, err
+	}
+	return result["data"].([]interface{}), nil
+
+}
 
 func (h *PrometheusAlertHandler) Init(config transport.Configer) error {
+	err := config.Parse(h)
+	if err != nil {
+		return err
+	}
+	if h.cmdb, err = GetCMDBInfo(h.CmdbLink); err != nil {
+		return err
+	}
+	fmt.Println(h.cmdb)
+	if len(h.cmdb) == 0 {
+		return fmt.Errorf("ec2 data is null!")
+	}
+	if h.service, err = GetExtraInfo(h.ServiceLink); err != nil {
+		return err
+	}
+	if len(h.service) == 0 {
+		return fmt.Errorf("service data is null!")
+	}
+	fmt.Println(h.service)
 	return nil
 }
 
-func timeformat(t string) string {
+func timeformat(t string, delta int) time.Time {
 	zone, _ := time.LoadLocation("Asia/Chongqing")
 	loctime, _ := time.ParseInLocation("2006-01-02T15:04:05.000Z", t, zone)
-	return loctime.Add(8 * time.Hour).Format(time.RFC822)
+	return loctime.Add(time.Duration(delta) * time.Hour)
 }
 
-func timeformat2(t string) time.Time {
-	zone, _ := time.LoadLocation("Asia/Chongqing")
-	loctime, _ := time.ParseInLocation("2006-01-02T15:04:05.000Z", t, zone)
-	return loctime.Add(8 * time.Hour)
+func getAbstract(msg string) string {
+	fristLine, err := bytes.NewBufferString(msg).ReadString('\n')
+	if err != nil {
+		return ""
+	}
+	s := strings.Split(fristLine, "ERROR")
+	if len(s) == 1 {
+		fmt.Println("split by ERROR error!")
+		return ""
+	}
+	ab := strings.Split(s[1], ":")[0]
+	if len(ab) > 100 {
+		return ab[:100]
+	}
+	return ab
 }
-
 func (h *PrometheusAlertHandler) Handle(in, out []byte) (int, error) {
 	src, err := types.ToMap(in)
 	if err != nil {
@@ -54,28 +168,40 @@ func (h *PrometheusAlertHandler) Handle(in, out []byte) (int, error) {
 	} else {
 		service = services[7]
 	}
-	url := "http://10.28.13.66:5601/app/kibana#/discover?_g=(refreshInterval:(display:Off,pause:!f,value:0),time:(from:now-24h,mode:quick,to:now))&_a=(columns:!(_source),index:'logstash-*',interval:auto,query:(query_string:(analyze_wildcard:!t,query:'serviceName:%22"+service+"%22%20AND%20host:%22"+host+"%22%20AND%20level:%22ERROR%22')),sort:!('@timestamp',desc))"
+
+	serviceInfo := h.QuerySERVICE("artifact_id", service)
+	fmt.Println("query service result", serviceInfo)
+
+	msg := src["message"].(string)
+
 	labels := map[string]string{
 		"alertname": "ERROR_LOG",
-		"service":   service, //"error_log"
-		"file":      src["source"].(string),
-		"host":      host,
-	//	"starttime": timeformat(src["@timestamp"].(string)),
+		"service":   service,
+		"abstract":  getAbstract(msg),
 	}
 	annotations := map[string]string{
-		"summary": src["message"].(string),
+		"summary":    msg,
+		"file":       src["source"].(string),
+		"host":       host,
+		"developers": h.QuerySERVICE("artifact_id", service),
+		"ip":         h.QueryCMDB("Name", host), //根据主机名,查询IP地址
 	}
 	if err_stack, ok := src["error_stack"]; ok {
 		for k, v := range err_stack.(map[string]interface{}) {
 			annotations[k] = v.(string)
 		}
 	}
+
+	generatorUrl := h.GeneratorURL
+	generatorUrl = strings.Replace(generatorUrl, "SERVICE", service, -1)
+	generatorUrl = strings.Replace(generatorUrl, "HOST", host, -1)
+
 	dest := Alert{
-		Labels:      labels,
-		Annotations: annotations,
-		StartsAt:    timeformat2(src["@timestamp"].(string)),
-		//EndsAt: "0001-01-01T00:00:00Z",
-		GeneratorURL: url,
+		Labels:       labels,
+		Annotations:  annotations,
+		StartsAt:     timeformat(src["@timestamp"].(string), 8),
+		EndsAt:       timeformat(src["@timestamp"].(string), 8+24),
+		GeneratorURL: generatorUrl,
 	}
 	alerts := []*Alert{&dest}
 	b, err := types.ToBytes(alerts)
@@ -87,7 +213,7 @@ func (h *PrometheusAlertHandler) Handle(in, out []byte) (int, error) {
 }
 
 func (h *PrometheusAlertHandler) Version() string {
-	return "0.0.1"
+	return "0.0.9_011118"
 }
 
 func init() {

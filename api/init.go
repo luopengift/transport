@@ -32,5 +32,5 @@ func ApiHttp(addr string) {
 	app := gohttp.Init()
 	app.Route("^/$", &RootHandler{})
 	app.Route("^/stats$", &StatsHandler{})
-	go app.Run(addr)
+	go app.RunHttp(addr)
 }

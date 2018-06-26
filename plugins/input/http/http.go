@@ -49,7 +49,7 @@ func (in *HttpInput) Read(p []byte) (int, error) {
 }
 
 func (in *HttpInput) Start() error {
-	in.app.Run(in.Addr)
+	in.app.RunHttp(in.Addr)
 	return nil
 }
 
