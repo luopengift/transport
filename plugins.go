@@ -4,14 +4,14 @@ import (
 	"fmt"
 )
 
-// Store available plugins, include input, adapt, output.
+// PluginsMap Store available plugins, include input, adapt, output.
 type PluginsMap struct {
 	Inputers  map[string]Inputer
 	Outputers map[string]Outputer
 	Adapters  map[string]Adapter
 }
 
-// New plugin map instance
+// NewpluginsMap map instance
 func NewPluginsMap() *PluginsMap {
 	Plugins = new(PluginsMap)
 	Plugins.Inputers = make(map[string]Inputer)
@@ -20,25 +20,25 @@ func NewPluginsMap() *PluginsMap {
 	return Plugins
 }
 
-// Global plugins instance
+// Plugins Global plugins instance
 var Plugins *PluginsMap
 
-// Regist input plugin
+// RegistInputer Regist input plugin
 func RegistInputer(key string, input Inputer) {
 	Plugins.Inputers[key] = input
 }
 
-// Regist out plugin
+// RegistOutputer Regist out plugin
 func RegistOutputer(key string, output Outputer) {
 	Plugins.Outputers[key] = output
 }
 
-// Regist adapt plugin
+// RegistHandler Regist adapt plugin
 func RegistHandler(key string, a Adapter) {
 	Plugins.Adapters[key] = a
 }
 
-// Show plugins information
+// PluginDetail Show plugins information
 func PluginDetail() string {
 	str := fmt.Sprintf("%-16s %s\n", "[Inputs]", "version")
 	for name, inputer := range Plugins.Inputers {

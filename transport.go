@@ -2,12 +2,14 @@ package transport
 
 import (
 	"fmt"
-	"github.com/luopengift/golibs/logger"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/luopengift/golibs/logger"
 )
 
+// Transport core struct
 type Transport struct {
 	byteSize int
 	chanSize int
@@ -21,6 +23,7 @@ type Transport struct {
 	logs     *logger.Logger
 }
 
+// NewTransprot new transport
 func NewTransport(cfg *Config) (*Transport, error) {
 	var err error
 	transport := new(Transport)
@@ -62,6 +65,7 @@ func (t *Transport) injectOutput(p []byte) {
 	t.sendChan <- p
 }
 
+// RunInputs run input plugins
 func (t *Transport) RunInputs() {
 	for _, input := range t.Inputs {
 		go input.Inputer.Start()
@@ -81,6 +85,7 @@ func (t *Transport) RunInputs() {
 
 }
 
+// RunAdapts run adapt plugins
 func (t *Transport) RunAdapts() {
 	for _, adapt := range t.Adapts {
 		go func(c *Adapt) {
@@ -106,6 +111,7 @@ func (t *Transport) RunAdapts() {
 	}
 }
 
+// RunOutputs run output plugins
 func (t *Transport) RunOutputs() {
 	for _, output := range t.Outputs {
 		go output.Start()
@@ -128,12 +134,14 @@ func (t *Transport) RunOutputs() {
 	}
 }
 
+// Run run
 func (t *Transport) Run() {
 	go t.RunOutputs()
 	go t.RunAdapts()
 	go t.RunInputs()
 }
 
+// Stop stop
 func (t *Transport) Stop() {
 	stopCronTask() //关闭全部定时任务
 	for _, input := range t.Inputs {
@@ -147,20 +155,22 @@ func (t *Transport) Stop() {
 	t.logs.Info("stop success...%s", time.Now())
 }
 
+// Stat monitor
 func (t *Transport) Stat() string {
-	input_stat := []string{}
+	inputStat := []string{}
 	for _, input := range t.Inputs {
-		input_stat = append(input_stat, fmt.Sprintf("%v:%v", input.Name, input.Count()))
+		inputStat = append(inputStat, fmt.Sprintf("%v:%v", input.Name, input.Count()))
 	}
-	adapt_stat := []string{}
+	adaptStat := []string{}
 	for _, adapt := range t.Adapts {
-		adapt_stat = append(adapt_stat, fmt.Sprintf("%v:%v", adapt.Name, adapt.Count()))
+		adaptStat = append(adaptStat, fmt.Sprintf("%v:%v", adapt.Name, adapt.Count()))
 	}
-	output_stat := []string{}
+	outputStat := []string{}
 	for _, output := range t.Outputs {
-		output_stat = append(output_stat, fmt.Sprintf("%v:%v", output.Name, output.Count()))
+		outputStat = append(outputStat, fmt.Sprintf("%v:%v", output.Name, output.Count()))
 	}
-	return fmt.Sprintf("stat=> [inputs]:%s|[adapts]:%s|[outputs]:%s", strings.Join(input_stat, ","), strings.Join(adapt_stat, ","), strings.Join(output_stat, ","))
+	return fmt.Sprintf("stat=> [inputs]:%s|[adapts]:%s|[outputs]:%s", strings.Join(inputStat, ","), strings.Join(adaptStat, ","), strings.Join(outputStat, ","))
 }
 
+// T transport
 var T *Transport

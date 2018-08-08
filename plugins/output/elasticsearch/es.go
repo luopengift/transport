@@ -2,6 +2,7 @@ package elasticsearch
 
 import (
 	"bytes"
+
 	"github.com/luopengift/gohttp"
 	"github.com/luopengift/golibs/file"
 	"github.com/luopengift/golibs/logger"
@@ -69,7 +70,7 @@ func (out *EsOutput) Start() error {
 		if err != nil {
 			logger.Error("get client from pool error:%v", err)
 		}
-		response, err := client.Url("http://"+out.Addrs[0]).Path("/_bulk").Header("Accept", "application/json").Body(buf.Bytes()).Post()
+		response, err := client.URLString("http://"+out.Addrs[0]).Path("/_bulk").Header("Accept", "application/json").Body(buf.Bytes()).Post()
 		if err != nil {
 			logger.Error("%v,%v", err, response)
 		}

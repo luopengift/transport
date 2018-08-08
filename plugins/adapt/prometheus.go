@@ -3,11 +3,12 @@ package codec
 import (
 	"bytes"
 	"fmt"
+	"strings"
+	"time"
+
 	"github.com/luopengift/gohttp"
 	"github.com/luopengift/transport"
 	"github.com/luopengift/types"
-	"strings"
-	"time"
 )
 
 type Alert struct {
@@ -70,8 +71,9 @@ func (h *PrometheusAlertHandler) QuerySERVICE(k, v string) string {
 	return fmt.Sprintf("开发者查询失败:无法查询到%s=%s的开发者", k, v)
 }
 
+// GetExtraInfo get extra info
 func GetExtraInfo(url string) ([]interface{}, error) {
-	resp, err := gohttp.NewClient().Url(url).Get()
+	resp, err := gohttp.NewClient().URLString(url).Get()
 	if err != nil {
 		return nil, err
 	}
@@ -87,8 +89,9 @@ func GetExtraInfo(url string) ([]interface{}, error) {
 
 }
 
+// GetCMDBInfo get cmdb
 func GetCMDBInfo(url string) ([]interface{}, error) {
-	resp, err := gohttp.NewClient().Url(url).Get()
+	resp, err := gohttp.NewClient().URLString(url).Get()
 	if err != nil {
 		return nil, err
 	}
@@ -105,6 +108,7 @@ func GetCMDBInfo(url string) ([]interface{}, error) {
 
 }
 
+// Init init
 func (h *PrometheusAlertHandler) Init(config transport.Configer) error {
 	err := config.Parse(h)
 	if err != nil {
@@ -115,13 +119,13 @@ func (h *PrometheusAlertHandler) Init(config transport.Configer) error {
 	}
 	fmt.Println(h.cmdb)
 	if len(h.cmdb) == 0 {
-		return fmt.Errorf("ec2 data is null!")
+		return fmt.Errorf("ec2 data is null")
 	}
 	if h.service, err = GetExtraInfo(h.ServiceLink); err != nil {
 		return err
 	}
 	if len(h.service) == 0 {
-		return fmt.Errorf("service data is null!")
+		return fmt.Errorf("service data is null")
 	}
 	fmt.Println(h.service)
 	return nil

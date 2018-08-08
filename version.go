@@ -1,5 +1,6 @@
 package transport
 
 const (
-	VERSION = "0.1.8.120817_beta"
+	// VERSION version
+	VERSION = "0.1.9.080818_beta"
 )

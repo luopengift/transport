@@ -5,7 +5,7 @@ import (
 	"sync/atomic"
 )
 
-// 数据输入接口
+// Inputer 数据输入接口
 type Inputer interface {
 	Init(Configer) error
 	Start() error
@@ -14,6 +14,7 @@ type Inputer interface {
 	Version() string
 }
 
+// Input input
 type Input struct {
 	Name string
 	cnt  uint64 //count numbers of input message

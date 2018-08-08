@@ -17,7 +17,7 @@ type HttpInput struct {
 	Path string `json:"path"`
 
 	app *gohttp.Application
-	gohttp.HttpHandler
+	gohttp.BaseHTTPHandler
 }
 
 func NewHttpInput() *HttpInput {
@@ -37,7 +37,7 @@ func (in *HttpInput) Init(config transport.Configer) error {
 }
 
 func (in *HttpInput) POST() {
-	body := in.HttpHandler.GetBodyArgs()
+	body := in.BaseHTTPHandler.GetBodyArgs()
 	Ch <- body
 	logger.Error("body:%v,ok", string(body))
 	in.Output("ok")
@@ -49,7 +49,7 @@ func (in *HttpInput) Read(p []byte) (int, error) {
 }
 
 func (in *HttpInput) Start() error {
-	in.app.RunHttp(in.Addr)
+	in.app.Run(in.Addr)
 	return nil
 }
 

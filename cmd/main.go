@@ -3,16 +3,17 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/luopengift/golibs/logger"
-	"github.com/luopengift/transport"
-	"github.com/luopengift/transport/api"
-	_ "github.com/luopengift/transport/plugins"
 	"net/http"
 	_ "net/http/pprof"
 	"os"
 	"os/signal"
 	"runtime"
 	"runtime/pprof"
+
+	"github.com/luopengift/golibs/logger"
+	"github.com/luopengift/transport"
+	"github.com/luopengift/transport/api"
+	_ "github.com/luopengift/transport/plugins"
 )
 
 /*
@@ -64,7 +65,7 @@ func main() {
 	}
 	defer transport.T.Stop()
 
-	api.ApiHttp(cfg.Runtime.HTTP)
+	api.APIHttp(cfg.Runtime.HTTP)
 	transport.T.Run()
 	select {}
 }

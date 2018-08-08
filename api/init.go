@@ -7,7 +7,7 @@ import (
 )
 
 type RootHandler struct {
-	gohttp.HttpHandler
+	gohttp.BaseHTTPHandler
 }
 
 func (ctx *RootHandler) GET() {
@@ -15,7 +15,7 @@ func (ctx *RootHandler) GET() {
 }
 
 type StatsHandler struct {
-	gohttp.HttpHandler
+	gohttp.BaseHTTPHandler
 }
 
 func (ctx *StatsHandler) GET() {
@@ -25,12 +25,12 @@ func (ctx *StatsHandler) GET() {
 }
 
 type StoreHandler struct {
-	gohttp.HttpHandler
+	gohttp.BaseHTTPHandler
 }
 
-func ApiHttp(addr string) {
+func APIHttp(addr string) {
 	app := gohttp.Init()
 	app.Route("^/$", &RootHandler{})
 	app.Route("^/stats$", &StatsHandler{})
-	go app.RunHttp(addr)
+	go app.Run(addr)
 }

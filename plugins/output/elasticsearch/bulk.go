@@ -3,6 +3,7 @@ package elasticsearch
 import (
 	"encoding/json"
 	"fmt"
+
 	"github.com/luopengift/gohttp"
 )
 
@@ -52,7 +53,7 @@ func (b *Bulk) Bytes() ([]byte, error) {
 }
 
 func Send(addr string, p []byte) error {
-	resp, err := gohttp.NewClient().Url("http://"+addr).Path("/_bulk").Header("Accept", "application/json").Body(p).Post()
+	resp, err := gohttp.NewClient().URLString("http://"+addr).Path("/_bulk").Header("Accept", "application/json").Body(p).Post()
 	if err != nil {
 		return err
 	}

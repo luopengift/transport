@@ -39,7 +39,7 @@ func (out *HTTPOutput) Write(p []byte) (int, error) {
 		return 0, err
 	}
 	defer out.pool.Put(client)
-	resp, err := client.KeepAlived(false).Url(out.Addr).Header("Content-Type", "application/json;charset=utf-8").Body(p).Post()
+	resp, err := client.KeepAlived(false).URLString(out.Addr).Header("Content-Type", "application/json;charset=utf-8").Body(p).Post()
 	//resp, err := gohttp.NewClient().KeepAlived(false).Url(out.Addr).Header("Content-Type", "application/json;charset=utf-8").Body(p).Post()
 	if err != nil {
 		return 0, err
