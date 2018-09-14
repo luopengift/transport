@@ -1,17 +1,17 @@
 package plugins
 
 import (
+	// init register plugins
 	_ "github.com/luopengift/transport/plugins/adapt"
-
 	_ "github.com/luopengift/transport/plugins/input/exec"
 	_ "github.com/luopengift/transport/plugins/input/file"
 	_ "github.com/luopengift/transport/plugins/input/hdfs"
 	_ "github.com/luopengift/transport/plugins/input/http"
 	_ "github.com/luopengift/transport/plugins/input/influxdb"
 	_ "github.com/luopengift/transport/plugins/input/kafka"
+	_ "github.com/luopengift/transport/plugins/input/kafka2"
 	_ "github.com/luopengift/transport/plugins/input/random"
 	_ "github.com/luopengift/transport/plugins/input/std"
-
 	_ "github.com/luopengift/transport/plugins/output/elasticsearch"
 	_ "github.com/luopengift/transport/plugins/output/file"
 	_ "github.com/luopengift/transport/plugins/output/hdfs"
