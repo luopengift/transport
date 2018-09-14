@@ -9,14 +9,14 @@ func startCronTask() error {
 	return nil
 }
 
-// 增加定时任务
+// AddCronTask 增加定时任务
 func AddCronTask(name, spec string, fun func() error) error {
 	task := cron.NewTask(name, spec, fun)
 	cron.AddTask(name, task)
 	return nil
 }
 
-// 删除定时任务
+// DelCronTask 删除定时任务
 func DelCronTask(name string) error {
 	cron.DeleteTask(name)
 	return nil

@@ -3,11 +3,12 @@ package influxdb
 import (
 	"encoding/json"
 	"fmt"
+	"net/url"
+	"time"
+
 	"github.com/influxdata/influxdb/client/v2"
 	"github.com/luopengift/golibs/logger"
 	"github.com/luopengift/transport"
-	"net/url"
-	"time"
 )
 
 type data struct {
@@ -80,7 +81,7 @@ func (out *InfluxOutput) Start() error {
 			point, ok := <-out.buffer
 			if !ok {
 				logger.Error("buffer closed")
-				return transport.BufferClosedError
+				return transport.ErrBufferClosedError
 			}
 			bp.AddPoint(point)
 		}

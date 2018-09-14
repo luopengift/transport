@@ -3,15 +3,18 @@ package transport
 import (
 	"fmt"
 	//	"github.com/luopengift/golibs/file"
-	"github.com/luopengift/golibs/logger"
-	"github.com/luopengift/types"
 	"strings"
+
+	"github.com/luopengift/log"
+	"github.com/luopengift/types"
 )
 
+// Configer config interface
 type Configer interface {
 	Parse(interface{}) error
 }
 
+// RuntimeConfig runtime config
 type RuntimeConfig struct {
 	DEBUG    bool   `json:"DEBUG"`
 	MAXPROCS int    `json:"MAXPROCS"`
@@ -21,6 +24,7 @@ type RuntimeConfig struct {
 	HTTP     string `json:"HTTP"`
 }
 
+// NewRuntimeConfig new runtime config
 func NewRuntimeConfig() *RuntimeConfig {
 	return &RuntimeConfig{
 		DEBUG:    true,
@@ -32,6 +36,7 @@ func NewRuntimeConfig() *RuntimeConfig {
 	}
 }
 
+// Config config
 type Config struct {
 	Runtime      *RuntimeConfig           `json:"runtime"`
 	InputConfig  map[string]types.HashMap `json:"inputs"`
@@ -62,16 +67,18 @@ func (cfg *Config) String() string {
 	return str
 }
 
+// NewConfig new config
 func NewConfig(path string) *Config {
 	cfg := new(Config)
 	err := cfg.Init(path)
 	if err != nil {
-		logger.Error("config parse error!%v", err)
+		log.Error("config parse error!%v", err)
 		return nil
 	}
 	return cfg
 }
 
+// Init init
 func (cfg *Config) Init(path string) error {
 	//conf := file.NewConfig(path)
 	//err := conf.Parse(cfg)
@@ -80,6 +87,7 @@ func (cfg *Config) Init(path string) error {
 
 }
 
+// InitInputs init input plugins
 func (cfg *Config) InitInputs() ([]*Input, error) {
 	var inputs []*Input
 	for inputName, config := range cfg.InputConfig {
@@ -96,6 +104,7 @@ func (cfg *Config) InitInputs() ([]*Input, error) {
 	return inputs, nil
 }
 
+// InitOutputs init output plugins
 func (cfg *Config) InitOutputs() ([]*Output, error) {
 	var outputs []*Output
 	for outputName, config := range cfg.OutputConfig {
@@ -112,6 +121,7 @@ func (cfg *Config) InitOutputs() ([]*Output, error) {
 	return outputs, nil
 }
 
+// InitAdapts init adapt plugins
 func (cfg *Config) InitAdapts() ([]*Adapt, error) {
 	var adapts []*Adapt
 	for adaptName, config := range cfg.HandleConfig {

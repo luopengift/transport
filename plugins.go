@@ -11,7 +11,7 @@ type PluginsMap struct {
 	Adapters  map[string]Adapter
 }
 
-// NewpluginsMap map instance
+// NewPluginsMap map instance
 func NewPluginsMap() *PluginsMap {
 	Plugins = new(PluginsMap)
 	Plugins.Inputers = make(map[string]Inputer)

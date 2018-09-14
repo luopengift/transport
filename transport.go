@@ -6,7 +6,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/luopengift/golibs/logger"
+	//"github.com/luopengift/golibs/logger"
+	"github.com/luopengift/log"
 )
 
 // Transport core struct
@@ -20,7 +21,7 @@ type Transport struct {
 	recvChan chan []byte
 	sendChan chan []byte
 	isEnd    chan bool
-	logs     *logger.Logger
+	logs     *log.Log
 }
 
 // NewTransprot new transport
@@ -44,14 +45,11 @@ func NewTransport(cfg *Config) (*Transport, error) {
 	transport.recvChan = make(chan []byte, transport.chanSize)
 	transport.sendChan = make(chan []byte, transport.chanSize)
 	transport.isEnd = make(chan bool)
-	f := os.Stdout //logger.NewFileWriter("logs/transport_%Y%M%D.log", 1024 * 1024 * 1024)
+	transport.logs = log.NewLog("transport", os.Stdout)
+	transport.logs.SetTimeFormat("2006/01/02 15:03:04.000")
 	if cfg.Runtime.DEBUG {
-		transport.logs = logger.NewLogger("2006/01/02 15:03:04.000", logger.DEBUG, f)
-	} else {
-		transport.logs = logger.NewLogger("2006/01/02 15:03:04.000", logger.INFO, f)
+		transport.logs.SetLevel(log.DEBUG)
 	}
-	transport.logs.SetPrefix("[transport]")
-
 	startCronTask()
 
 	return transport, err
@@ -103,7 +101,7 @@ func (t *Transport) RunAdapts() {
 						c.channel.Done()
 					}()
 				} else {
-					t.logs.Error("[%s] %s", c.Name, ReadBufferClosedError.Error())
+					t.logs.Error("[%s] %s", c.Name, ErrReadBufferClosedError.Error())
 					break
 				}
 			}
@@ -119,7 +117,7 @@ func (t *Transport) RunOutputs() {
 	for {
 		value, ok := <-t.sendChan
 		if !ok {
-			t.logs.Error("%s", WriteBufferClosedError.Error())
+			t.logs.Error("%s", ErrWriteBufferClosedError.Error())
 			break
 		}
 		t.logs.Debug("send %v", string(value))
