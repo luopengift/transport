@@ -5,18 +5,17 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/luopengift/golibs/email"
 	"github.com/luopengift/transport"
 	"github.com/luopengift/types"
 )
 
 // K8sLogHandler add a enter symbol at end of line, classic written into file
 type K8sLogHandler struct {
-	GeneratorURL string `json:"generatorURL"`
-	CmdbLink     string `json:"cmdbLink"`
-	ServiceLink  string `json:"serviceLink"`
-
-	cmdb    []interface{}
-	service []interface{}
+	*email.Email
+	Subject string `json:"subject" yaml:"subject"`
+	From    string `json:"from"`
+	To      string `json:"to"`
 }
 
 // Init init
@@ -40,8 +39,6 @@ func (h *K8sLogHandler) Handle(in, out []byte) (int, error) {
 	if err != nil {
 		return 0, fmt.Errorf("%v => %v", err, string(in))
 	}
-	// 				0	1	2		3							4			5
-	// source -> /data/log/mm-prod/edb-channel-9478fc5db-8h8j4/edb-channel/common-error.log
 	sources := strings.Split(log.Source, "/")
 
 	log.Namespace = sources[2]
@@ -52,8 +49,14 @@ func (h *K8sLogHandler) Handle(in, out []byte) (int, error) {
 	if err != nil {
 		return 0, fmt.Errorf("%v => %v", err, string(in))
 	}
+
+	content := email.NewContent()
+	content.Body = log.Source + "\n\n" + log.Message
+	content.Subject = "mmsz-nx-prod.k8s.local ERROR LOG"
+
+	err = h.Email.Send(content)
 	n := copy(out, b)
-	return n, nil
+	return n, err
 }
 
 // Version version
