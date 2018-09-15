@@ -11,8 +11,8 @@ const (
 )
 
 type ExecInput struct {
-	Commands []string `json:"commands"`
-	Crontab  string   `json:"cron"`
+	Commands []string `json:"commands" yaml:"commands"`
+	Crontab  string   `json:"cron" yaml:"cron"`
 
 	result  chan []byte
 	errchan chan error

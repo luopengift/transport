@@ -2,28 +2,31 @@ package codec
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/luopengift/golibs/logger"
 	"github.com/luopengift/transport"
 	"github.com/luopengift/transport/utils"
 	"github.com/luopengift/types"
-	"strings"
 )
 
+// KVHandler kv handler
 type KVHandler struct {
 	Keys   [][]string             `json:"keys"`
 	Split  string                 `json:"split"`
 	Ignore string                 `json:"ignore"`
 	GeoIP  string                 `json:"geoip"` //tell program which keys format to geoip, eg: "ip => geoip"
-	IpDB   string                 `json:"ipdb"`
+	IPDB   string                 `json:"ipdb"`
 	Tags   map[string]interface{} `json:"tags"`
 
 	geomap map[string]string
 }
 
+// Init init
 func (kv *KVHandler) Init(config transport.Configer) error {
 	kv.Ignore = "-"
 	kv.GeoIP = ""
-	kv.IpDB = utils.GeoDB
+	kv.IPDB = utils.GeoDB
 	kv.geomap = map[string]string{}
 	err := config.Parse(kv)
 	if err != nil {
@@ -32,11 +35,12 @@ func (kv *KVHandler) Init(config transport.Configer) error {
 	if kv.GeoIP != "" && strings.Count(kv.GeoIP, "=>") == 1 {
 		geo := strings.Split(kv.GeoIP, "=>") //key is need to geoip, value is return key
 		kv.geomap[strings.TrimSpace(geo[0])] = strings.TrimSpace(geo[1])
-		utils.GeoIPClient, err = utils.NewClient(kv.IpDB)
+		utils.GeoIPClient, err = utils.NewClient(kv.IPDB)
 	}
 	return err
 }
 
+// Handle Handle
 func (kv *KVHandler) Handle(in, out []byte) (int, error) {
 	o := make(map[string]interface{})
 	for index, value := range strings.Split(string(in), kv.Split) {
@@ -97,6 +101,7 @@ func (kv *KVHandler) Handle(in, out []byte) (int, error) {
 	return n, nil
 }
 
+// Version version
 func (kv *KVHandler) Version() string {
 	return "0.0.5"
 }

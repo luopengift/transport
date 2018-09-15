@@ -1,29 +1,28 @@
 package kafka
 
 import (
+	"sync"
+	"time"
+
 	"github.com/Shopify/sarama"
 	"github.com/luopengift/golibs/logger"
 	"github.com/luopengift/transport"
 	"github.com/wvanbergen/kafka/consumergroup"
 	"github.com/wvanbergen/kazoo-go"
-	"sync"
-	"time"
 )
 
 const (
 	VERSION = "0.0.1"
 )
 
-/*
-一些使用说明:
-sarame.OffsetNewest int64 = -1
-sarame.OffsetOldest int64 = -2
-*/
+// KafkaInput kafka input
+// sarame.OffsetNewest int64 = -1
+// sarame.OffsetOldest int64 = -2
 type KafkaInput struct {
-	Addrs  []string `json:"addrs"` //如果定义了group,则addrs是zookeeper的地址(2181)，否则的话是kafka的地址(9092)
-	Topics []string `json:"topics"`
-	Group  string   `json:"group"`
-	Offset int64    `json:"offset"`
+	Addrs  []string `json:"addrs" yaml:"addr"` //如果定义了group,则addrs是zookeeper的地址(2181)，否则的话是kafka的地址(9092)
+	Topics []string `json:"topics" yaml:"topics"`
+	Group  string   `json:"group" yaml:"group"`
+	Offset int64    `json:"offset" yaml:"offset"`
 
 	Message chan []byte //从这个管道中读取数据
 }

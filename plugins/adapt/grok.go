@@ -2,13 +2,15 @@ package codec
 
 import (
 	"fmt"
+	"regexp"
+
 	"github.com/luopengift/transport"
 	"github.com/luopengift/types"
-	"regexp"
 )
 
+// GrokHandler grok handler
 type GrokHandler struct {
-	Regex string `json:"regex"`
+	Regex string `json:"regex" yaml:"regex"`
 
 	Regexp *regexp.Regexp
 }

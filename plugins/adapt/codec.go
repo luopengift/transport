@@ -4,6 +4,7 @@ import (
 	"github.com/luopengift/transport"
 )
 
+// AddEnterHandler add enterhandler
 // add a enter symbol at end of line, classic written into file
 type AddEnterHandler struct{}
 
@@ -21,7 +22,7 @@ func (h *AddEnterHandler) Version() string {
 	return "0.0.1"
 }
 
-// direct connect input and output, do nothing
+// NullHandler direct connect input and output, do nothing
 type NullHandler struct{}
 
 func (h *NullHandler) Init(config transport.Configer) error {

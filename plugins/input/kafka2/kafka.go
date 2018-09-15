@@ -20,10 +20,10 @@ const (
 // sarame.OffsetNewest int64 = -1
 // sarame.OffsetOldest int64 = -2
 type KafkaInput struct {
-	Addrs   []string    `json:"addrs"` //如果定义了group,则addrs是zookeeper的地址(2181)，否则的话是kafka的地址(9092)
-	Topics  []string    `json:"topics"`
-	Group   string      `json:"group"`
-	Offset  string      `json:"offset"`
+	Addrs   []string    `json:"addrs" yaml:"addrs"` //如果定义了group,则addrs是zookeeper的地址(2181)，否则的话是kafka的地址(9092)
+	Topics  []string    `json:"topics" yaml:"topics"`
+	Group   string      `json:"group" yaml:"group"`
+	Offset  string      `json:"offset" yaml:"offset"`
 	Message chan []byte //从这个管道中读取数据
 	*kafka.Consumer
 }

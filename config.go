@@ -2,7 +2,6 @@ package transport
 
 import (
 	"fmt"
-	//	"github.com/luopengift/golibs/file"
 	"strings"
 
 	"github.com/luopengift/log"
@@ -16,12 +15,12 @@ type Configer interface {
 
 // RuntimeConfig runtime config
 type RuntimeConfig struct {
-	DEBUG    bool   `json:"DEBUG"`
-	MAXPROCS int    `json:"MAXPROCS"`
-	BYTESIZE int    `json:"BYTESIZE"`
-	CHANSIZE int    `json:"CHANSIZE"`
-	VERSION  string `json:"VERSION"`
-	HTTP     string `json:"HTTP"`
+	DEBUG    bool   `json:"DEBUG" yaml:"DEBUG"`
+	MAXPROCS int    `json:"MAXPROCS" yaml:"MAXPROCS"`
+	BYTESIZE int    `json:"BYTESIZE" yaml:"BYTESIZE"`
+	CHANSIZE int    `json:"CHANSIZE" yaml:"CHANSIZE"`
+	VERSION  string `json:"VERSION" yaml:"VERSION"`
+	HTTP     string `json:"HTTP" yaml:"HTTP"`
 }
 
 // NewRuntimeConfig new runtime config
@@ -80,11 +79,7 @@ func NewConfig(path string) *Config {
 
 // Init init
 func (cfg *Config) Init(path string) error {
-	//conf := file.NewConfig(path)
-	//err := conf.Parse(cfg)
-	err := types.ParseConfigFile(path, cfg)
-	return err
-
+	return types.ParseConfigFile(path, cfg)
 }
 
 // InitInputs init input plugins

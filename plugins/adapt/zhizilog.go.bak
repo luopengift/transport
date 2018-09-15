@@ -3,10 +3,11 @@ package codec
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/luopengift/golibs/crypto"
-	"github.com/luopengift/transport"
 	"strconv"
 	"strings"
+
+	"github.com/luopengift/golibs/crypto"
+	"github.com/luopengift/transport"
 )
 
 type ZhiziLog struct {
