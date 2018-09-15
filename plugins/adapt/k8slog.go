@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/luopengift/golibs/email"
+	"github.com/luopengift/log"
 	"github.com/luopengift/transport"
 	"github.com/luopengift/types"
 )
@@ -34,27 +35,31 @@ type Log struct {
 
 // Handle handler
 func (h *K8sLogHandler) Handle(in, out []byte) (int, error) {
-	log := &Log{}
-	err := json.Unmarshal(in, log)
+	msg := &Log{}
+	err := json.Unmarshal(in, msg)
 	if err != nil {
 		return 0, fmt.Errorf("%v => %v", err, string(in))
 	}
-	sources := strings.Split(log.Source, "/")
+	sources := strings.Split(msg.Source, "/")
 
-	log.Namespace = sources[2]
-	log.Pod = sources[3]
-	log.App = sources[4]
+	msg.Namespace = sources[2]
+	msg.Pod = sources[3]
+	msg.App = sources[4]
 
-	b, err := types.ToBytes(log)
+	b, err := types.ToBytes(msg)
 	if err != nil {
 		return 0, fmt.Errorf("%v => %v", err, string(in))
 	}
 
 	content := email.NewContent()
-	content.Body = log.Source + "\n\n" + log.Message
+	content.Body = msg.Source + "\n\n" + msg.Message
 	content.Subject = "mmsz-nx-prod.k8s.local ERROR LOG"
 
-	err = h.Email.Send(content)
+	if err = h.Email.Send(content); err != nil {
+		log.Error("send email error: %v", err)
+		return 0, err
+	}
+	log.Info("send email ok!")
 	n := copy(out, b)
 	return n, err
 }

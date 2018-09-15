@@ -47,8 +47,8 @@ func NewTransport(cfg *Config) (*Transport, error) {
 	transport.isEnd = make(chan bool)
 	transport.logs = log.NewLog("transport", os.Stdout)
 	transport.logs.SetTimeFormat("2006/01/02 15:03:04.000")
-	if cfg.Runtime.DEBUG {
-		transport.logs.SetLevel(log.DEBUG)
+	if !cfg.Runtime.DEBUG {
+		transport.logs.SetLevel(log.INFO)
 	}
 	startCronTask()
 
