@@ -43,6 +43,7 @@ func main() {
 		os.Exit(-1)
 	}
 	cfg := transport.NewConfig(cmd.Config)
+	log.Display("CONFIG", cfg)
 	if cfg.Runtime.VERSION != transport.VERSION {
 		log.Warn("runtime version is %s,but config version is %s,NOT match!exit...", transport.VERSION, cfg.Runtime.VERSION)
 	}
