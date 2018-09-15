@@ -54,6 +54,8 @@ func (h *K8sLogHandler) Handle(in, out []byte) (int, error) {
 	content := email.NewContent()
 	content.Body = msg.Source + "\n\n" + msg.Message
 	content.Subject = "mmsz-nx-prod.k8s.local ERROR LOG"
+	content.From = h.From
+	content.To = h.To
 
 	if err = h.Email.Send(content); err != nil {
 		log.Error("send email error: %v", err)
