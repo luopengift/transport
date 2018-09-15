@@ -1,6 +1,7 @@
 package codec
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 
@@ -35,7 +36,7 @@ type Log struct {
 // Handle handler
 func (h *K8sLogHandler) Handle(in, out []byte) (int, error) {
 	log := &Log{}
-	err := types.Format(in, log)
+	err := json.Unmarshal(in, log)
 	if err != nil {
 		return 0, fmt.Errorf("%v => %v", err, string(in))
 	}
