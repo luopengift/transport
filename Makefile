@@ -1,9 +1,16 @@
-APP = transport
-MAIN = cmd/main.go
 PREFIX = /usr/local
 GEOIP = utils/GeoLite2-City.mmdb
-build:
-	go build -o $(APP) $(MAIN)
+MAIN = cmd/*.go
+APP = transport
+VERSION	= 1.0.0
+TIME = $(shell date "+%F %T")
+GIT = $(shell git rev-parse HEAD)
+PKG = github.com/luopengift/version
+
+FLAG = "-X '${PKG}.VERSION=${VERSION}' -X '${PKG}.APP=${APP}' -X '${PKG}.TIME=${TIME}' -X '${PKG}.GIT=${GIT}'"
+
+build: 
+	go build -ldflags $(FLAG) -o ${APP} ${MAIN}
 update:
 	go get -u ./...
 package: build

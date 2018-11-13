@@ -10,6 +10,8 @@ import (
 	"runtime"
 	"runtime/pprof"
 
+	"github.com/luopengift/version"
+
 	"github.com/luopengift/log"
 	"github.com/luopengift/transport"
 	"github.com/luopengift/transport/api"
@@ -31,7 +33,7 @@ SIGHUP	Reloads server configuration file
 func main() {
 	cmd := ParseCmdLine()
 	if cmd.Version {
-		fmt.Println("version is", transport.VERSION)
+		log.ConsoleWithBlue(version.String())
 		os.Exit(0)
 	}
 	if cmd.List {
