@@ -3,7 +3,7 @@ package elasticsearch
 import (
 	"github.com/luopengift/golibs/channel"
 	"github.com/luopengift/golibs/file"
-	"github.com/luopengift/golibs/logger"
+	"github.com/luopengift/log"
 	"github.com/luopengift/transport"
 
 	"context"
@@ -80,14 +80,14 @@ func (out *EsOutput) Start() error {
 				b := <-out.buffer
 				index, err := out.createIndex()
 				if err != nil {
-					logger.Error("index error: %v", err)
+					log.Error("index error: %v", err)
 				}
 				req := es.NewBulkIndexRequest().Index(index).Type(out.Type).Doc(string(b))
 				bulkRequest.Add(req)
 			}
 			bulkResponse, err := bulkRequest.Do(out.ctx)
 			if err != nil {
-				logger.Error("bulkResponse error: %v, %v", len(bulkResponse.Indexed()), err)
+				log.Error("bulkResponse error: %v, %v", len(bulkResponse.Indexed()), err)
 			}
 			out.channel.Done()
 		}()

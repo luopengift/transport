@@ -2,7 +2,7 @@ package http
 
 import (
 	"github.com/luopengift/gohttp"
-	"github.com/luopengift/golibs/logger"
+	"github.com/luopengift/log"
 	"github.com/luopengift/transport"
 )
 
@@ -27,7 +27,7 @@ func NewHttpInput() *HttpInput {
 func (in *HttpInput) Init(config transport.Configer) error {
 	err := config.Parse(in)
 	if err != nil {
-		logger.Error("parse error:%v", err)
+		log.Error("parse error:%v", err)
 		return err
 	}
 	in.app = gohttp.Init()
@@ -39,7 +39,7 @@ func (in *HttpInput) Init(config transport.Configer) error {
 func (in *HttpInput) POST() {
 	body := in.BaseHTTPHandler.GetBodyArgs()
 	Ch <- body
-	logger.Error("body:%v,ok", string(body))
+	log.Error("body:%v,ok", string(body))
 	in.Output("ok")
 }
 

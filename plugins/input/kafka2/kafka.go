@@ -35,25 +35,7 @@ func NewKafkaInput() *KafkaInput {
 }
 
 func (in *KafkaInput) Init(config transport.Configer) error {
-	err := config.Parse(in)
-	if err != nil {
-		log.Error("parse error:%v", err)
-		return err
-	}
-	in.Message = make(chan []byte, 1000)
-
-	//c.closechan = make(chan string, 1)
-	//c.mux = new(sync.Mutex)
-	if in.Consumer, err = kafka.NewConsumer(&kafka.ConfigMap{
-		"bootstrap.servers": strings.Join(in.Addrs, ","),
-		"group.id":          in.Group,
-		"auto.offset.reset": in.Offset,
-	}); err != nil {
-		return err
-	}
-	in.Consumer.SubscribeTopics(in.Topics, nil)
-	return nil
-
+	return config.Parse(in)
 }
 
 func (in *KafkaInput) Read(p []byte) (cnt int, err error) {
@@ -75,7 +57,7 @@ LOOP:
 				break LOOP
 			}
 			in.Message <- msg.Value
-			//fmt.Printf("Message on %s: %s\n", msg.TopicPartition, string(msg.Value)[:60])
+			// log.Info("Message on %s: %s\n", msg.TopicPartition, string(msg.Value)[:60])
 		}
 	}
 	log.Warn("close client!")
@@ -84,6 +66,20 @@ LOOP:
 }
 
 func (in *KafkaInput) Start() error {
+	log.Info("kafka starting")
+	var err error
+	in.Message = make(chan []byte, 1000)
+
+	//c.closechan = make(chan string, 1)
+	//c.mux = new(sync.Mutex)
+	if in.Consumer, err = kafka.NewConsumer(&kafka.ConfigMap{
+		"bootstrap.servers": strings.Join(in.Addrs, ","),
+		"group.id":          in.Group,
+		"auto.offset.reset": in.Offset,
+	}); err != nil {
+		return err
+	}
+	in.Consumer.SubscribeTopics(in.Topics, nil)
 	go in.ReadFromTopics(context.TODO())
 	return nil
 }

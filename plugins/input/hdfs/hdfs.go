@@ -3,11 +3,12 @@ package hdfs
 import (
 	"bufio"
 	"bytes"
+	"io"
+
 	"github.com/colinmarc/hdfs"
 	"github.com/luopengift/golibs/file"
-	"github.com/luopengift/golibs/logger"
+	"github.com/luopengift/log"
 	"github.com/luopengift/transport"
-	"io"
 )
 
 const (
@@ -43,7 +44,7 @@ func (in *HDFSInput) Start() error {
 		in.realFile = file.TimeRule.Handle(in.File)
 		r, err := in.client.Open(in.realFile)
 		if err != nil {
-			logger.Error("client open file error:%v", err)
+			log.Error("client open file error:%v", err)
 			continue
 		}
 		reader := bufio.NewReader(r)
@@ -51,10 +52,10 @@ func (in *HDFSInput) Start() error {
 			line, err := reader.ReadBytes('\n')
 			switch {
 			case err != nil && err == io.EOF:
-				logger.Warn("%v EOF", in.realFile)
+				log.Warn("%v EOF", in.realFile)
 				return in.Close()
 			case err != nil && err != io.EOF:
-				logger.Error("error:%v", err)
+				log.Error("error:%v", err)
 				return err
 			default:
 				in.buffer <- bytes.TrimRight(line, "\n")

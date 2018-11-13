@@ -3,7 +3,7 @@ package kafka
 import (
 	"github.com/Shopify/sarama"
 	"github.com/luopengift/golibs/channel"
-	"github.com/luopengift/golibs/logger"
+	"github.com/luopengift/log"
 	"github.com/luopengift/transport"
 )
 
@@ -27,13 +27,7 @@ func NewKafkaOutput() *KafkaOutput {
 }
 
 func (out *KafkaOutput) Init(config transport.Configer) error {
-	err := config.Parse(out)
-	if err != nil {
-		return err
-	}
-	out.Message = make(chan []byte, out.MaxProcs)
-	out.channel = channel.NewChannel(out.MaxProcs)
-	return nil
+	return config.Parse(out)
 }
 
 func (out *KafkaOutput) ChanInfo() string {
@@ -50,6 +44,8 @@ func (out *KafkaOutput) Close() error {
 }
 
 func (out *KafkaOutput) Start() error {
+	out.Message = make(chan []byte, out.MaxProcs)
+	out.channel = channel.NewChannel(out.MaxProcs)
 	go out.WriteToTopic()
 	return nil
 }
@@ -60,13 +56,13 @@ func (out *KafkaOutput) WriteToTopic() error {
 	config.ClientID = "TransportKafkaOutput"
 	config.Producer.Return.Successes = true
 	if err := config.Validate(); err != nil {
-		logger.Error("<config error> %v", err)
+		log.Error("<config error> %v", err)
 		return err
 	}
 
 	producer, err := sarama.NewSyncProducer(out.Addrs, config)
 	if err != nil {
-		logger.Error("<Failed to produce message> %v", err)
+		log.Error("<Failed to produce message> %v", err)
 		return err
 	}
 	defer producer.Close()
@@ -83,7 +79,7 @@ func (out *KafkaOutput) WriteToTopic() error {
 					Value: sarama.ByteEncoder(message),
 				}
 				if partition, offset, err := producer.SendMessage(msg); err != nil {
-					logger.Error("<write to kafka error,partition=%v,offset=%v> %v", partition, offset, err)
+					log.Error("<write to kafka error,partition=%v,offset=%v> %v", partition, offset, err)
 				}
 				out.channel.Done()
 			}(message)

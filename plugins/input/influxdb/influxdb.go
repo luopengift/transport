@@ -2,9 +2,10 @@ package influxdb
 
 import (
 	"fmt"
+
 	"github.com/influxdata/influxdb/client/v2"
 	"github.com/influxdata/influxdb/models"
-	"github.com/luopengift/golibs/logger"
+	"github.com/luopengift/log"
 	"github.com/luopengift/transport"
 	"github.com/luopengift/types"
 )
@@ -64,7 +65,7 @@ func (in *InfluxInput) Start() error {
 	if err != nil {
 		return err
 	}
-	logger.Debug("%#v, %#v", data.Name, data.Columns)
+	log.Debug("%#v, %#v", data.Name, data.Columns)
 	for _, dat := range data.Values {
 		in.Buffer <- dat
 	}

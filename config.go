@@ -79,7 +79,7 @@ func NewConfig(path string) *Config {
 
 // Init init
 func (cfg *Config) Init(path string) error {
-	return types.ParseConfigFile(path, cfg)
+	return types.ParseConfigFiles(cfg, path)
 }
 
 // InitInputs init input plugins

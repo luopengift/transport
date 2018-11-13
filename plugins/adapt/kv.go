@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/luopengift/golibs/logger"
+	"github.com/luopengift/log"
 	"github.com/luopengift/transport"
 	"github.com/luopengift/transport/utils"
 	"github.com/luopengift/types"
@@ -45,7 +45,7 @@ func (kv *KVHandler) Handle(in, out []byte) (int, error) {
 	o := make(map[string]interface{})
 	for index, value := range strings.Split(string(in), kv.Split) {
 		if index == len(kv.Keys) {
-			logger.Warn("index<%d> out of len(kv.Keys)<%d>: %s", index, len(kv.Keys), string(in))
+			log.Warn("index<%d> out of len(kv.Keys)<%d>: %s", index, len(kv.Keys), string(in))
 			return 0, fmt.Errorf("index out of range")
 		}
 		key := kv.Keys[index][0]
@@ -85,7 +85,7 @@ func (kv *KVHandler) Handle(in, out []byte) (int, error) {
 				o[value] = *utils.GeoToEsIP(geoip)
 				continue
 			}
-			logger.Warn("GeoIP is fail:%v", o[key])
+			log.Warn("GeoIP is fail:%v", o[key])
 		}
 	}
 

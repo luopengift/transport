@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/Shopify/sarama"
-	"github.com/luopengift/golibs/logger"
+	"github.com/luopengift/log"
 	"github.com/luopengift/transport"
 	"github.com/wvanbergen/kafka/consumergroup"
 	"github.com/wvanbergen/kazoo-go"
@@ -35,7 +35,7 @@ func NewKafkaInput() *KafkaInput {
 func (in *KafkaInput) Init(config transport.Configer) error {
 	err := config.Parse(in)
 	if err != nil {
-		logger.Error("parse error:%v", err)
+		log.Error("parse error:%v", err)
 		return err
 	}
 	in.Message = make(chan []byte, 1000)
@@ -64,16 +64,16 @@ func (in *KafkaInput) ReadFromTopic(topic string) {
 	var wg sync.WaitGroup
 	consumer, err := sarama.NewConsumer(in.Addrs, sarama.NewConfig())
 	if err != nil {
-		logger.Error("<new consumer error> %v", err)
+		log.Error("<new consumer error> %v", err)
 	}
 	partitionList, err := consumer.Partitions(topic)
 	if err != nil {
-		logger.Error("<consumer partitions> %v", err)
+		log.Error("<consumer partitions> %v", err)
 	}
 	for partition := range partitionList {
 		pc, err := consumer.ConsumePartition(topic, int32(partition), in.Offset)
 		if err != nil {
-			logger.Error("<consume error> %v", err)
+			log.Error("<consume error> %v", err)
 		}
 		defer pc.AsyncClose()
 
@@ -100,13 +100,13 @@ func (in *KafkaInput) ReadWithGroup() error {
 	config.Zookeeper.Chroot = chroot
 	consumer, err := consumergroup.JoinConsumerGroup(in.Group, in.Topics, zookeeperNodes, config)
 	if err != nil {
-		logger.Error("parse error:%v", err)
+		log.Error("parse error:%v", err)
 		return err
 	}
 
 	go func() {
 		for err := range consumer.Errors() {
-			logger.Error("consumer error:%v", err)
+			log.Error("consumer error:%v", err)
 		}
 	}()
 
@@ -118,9 +118,9 @@ func (in *KafkaInput) ReadWithGroup() error {
 			offsets[message.Topic] = make(map[int32]int64)
 		}
 
-		eventCount += 1
+		eventCount++
 		if offsets[message.Topic][message.Partition] != 0 && offsets[message.Topic][message.Partition] != message.Offset-1 {
-			logger.Error("Unexpected offset on %s:%d. Expected %d, found %d, diff %d.", message.Topic, message.Partition, offsets[message.Topic][message.Partition]+1, message.Offset, message.Offset-offsets[message.Topic][message.Partition]+1)
+			log.Error("Unexpected offset on %s:%d. Expected %d, found %d, diff %d.", message.Topic, message.Partition, offsets[message.Topic][message.Partition]+1, message.Offset, message.Offset-offsets[message.Topic][message.Partition]+1)
 		}
 
 		offsets[message.Topic][message.Partition] = message.Offset
@@ -128,8 +128,8 @@ func (in *KafkaInput) ReadWithGroup() error {
 		in.Message <- message.Value
 	}
 
-	logger.Info("Processed %d events.", eventCount)
-	logger.Info("%+v", offsets)
+	log.Info("Processed %d events.", eventCount)
+	log.Info("%+v", offsets)
 	consumer.Close()
 	return nil
 

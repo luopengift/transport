@@ -3,6 +3,8 @@ package transport
 import (
 	"sync"
 	"sync/atomic"
+
+	"github.com/luopengift/log"
 )
 
 // Inputer 数据输入接口
@@ -51,6 +53,7 @@ func (i *Input) Read(p []byte) (int, error) {
 }
 
 func (i *Input) Start() error {
+	log.Info("Input Plugin[%v] starting...", i.Name)
 	return i.Inputer.Start()
 }
 

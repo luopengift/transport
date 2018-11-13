@@ -2,7 +2,7 @@ package exec
 
 import (
 	"github.com/luopengift/golibs/exec"
-	"github.com/luopengift/golibs/logger"
+	"github.com/luopengift/log"
 	"github.com/luopengift/transport"
 )
 
@@ -25,7 +25,7 @@ func NewExecInput() *ExecInput {
 func (in *ExecInput) Init(config transport.Configer) error {
 	err := config.Parse(in)
 	if err != nil {
-		logger.Error("parse error:%v", err)
+		log.Error("parse error:%v", err)
 		return err
 	}
 	in.result = make(chan []byte, 1)

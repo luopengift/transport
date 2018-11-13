@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/influxdata/influxdb/client/v2"
-	"github.com/luopengift/golibs/logger"
+	"github.com/luopengift/log"
 	"github.com/luopengift/transport"
 )
 
@@ -80,16 +80,16 @@ func (out *InfluxOutput) Start() error {
 		for tmp := out.Batch; tmp > 0; tmp-- {
 			point, ok := <-out.buffer
 			if !ok {
-				logger.Error("buffer closed")
+				log.Error("buffer closed")
 				return transport.ErrBufferClosedError
 			}
 			bp.AddPoint(point)
 		}
 		err = out.client.Write(bp)
 		if err != nil {
-			logger.Error("write error:%v", err)
+			log.Error("write error:%v", err)
 		}
-		logger.Info("%#v", bp.Points()[0].String())
+		log.Info("%#v", bp.Points()[0].String())
 	}
 }
 

@@ -6,7 +6,6 @@ import (
 	"strings"
 	"time"
 
-	//"github.com/luopengift/golibs/logger"
 	"github.com/luopengift/log"
 )
 

@@ -1,13 +1,14 @@
 package hdfs
 
 import (
-	"github.com/colinmarc/hdfs"
-	"github.com/luopengift/golibs/file"
-	"github.com/luopengift/golibs/logger"
-	"github.com/luopengift/transport"
-	"github.com/luopengift/types"
 	"path/filepath"
 	"time"
+
+	"github.com/colinmarc/hdfs"
+	"github.com/luopengift/golibs/file"
+	"github.com/luopengift/log"
+	"github.com/luopengift/transport"
+	"github.com/luopengift/types"
 )
 
 const (
@@ -74,29 +75,29 @@ func (out *HDFSOutput) Start() error {
 		if out.RollSize <= out.Size() {
 			fname := file.TimeRule.Handle(out.File)
 			if err = out.client.Rename(fname, fname+"."+time.Now().Format("20060102150405")); err != nil {
-				logger.Error("rename file error:%v", err)
+				log.Error("rename file error:%v", err)
 				time.Sleep(3 * time.Second)
 				continue
 			}
 		}
 		out.fd, err = out.prepareFd()
 		if err != nil {
-			logger.Error("prepare fd error:%v", err)
+			log.Error("prepare fd error:%v", err)
 			time.Sleep(3 * time.Second)
 			continue
 		}
 		for tmp := out.Batch; tmp > 0; tmp-- {
 			b, ok := <-out.buffer
 			if !ok {
-				logger.Error("buffer chan is closed")
+				log.Error("buffer chan is closed")
 				return nil
 			}
 			if n, err := out.fd.Write(b); err != nil {
-				logger.Error("write %s error,len=%v,%v", file.TimeRule.Handle(out.File), n, err)
+				log.Error("write %s error,len=%v,%v", file.TimeRule.Handle(out.File), n, err)
 			}
 		}
 		if err = out.fd.Close(); err != nil {
-			logger.Error("fd close error:%v", err)
+			log.Error("fd close error:%v", err)
 		}
 	}
 }

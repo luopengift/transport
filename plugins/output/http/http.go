@@ -2,7 +2,7 @@ package hdfs
 
 import (
 	"github.com/luopengift/gohttp"
-	"github.com/luopengift/golibs/logger"
+	"github.com/luopengift/log"
 	"github.com/luopengift/transport"
 )
 
@@ -45,7 +45,7 @@ func (out *HTTPOutput) Write(p []byte) (int, error) {
 		return 0, err
 	}
 	if resp.Code() != 200 {
-		logger.Error("plugin out http post status not 200, response is: %#v", string(resp.Byte))
+		log.Error("plugin out http post status not 200, response is: %#v", string(resp.Byte))
 		return 0, err
 	}
 	return len(p), nil

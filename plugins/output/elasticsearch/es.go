@@ -5,7 +5,7 @@ import (
 
 	"github.com/luopengift/gohttp"
 	"github.com/luopengift/golibs/file"
-	"github.com/luopengift/golibs/logger"
+	"github.com/luopengift/log"
 	"github.com/luopengift/transport"
 )
 
@@ -55,24 +55,24 @@ func (out *EsOutput) Start() error {
 		for tmp := out.Batch; tmp > 0; tmp-- {
 			b, ok := <-out.buffer
 			if !ok {
-				logger.Error("buffer closed")
+				log.Error("buffer closed")
 				return nil
 			}
 			bulk := NewBulkIndex(file.TimeRule.Handle(out.Index), out.Type, "", b)
 			bt, err := bulk.Bytes()
 			if err != nil {
-				logger.Error("bulk Bytes error:%v", err)
+				log.Error("bulk Bytes error:%v", err)
 				continue
 			}
 			buf.Write(bt)
 		}
 		client, err := out.pool.Get()
 		if err != nil {
-			logger.Error("get client from pool error:%v", err)
+			log.Error("get client from pool error:%v", err)
 		}
 		response, err := client.URLString("http://"+out.Addrs[0]).Path("/_bulk").Header("Accept", "application/json").Body(buf.Bytes()).Post()
 		if err != nil {
-			logger.Error("%v,%v", err, response)
+			log.Error("%v,%v", err, response)
 		}
 		out.pool.Put(client)
 	}

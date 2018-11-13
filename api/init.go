@@ -2,7 +2,7 @@ package api
 
 import (
 	"github.com/luopengift/gohttp"
-	"github.com/luopengift/golibs/logger"
+	"github.com/luopengift/log"
 	"github.com/luopengift/transport"
 )
 
@@ -20,7 +20,7 @@ type StatsHandler struct {
 
 func (ctx *StatsHandler) GET() {
 	stats := transport.T.Stat()
-	logger.Debug("[API] %v", stats)
+	log.Debug("[API] %v", stats)
 	ctx.Output(stats)
 }
 

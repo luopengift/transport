@@ -2,7 +2,7 @@ package file
 
 import (
 	"github.com/luopengift/golibs/file"
-	"github.com/luopengift/golibs/logger"
+	"github.com/luopengift/log"
 	"github.com/luopengift/transport"
 )
 
@@ -23,7 +23,7 @@ func NewFileInput() *FileInput {
 func (in *FileInput) Init(config transport.Configer) error {
 	err := config.Parse(in)
 	if err != nil {
-		logger.Error("parse error:%v", err)
+		log.Error("parse error:%v", err)
 		return err
 	}
 
