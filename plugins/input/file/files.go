@@ -2,7 +2,6 @@ package file
 
 import (
 	"github.com/luopengift/golibs/file"
-	"github.com/luopengift/log"
 	"github.com/luopengift/transport"
 )
 
@@ -19,20 +18,7 @@ func NewFilesInput() *FilesInput {
 }
 
 func (in *FilesInput) Init(config transport.Configer) error {
-	err := config.Parse(in)
-	if err != nil {
-		log.Error("parse error:%v", err)
-		return err
-	}
-	for _, path := range in.Path {
-		tail := file.NewTail(path, file.TimeRule)
-		if in.EndStop {
-			tail.EndStop(true)
-		}
-		in.Files = append(in.Files, tail)
-	}
-	in.buf = make(chan []byte, 1000)
-	return nil
+	return config.Parse(in)
 }
 
 func (in *FilesInput) Read(p []byte) (int, error) {
@@ -41,6 +27,15 @@ func (in *FilesInput) Read(p []byte) (int, error) {
 }
 
 func (in *FilesInput) Start() error {
+	for _, path := range in.Path {
+		tail := file.NewTail(path, file.TimeRule)
+		if in.EndStop {
+			tail.EndStop(true)
+		}
+		in.Files = append(in.Files, tail)
+	}
+	in.buf = make(chan []byte, 1000)
+
 	for _, tail := range in.Files {
 		go func(t *file.Tail) {
 			t.ReadLine()
